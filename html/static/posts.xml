@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<posts
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:noNamespaceSchemaLocation="posts.xsd">
+
+	<review id="r1" movie="m2" author="foo" date="2020-01-01T00:00:00">
+		<rating>10</rating>
+		<title>Fantastic movie</title>
+		<text>Great visuals and soundtrack</text>
+	</review>
+
+	<question id="q1" movie="m1" author="foo" date="2020-01-01T00:00:00" featured="true" featuredAnswer="a1">
+		<title>Book</title>
+		<text>Is it as good as the book?</text>
+	</question>
+
+	<question id="q2" movie="m1" author="foo" date="2020-01-01T00:00:00">
+		<title>Realism</title>
+		<text>Is it realistic?</text>
+	</question>
+
+	<spoiler id="s1" movie="m1" author="foo" date="2020-01-01T00:00:00">
+		<rating>6</rating>
+		<title>Iron Man</title>
+		<text>He goes Iron Man near the end</text>
+	</spoiler>
+
+	<extra id="e1" movie="m1" author="foo" date="2020-01-01T00:00:00" rep="20">
+		<title>Deleted scenes</title>
+		<text>http://example.com/...</text>
+	</extra>
+
+</posts>

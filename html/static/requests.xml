@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<requests
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:noNamespaceSchemaLocation="requests.xsd">
+
+	<request id="req1" status="rejected">
+		<title>The Secret Life of Walter Mitty</title>
+		<year>2013</year>
+	</request>
+
+	<request id="req2" status="accepted">
+		<title>The Secret Life of Walter Mitty</title>
+		<year>2013</year>
+		<duration>114</duration>
+		<summary>A timid magazine photo manager who lives life vicariously through daydreams embarks on a true-life adventure when a negative goes missing.</summary>
+		<director>Ben Stiller</director>
+		<writer>James Thurber</writer>
+	</request>
+
+</requests>

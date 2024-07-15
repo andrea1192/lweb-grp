@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+	<xsd:include schemaLocation="groups.xsd" />
+
+	<xsd:element name="answers">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="answer" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="answer">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="text" type="xsd:string" />
+			</xsd:sequence>
+			<xsd:attribute use="required" name="id" type="xsd:ID" />
+			<xsd:attributeGroup ref="reactionAttr" />
+			<xsd:attribute use="required" name="date" type="xsd:dateTime" />
+		</xsd:complexType>
+	</xsd:element>
+
+</xsd:schema>

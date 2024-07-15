@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+	<xsd:group name="postElem">
+		<xsd:sequence>
+			<xsd:element name="title" type="xsd:string" />
+			<xsd:element name="text" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:group>
+
+	<xsd:attributeGroup name="postAttr">
+		<xsd:attribute use="required" name="id" type="xsd:ID" />
+		<xsd:attribute use="required" name="movie" type="xsd:string" /><!-- ext ref -->
+		<xsd:attribute use="required" name="author" type="xsd:string" />
+		<xsd:attribute use="required" name="date" type="xsd:dateTime" />
+	</xsd:attributeGroup>
+
+	<xsd:attributeGroup name="reactionAttr">
+		<xsd:attribute use="required" name="post" type="xsd:string" /> <!-- ext ref -->
+		<xsd:attribute use="required" name="author" type="xsd:string" />
+	</xsd:attributeGroup>
+
+</xsd:schema>

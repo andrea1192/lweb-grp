@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<movies
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:noNamespaceSchemaLocation="movies.xsd">
+
+	<movie id="m1">
+		<title>The Martian</title>
+		<year>2015</year>
+		<duration>141</duration>
+		<summary>During a manned mission to Mars, Astronaut Mark Watney is presumed dead after a fierce storm and left behind by his crew. But Watney has survived and finds himself stranded and alone on the hostile planet. With only meager supplies, he must draw upon his ingenuity, wit and spirit to subsist and find a way to signal to Earth that he is alive.</summary>
+		<director>Ridley Scott</director>
+		<writer>Andy Weir</writer>
+	</movie>
+
+	<movie id="m2">
+		<title>The Secret Life of Walter Mitty</title>
+		<year>2013</year>
+		<duration>114</duration>
+		<summary>A timid magazine photo manager who lives life vicariously through daydreams embarks on a true-life adventure when a negative goes missing.</summary>
+		<director>Ben Stiller</director>
+		<writer>James Thurber</writer>
+	</movie>
+
+</movies>
