@@ -1,0 +1,21 @@
+services:
+  httpd:
+    image: php-mysqli
+    build: .
+    container_name: grp-apache
+    volumes:
+      - ./html:/var/www/html
+    ports:
+      - 8080:80
+
+  db:
+    image: mariadb:11.3
+    container_name: grp-mariadb
+    env_file: .env
+
+  db-admin:
+    image: phpmyadmin:5
+    container_name: grp-phpmyadmin
+    env_file: .env
+    ports:
+      - 8081:80

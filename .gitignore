@@ -1,0 +1,7 @@
+# Binaries
+*.cgi
+*.exe
+
+# Secrets
+.env
+test.php
