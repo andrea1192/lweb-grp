@@ -1,0 +1,212 @@
+@import url('material.css');
+@import url('icons.css');
+
+/* ==== Classi di utilità generale ========================================= */
+
+.flex {
+	display: flex;
+	align-items: center;
+}
+
+.flex >div:not(:last-child),
+.flex >button:not(:last-child) {
+	margin-right: 10px;
+}
+
+.right {
+	margin-left: auto;
+}
+
+.blur {
+	backdrop-filter: contrast(50%) blur(100px);
+}
+
+/* ==== Parti vista qualsiasi ============================================== */
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	font-family: "Roboto", system-ui, sans-serif;
+	letter-spacing: 0.4pt;
+}
+
+.wrapper {
+	width: 50%;
+	min-width: 960px;
+	margin: 0 auto;
+}
+
+#header {
+	position: sticky;
+	top: 0;
+	height: 64px;
+	border-bottom: 1px solid #AAA;
+	padding-top: 10px;
+	text-align: center;
+	background-color: #FFFF;
+	z-index: 100;
+}
+
+.poster {
+	position: relative;
+	border-radius: 6px;
+	background-color: #EEE;
+	/*background-image: url('backdrop.webp');*/
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+.poster .status {
+	position: absolute;
+	top: 4%;
+	left: 4%;
+	border-radius: 4px;
+	padding: 2px;
+	color: #999;
+	font-size: 0.7rem;
+	text-transform: uppercase;
+	background-color: white;
+}
+
+#footer {
+	padding: 15px;
+	background-color: #EEE;
+}
+
+/* ==== Parti vista MovieView ============================================== */
+
+#backdrop {
+	background-color: #EEE;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+#overview {
+	display: flex;
+	height: 100%;
+	padding: 40px 0;
+	color: white;
+}
+
+#poster {
+	flex-shrink: 0;
+	width: 300px;
+	height: 450px;
+}
+
+#description {
+	flex: 1;
+	margin-left: 40px;
+}
+
+#description h1 {
+	margin-bottom: 5px;
+	font-size: 1.8rem;
+}
+
+#description .detail >div:first-child {
+	flex: 0 0 100px;
+}
+
+#tabs_bar {
+	border-bottom: 1px solid #AAA;
+}
+
+#tabs {
+	display: flex;
+	list-style-type: none;
+	padding: 0;
+}
+
+#tabs >li >a {
+	display: block;
+	padding: 15px 40px;
+	color: black;
+	text-decoration: none;
+}
+
+#tabs >li >a:hover {
+	background-color: #CCC3;
+}
+
+#tabs >li >a.active {
+	border-bottom: 2px solid dodgerblue;
+}
+
+/* ==== Parti vista ArchiveView ============================================ */
+
+.flex.list {
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 40px;
+}
+
+.flex.list >.movie {
+	flex: 0 0 200px;
+	height: 450px;
+	margin: 0;
+	overflow: hidden;
+}
+
+.flex.list >.movie >h1 {
+	font-size: 1.2rem;
+	font-weight: normal;
+}
+
+.flex.list >.movie >.poster {
+	width: 200px;
+	height: 300px;
+	margin: -15px -15px 0 -15px;
+}
+
+/* ==== Parti vista MovieView ============================================== */
+
+.header .rating {
+	position: relative;
+	flex-shrink: 0;
+	width: 40px;
+	height: 40px;
+	border: 1px solid #AAA;
+	border-radius: 50%;
+	font-size: 1.6rem;
+}
+
+.header .rating >span:only-child {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	translate: -50% -50%;
+}
+
+.header h1 {
+	margin: 0;
+	font-size: 1.2rem;
+	font-weight: normal;
+}
+
+.header .published {
+	font-size: 0.8rem;
+}
+
+.header .published >span:not(:last-child)::after {
+	content: '\00b7';
+	margin: 0 4px;
+}
+
+.post >.content {
+	position: relative;
+}
+
+.post >.answers >.answer {
+	position: relative;
+	top: 15px;
+	margin: 0 -15px;
+	border-top: 1px solid #AAA;
+	padding: 10px 15px 10px 35px;
+	font-size: 0.9rem;
+}

@@ -1,0 +1,107 @@
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+
+.material-symbols-outlined {
+	color: #999;
+	font-size: 18px;
+	font-variation-settings:
+	'FILL' 0,
+	'wght' 400,
+	'GRAD' 0,
+	'opsz' 20;
+}
+
+button >.material-symbols-outlined:has(+.label) {
+	margin-right: 8px;
+}
+
+button >.material-symbols-outlined:not(:has(+.label)) {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	translate: -50% -50%;
+}
+
+.dropdown >ul >li >.material-symbols-outlined {
+	margin-right: 12px;
+}
+
+.login >.material-symbols-outlined::before {
+	content:'login';
+}
+
+.poster >.material-symbols-outlined::before {
+	content: 'movie';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	translate: -50% -50%;
+	font-size: 48px;
+}
+
+.status >.material-symbols-outlined::before {
+	content: 'pending_actions';
+}
+
+.likes >.material-symbols-outlined::before {
+	content:'thumb_up';
+}
+
+.dislikes >.material-symbols-outlined::before {
+	content:'thumb_down';
+}
+
+.usefulness >.material-symbols-outlined::before {
+	content:'lightbulb';
+}
+
+.agreement >.material-symbols-outlined::before {
+	content:'thumb_up';
+}
+
+.answer_compose >.material-symbols-outlined::before {
+	content:'comment';
+}
+
+.answer >.material-symbols-outlined {
+	position: absolute;
+	top: 8px;
+	left: 12px;
+}
+
+.answer:not(.selected) >.material-symbols-outlined::before {
+	content:'mode_comment';
+}
+
+.answer.selected >.material-symbols-outlined::before {
+	content:'check_circle';
+	color: green;
+}
+
+.spoiler_show >.material-symbols-outlined::before {
+	content:'visibility';
+}
+
+.spoil_level >.material-symbols-outlined::before {
+	content:'speed';
+}
+
+.kebab >.material-symbols-outlined::before {
+	content:'more_vert';
+}
+
+.edit >.material-symbols-outlined::before {
+	content:'edit';
+}
+
+.delete >.material-symbols-outlined::before {
+	content:'delete';
+}
+
+.report >.material-symbols-outlined::before {
+	content:'report';
+}
+
+.new_post >.material-symbols-outlined::before {
+	content:'add';
+	font-size: 24px;
+}
