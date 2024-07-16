@@ -1,5 +1,7 @@
 <?php namespace models;
 
+	require_once('models/Reactions.php');
+
 	abstract class Post {
 		public $id;
 		public $movie;
@@ -8,6 +10,8 @@
 
 		public $title;
 		public $text;
+
+		public $reactions;
 
 		public function __construct($element) {
 
@@ -18,6 +22,8 @@
 
 			$this->title = $element->getElementsByTagName('title')->item(0)->textContent;
 			$this->text = $element->getElementsByTagName('text')->item(0)->textContent;
+
+			$this->reactions = \models\Reactions::getReactionsByPost($this->id);
 		}
 
 		public static function generatePost($element) {
