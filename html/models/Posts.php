@@ -44,7 +44,7 @@
 
 		public function current(): \models\Post {
 
-			return new \models\Post(parent::current());
+			return \models\Post::generatePost(parent::current());
 		}
 	}
 ?>

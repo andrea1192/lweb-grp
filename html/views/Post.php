@@ -4,11 +4,22 @@
 
 		public static function generateHTML($post) {
 
+			$rating = (in_array('models\RatedPost', class_parents($post))) ? <<<EOF
+			<div class="rating">
+				<span class="centered">{$post->rating}</span>
+			</div>
+			EOF : '';
+
+			$action_buttons = ('models\Question' == get_class($post)) ? <<<EOF
+			<button class="answer_compose">
+				<span class="material-symbols-outlined"></span><span class="label">Answer</span>
+			</button>
+			EOF : '';
+
 			return <<<EOF
 			<div class="card post">
 				<div class="flex header">
-					<div class="rating">
-						<span class="centered">10</span></div>
+					{$rating}
 					<div class="details">
 						<h1>{$post->title}</h1>
 						<div class="flex published">
@@ -74,9 +85,7 @@
 					</div>
 
 					<div class="flex right">
-						<button class="answer_compose">
-							<span class="material-symbols-outlined"></span><span class="label">Answer</span>
-						</button>
+						{$action_buttons}
 					</div>
 				</div>
 			</div>

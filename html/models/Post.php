@@ -1,6 +1,6 @@
 <?php namespace models;
 
-	class Post {
+	abstract class Post {
 		public $id;
 		public $movie;
 		public $author;
@@ -18,6 +18,56 @@
 
 			$this->title = $element->getElementsByTagName('title')->item(0)->textContent;
 			$this->text = $element->getElementsByTagName('text')->item(0)->textContent;
+		}
+
+		public static function generatePost($element) {
+
+			switch ($element->nodeName) {
+				case 'review':
+					return new Review($element);
+				case 'question':
+					return new Question($element);
+				case 'spoiler':
+					return new Spoiler($element);
+				case 'extra':
+					return new Extra($element);
+			}
+		}
+	}
+
+	abstract class RatedPost extends Post {
+		public $rating;
+
+		public function __construct($element) {
+			parent::__construct($element);
+
+			$this->rating = $element->getElementsByTagName('rating')->item(0)->textContent;
+		}
+	}
+
+	class Review extends RatedPost {}
+
+	class Question extends Post {
+		public $featured;
+		public $featuredAnswer;
+
+		public function __construct($element) {
+			parent::__construct($element);
+
+			$this->featured = (boolean) $element->getAttribute('featured');
+			$this->featuredAnswer = (string) $element->getAttribute('featuredAnswer');
+		}
+	}
+
+	class Spoiler extends RatedPost {}
+
+	class Extra extends Post {
+		public $reputation;
+
+		public function __construct($element) {
+			parent::__construct($element);
+
+			$this->reputation = $element->getAttribute('reputation');
 		}
 	}
 ?>
