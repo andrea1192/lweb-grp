@@ -6,10 +6,12 @@
 
 	class MovieView {
 		public $movie;
+		public $posts;
 
 		public function __construct($movie_id) {
 
 			$this->movie = \models\Movies::getMovie($movie_id);
+			$this->posts = \models\Posts::getPostsByMovie($movie_id, 'question');
 		}
 
 		public function printOverview() {
@@ -18,8 +20,7 @@
 
 		public function printPosts($filter) {
 
-			foreach ($this->movie->posts as $post) {
-
+			foreach ($this->posts as $post) {
 				print(\views\Post::generateHTML($post));
 			}
 		}

@@ -23,8 +23,16 @@
 			return self::$xpath->query($query, self::$document);
 		}
 
-		public static function getPosts($movie_id) {
-			$query = "/posts/*[@movie='{$movie_id}']";
+		public static function getPostsByMovie($movie_id, $type = '*') {
+			$query = "/posts/{$type}[@movie='{$movie_id}']";
+
+			$matches = self::queryDocument($query);
+
+			return new \models\PostList($matches);
+		}
+
+		public static function getPostsByAuthor($author, $type = '*') {
+			$query = "/posts/{$type}[@author='{$author}']";
 
 			$matches = self::queryDocument($query);
 

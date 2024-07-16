@@ -25,7 +25,7 @@
 			$this->director = $element->getElementsByTagName('director')->item(0)->textContent;
 			$this->writer = $element->getElementsByTagName('writer')->item(0)->textContent;
 
-			$this->posts = \models\Posts::getPosts($this->id);
+			$this->posts = \models\Posts::getPostsByMovie($this->id);
 		}
 	}
 ?>
