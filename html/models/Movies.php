@@ -1,19 +1,15 @@
 <?php namespace models;
 
+	require_once('models/XMLDocument.php');
 	require_once('models/Movie.php');
 
-	class Movies {
-		private static $document;
-
-		private static function loadDocument() {
-			self::$document = new \DOMDocument('1.0', 'UTF-8');
-
-			self::$document->load('static/movies.xml');
-			self::$document->schemaValidate('schemas/movies.xsd');
-		}
+	class Movies extends \models\XMLDocument {
+		protected const DOCUMENT_NAME = 'movies';
+		protected static $document;
+		protected static $xpath;
 
 		public static function getMovie($id) {
-	
+
 			if (!(self::$document))
 				self::loadDocument();
 
