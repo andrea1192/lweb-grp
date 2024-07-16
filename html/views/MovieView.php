@@ -20,9 +20,7 @@
 
 			foreach ($this->movie->posts as $post) {
 
-				if ($this->movie->id == $post->movie) {
-					print(\views\Post::generateHTML($post));
-				}
+				print(\views\Post::generateHTML($post));
 			}
 		}
 	}

@@ -4,6 +4,7 @@
 
 	class Posts {
 		private static $document;
+		private static $xpath;
 
 		private static function loadDocument() {
 			self::$document = new \DOMDocument('1.0', 'UTF-8');
@@ -12,14 +13,22 @@
 			self::$document->schemaValidate('schemas/posts.xsd');
 		}
 
-		public static function getPosts($movie_id) {
-	
-			if (!(self::$document))
+		private static function queryDocument($query) {
+
+			if (!(self::$document)) {
 				self::loadDocument();
+				self::$xpath = new \DOMXPath(self::$document);
+			}
 
-			$results = self::$document->getElementsByTagName('review');
+			return self::$xpath->query($query, self::$document);
+		}
 
-			return new \models\PostList($results);
+		public static function getPosts($movie_id) {
+			$query = "/posts/*[@movie='{$movie_id}']";
+
+			$matches = self::queryDocument($query);
+
+			return new \models\PostList($matches);
 		}
 	}
 
