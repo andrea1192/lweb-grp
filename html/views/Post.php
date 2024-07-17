@@ -2,6 +2,94 @@
 	
 	class Post {
 
+		public static function generateReactionButtons($reaction_types) {
+			$html = '';
+
+			foreach ($reaction_types as $type => $stats) {
+				/*print("{$reaction_type} = {$stat->average}<br />\n");*/
+
+				switch ($type) {
+					case 'like':
+						$html .= <<<EOF
+						<button class="text likes">
+							<span class="material-symbols-outlined"></span><span class="label">{$stats->count_up}</span>
+						</button>
+						<button class="text dislikes">
+							<span class="material-symbols-outlined"></span><span class="label">{$stats->count_down}</span>
+						</button>
+						EOF;
+						break;
+
+					case 'usefulness':
+						$html .= <<<EOF
+						<button class="text usefulness" disabled="disabled">
+							<div class="tooltip">
+								<span class="material-symbols-outlined"></span>Useful?
+								<span class="rate">
+									<span class="material-symbols-outlined">star</span>
+									<span class="material-symbols-outlined">star</span>
+									<span class="material-symbols-outlined">star</span>
+									<span class="material-symbols-outlined">star</span>
+									<span class="material-symbols-outlined">star</span>
+								</span>
+							</div>
+							<span class="material-symbols-outlined"></span><span class="label">{$stats->average}</span>
+						</button>
+						EOF;
+						break;
+
+					case 'agreement':
+						$html .= <<<EOF
+						<button class="text agreement" disabled="disabled">
+							<div class="tooltip">
+								<span class="material-symbols-outlined"></span>Useful?
+								<span class="rate">
+									<span class="material-symbols-outlined">star</span>
+									<span class="material-symbols-outlined">star</span>
+									<span class="material-symbols-outlined">star</span>
+									<span class="material-symbols-outlined">star</span>
+									<span class="material-symbols-outlined">star</span>
+								</span>
+							</div>
+							<span class="material-symbols-outlined"></span><span class="label">{$stats->average}</span>
+						</button>
+						EOF;
+						break;
+
+					case 'spoilage':
+						$html .= <<<EOF
+						<button class="text spoil_level" disabled="disabled">
+							<div class="tooltip">
+								<span class="material-symbols-outlined"></span>Spoiler level:
+								<span class="rate">
+									<select name="rating">
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3">3</option>
+										<option value="4">4</option>
+										<option value="5">5</option>
+										<option value="6">6</option>
+										<option value="7">7</option>
+										<option value="8">8</option>
+										<option value="9">9</option>
+										<option value="10">10</option>
+									</select>
+								</span>
+							</div>
+							<span class="material-symbols-outlined"></span><span class="label">{$stats->average}</span>
+						</button>
+						EOF;
+						break;
+
+					default:
+						$html .= '<div>Unknown reaction type</div>';
+						break;
+				}
+			}
+
+			return $html;
+		}
+
 		public static function generateHTML($post) {
 
 			$rating = (in_array('models\RatedPost', class_parents($post))) ? <<<EOF
@@ -9,6 +97,8 @@
 				<span class="centered">{$post->rating}</span>
 			</div>
 			EOF : '';
+
+			$reaction_buttons = self::generateReactionButtons($post->reactions);
 
 			$action_buttons = ('models\Question' == get_class($post)) ? <<<EOF
 			<button class="answer_compose">
@@ -43,47 +133,8 @@
 				</div>
 				<div class="flex footer">
 					<div class="flex left">
-						<button class="text likes">
-							<span class="material-symbols-outlined"></span><span class="label">42</span>
-						</button>
-						<button class="text dislikes">
-							<span class="material-symbols-outlined"></span><span class="label">10</span>
-						</button>
-						<button class="text usefulness" disabled="disabled">
-							<div class="tooltip">
-								<span class="material-symbols-outlined"></span>Useful?
-								<span class="rate">
-									<span class="material-symbols-outlined">star</span>
-									<span class="material-symbols-outlined">star</span>
-									<span class="material-symbols-outlined">star</span>
-									<span class="material-symbols-outlined">star</span>
-									<span class="material-symbols-outlined">star</span>
-								</span>
-							</div>
-							<span class="material-symbols-outlined"></span><span class="label">5.0</span>
-						</button>
-						<button class="text spoil_level" disabled="disabled">
-							<div class="tooltip">
-								<span class="material-symbols-outlined"></span>Spoiler level:
-								<span class="rate">
-									<select name="rating">
-										<option value="1">1</option>
-										<option value="2">2</option>
-										<option value="3">3</option>
-										<option value="4">4</option>
-										<option value="5">5</option>
-										<option value="6">6</option>
-										<option value="7">7</option>
-										<option value="8">8</option>
-										<option value="9">9</option>
-										<option value="10">10</option>
-									</select>
-								</span>
-							</div>
-							<span class="material-symbols-outlined"></span><span class="label">10</span>
-						</button>
+						{$reaction_buttons}
 					</div>
-
 					<div class="flex right">
 						{$action_buttons}
 					</div>

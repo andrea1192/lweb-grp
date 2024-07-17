@@ -22,8 +22,6 @@
 
 			$this->title = $element->getElementsByTagName('title')->item(0)->textContent;
 			$this->text = $element->getElementsByTagName('text')->item(0)->textContent;
-
-			$this->reactions = \models\Reactions::getReactionsByPost($this->id);
 		}
 
 		public static function generatePost($element) {
@@ -51,7 +49,16 @@
 		}
 	}
 
-	class Review extends RatedPost {}
+	class Review extends RatedPost {
+
+		public function __construct($element) {
+			parent::__construct($element);
+
+			$this->reactions = [
+				'like' => new \models\BinaryReactionType($this->id, 'like', 'like', 'dislike')
+			];
+		}
+	}
 
 	class Question extends Post {
 		public $featured;
@@ -62,10 +69,24 @@
 
 			$this->featured = (boolean) $element->getAttribute('featured');
 			$this->featuredAnswer = (string) $element->getAttribute('featuredAnswer');
+
+			$this->reactions = [
+				'usefulness' => new \models\NumericReactionType($this->id, 'usefulness'),
+				'agreement' => new \models\NumericReactionType($this->id, 'agreement')
+			];
 		}
 	}
 
-	class Spoiler extends RatedPost {}
+	class Spoiler extends RatedPost {
+
+		public function __construct($element) {
+			parent::__construct($element);
+
+			$this->reactions = [
+				'spoilage' => new \models\NumericReactionType($this->id, 'spoilage')
+			];
+		}
+	}
 
 	class Extra extends Post {
 		public $reputation;

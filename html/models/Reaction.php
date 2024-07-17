@@ -53,4 +53,33 @@
 	class Agreement extends NumericRating {}
 
 	class Spoilage extends NumericRating {}
+
+	abstract class ReactionType {
+		public $type;
+		public $list;
+	}
+
+	class BinaryReactionType extends ReactionType {
+		public $count_up;
+		public $count_down;
+
+		public function __construct($post_id, $reaction_type, $type_up, $type_down) {
+			$this->type = $reaction_type;
+
+			$this->list = \models\Reactions::getReactionsByPost($post_id);
+			$this->count_up = \models\Reactions::getReactionCountByPost($post_id, $reaction_type, $type_up);
+			$this->count_down = \models\Reactions::getReactionCountByPost($post_id, $reaction_type, $type_down);
+		}
+	}
+
+	class NumericReactionType extends ReactionType {
+		public $average;
+
+		public function __construct($post_id, $reaction_type) {
+			$this->type = $reaction_type;
+
+			$this->list = \models\Reactions::getReactionsByPost($post_id);
+			$this->average = \models\Reactions::getReactionAverageByPost($post_id, $reaction_type);
+		}
+	}
 ?>
