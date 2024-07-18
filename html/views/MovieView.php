@@ -6,19 +6,25 @@
 
 	class MovieView {
 		public $movie;
+		public $tab;
 		public $posts;
 
-		public function __construct($movie_id) {
+		public function __construct($movie_id, $tab) {
 
 			$this->movie = \models\Movies::getMovie($movie_id);
-			$this->posts = \models\Posts::getPostsByMovie($movie_id, 'question');
+			$this->tab = $tab;
+			$this->posts = \models\Posts::getPostsByMovie($movie_id, $tab);
 		}
 
 		public function printOverview() {
 			print(\views\Movie::generateHTML($this->movie));
 		}
 
-		public function printPosts($filter) {
+		public function printTabs() {
+			print(\views\Movie::generateTabs($this->tab));
+		}
+
+		public function printPosts() {
 
 			foreach ($this->posts as $post) {
 				print(\views\Post::generateHTML($post));

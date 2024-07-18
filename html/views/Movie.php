@@ -2,6 +2,25 @@
 	
 	class Movie {
 
+		public static function generateTabs($current) {
+			$list = '';
+
+			$tabs = [
+				'review' => 'Reviews',
+				'question' => 'Q&amp;A',
+				'spoiler' => 'Spoilers',
+				'extra' => 'Extras'
+			];
+
+			foreach ($tabs as $tab => $label) {
+				$active = ($current == $tab) ? 'class="active"' : '';
+
+				$list .= "<li><a href=\"\" {$active}>{$label}</a></li>";
+			}
+
+			return $list;
+		}
+
 		public static function generateHTML($movie) {
 
 			return <<<EOF

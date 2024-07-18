@@ -2,7 +2,7 @@
 
 	require_once('views/MovieView.php');
 
-	$view = new \views\MovieView('m1');
+	$view = new \views\MovieView('m1', 'question');
 
 	// TODO: add XML prologue (xml version="1.0" encoding="UTF-8")
 ?>
@@ -24,16 +24,12 @@
 
 		<div id="tabs_bar">
 			<ul id="tabs" class="wrapper">
-				<li><a href="" class="active">Reviews</a></li>
-				<li><a href="">Q&amp;A</a></li>
-				<li><a href="">Spoilers</a></li>
-				<li><a href="">Extras</a></li>
+				<?php $view->printTabs() ?>
 			</ul>
 		</div>
 
 		<div id="content" class="wrapper">
-
-			<?php $view->printPosts(null) ?>
+			<?php $view->printPosts() ?>
 
 			<button class="fab new_post"><span class="material-symbols-outlined"></span><span class="label">New post</span></button>
 		</div>
