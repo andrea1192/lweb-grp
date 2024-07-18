@@ -22,12 +22,6 @@
 
 		<?php $view->printOverview() ?>
 
-		<div id="tabs_bar">
-			<ul id="tabs" class="wrapper">
-				<?php $view->printTabs() ?>
-			</ul>
-		</div>
-
 		<div id="content" class="wrapper">
 			<?php $view->printPosts() ?>
 

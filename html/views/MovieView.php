@@ -17,11 +17,7 @@
 		}
 
 		public function printOverview() {
-			print(\views\Movie::generateHTML($this->movie));
-		}
-
-		public function printTabs() {
-			print(\views\Movie::generateTabs($this->tab));
+			print(\views\Movie::generateHTML($this->movie, $this->tab));
 		}
 
 		public function printPosts() {

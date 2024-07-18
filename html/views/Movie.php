@@ -2,7 +2,8 @@
 	
 	class Movie {
 
-		public static function generateTabs($current) {
+		public static function generateTabs($movie, $current_tab) {
+			$base_URL = $_SERVER['SCRIPT_NAME'];
 			$list = '';
 
 			$tabs = [
@@ -13,15 +14,24 @@
 			];
 
 			foreach ($tabs as $tab => $label) {
-				$active = ($current == $tab) ? 'class="active"' : '';
+				$query = [
+					'id' => $movie,
+					'tab' => $tab
+				];
 
-				$list .= "<li><a href=\"\" {$active}>{$label}</a></li>";
+				$URL = $base_URL.'?'.http_build_query($query);
+
+				$active = ($current_tab == $tab) ? 'class="active"' : '';
+
+				$list .= "<li><a href=\"{$URL}\" {$active}>{$label}</a></li>";
 			}
 
 			return $list;
 		}
 
-		public static function generateHTML($movie) {
+		public static function generateHTML($movie, $tab) {
+
+			$tabs = self::generateTabs($movie->id, $tab);
 
 			return <<<EOF
 			<div id="backdrop" style="background-image: url('na.webp')">
@@ -50,6 +60,12 @@
 						</div>
 					</div>
 				</div>
+			</div>
+
+			<div id="tabs_bar">
+				<ul id="tabs" class="wrapper">
+					{$tabs}
+				</ul>
 			</div>
 			EOF;
 		}
