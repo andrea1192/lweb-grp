@@ -5,8 +5,9 @@
 		public static function generateReactionButtons($reaction_types) {
 			$html = '';
 
+			if (!$reaction_types) return $html;
+
 			foreach ($reaction_types as $type => $stats) {
-				/*print("{$reaction_type} = {$stat->average}<br />\n");*/
 
 				switch ($type) {
 					case 'like':
