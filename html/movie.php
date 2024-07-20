@@ -2,7 +2,10 @@
 
 	require_once('views/MovieView.php');
 
-	$view = new \views\MovieView('m1', 'question');
+	$movie = $_GET['id'] ?? 'm1';
+	$tab = $_GET['tab'] ?? 'review';
+
+	$view = new \views\MovieView($movie, $tab);
 
 	// TODO: add XML prologue (xml version="1.0" encoding="UTF-8")
 ?>
@@ -12,7 +15,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 	<head>
-		<title>Test</title>
+		<title><?php $view->printTitle() ?></title>
 
 		<link rel="stylesheet" href="../css/common.css" type="text/css" />
 	</head>

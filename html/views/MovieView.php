@@ -16,6 +16,19 @@
 			$this->posts = \models\Posts::getPostsByMovie($movie_id, $tab);
 		}
 
+		public function printTitle() {
+
+			$tabs = [
+				'review' => 'Reviews',
+				'question' => 'Q&amp;A',
+				'spoiler' => 'Spoilers',
+				'extra' => 'Extras'
+			];
+
+			print("{$this->movie->title} ({$this->movie->year}) - {$tabs[$this->tab]} - grp");
+
+		}
+
 		public function printOverview() {
 			print(\views\Movie::generateHTML($this->movie, $this->tab));
 		}
