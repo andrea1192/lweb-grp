@@ -8,7 +8,15 @@
 		protected static $document;
 		protected static $xpath;
 
-		public static function getMovie($id) {
+		public static function getMovies() {
+			$query = "/movies/*";
+
+			$movies = self::queryDocument($query);
+
+			return new \models\MovieList($movies);
+		}
+
+		public static function getMovieById($id) {
 
 			if (!(self::$document))
 				self::loadDocument();
@@ -16,6 +24,14 @@
 			$movie = self::$document->getElementById($id);
 
 			return new \models\Movie($movie);
+		}
+	}
+
+	class MovieList extends \IteratorIterator {
+
+		public function current(): \models\Movie {
+
+			return new \models\Movie(parent::current());
 		}
 	}
 ?>

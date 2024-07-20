@@ -11,7 +11,7 @@
 
 		public function __construct($movie_id, $tab) {
 
-			$this->movie = \models\Movies::getMovie($movie_id);
+			$this->movie = \models\Movies::getMovieById($movie_id);
 			$this->tab = $tab;
 			$this->posts = \models\Posts::getPostsByMovie($movie_id, $tab);
 		}

@@ -16,7 +16,7 @@
 
 		protected static function queryDocument($query) {
 
-			if (!(static::$document)) {
+			if (!(static::$xpath)) {
 				static::loadDocument();
 				static::$xpath = new \DOMXPath(static::$document);
 			}
