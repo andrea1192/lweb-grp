@@ -44,6 +44,26 @@
 		}
 	}
 
+	class Answers extends \models\XMLDocument {
+		protected const DOCUMENT_NAME = 'answers';
+		protected static $document;
+		protected static $xpath;
+
+		public static function getAnswersByPost($post_id) {
+			$query = "/answers/answer[@post='{$post_id}']";
+			$matches = self::queryDocument($query);
+
+			return new \models\ReactionList($matches);
+		}
+
+		public static function getAnswersByAuthor($author) {
+			$query = "/answers/answer[@author='{$author}']";
+			$matches = self::queryDocument($query);
+
+			return new \models\ReactionList($matches);
+		}
+	}
+
 	class ReactionList extends \IteratorIterator {
 
 		public function current(): \models\Reaction {

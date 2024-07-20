@@ -91,6 +91,40 @@
 			return $html;
 		}
 
+		public static function generateAnswers($post, $answers) {
+			$html = '';
+
+			foreach ($answers as $answer) {
+				$selected = ($answer->id == $post->featuredAnswer) ? 'selected' : '';
+				$reaction_buttons = self::generateReactionButtons($answer->reactions);
+
+				$html .= <<<EOF
+				<div class="answer {$selected}">
+					<span class="material-symbols-outlined"></span>
+					<div class="flex header">
+						<div class="flex published">
+							<span class="author">{$answer->author}</span>
+							<span class="date">{$answer->date}</span>
+						</div>
+						<div class="right flag"><span class="material-symbols-outlined"></span></div>
+					</div>
+					<div class="content">
+						<p>{$answer->text}</p>
+					</div>
+					<div class="flex footer">
+						{$reaction_buttons}
+					</div>
+				</div>
+				EOF;
+			}
+
+			return <<<EOF
+			<div class="answers">
+				{$html}
+			</div>
+			EOF;
+		}
+
 		public static function generateHTML($post) {
 
 			$rating = (in_array('models\RatedPost', class_parents($post))) ? <<<EOF
@@ -106,6 +140,9 @@
 				<span class="material-symbols-outlined"></span><span class="label">Answer</span>
 			</button>
 			EOF : '';
+
+			$answers = ('models\Question' == get_class($post)) ?
+				self::generateAnswers($post, $post->answers) : '';
 
 			return <<<EOF
 			<div class="card post">
@@ -140,6 +177,7 @@
 						{$action_buttons}
 					</div>
 				</div>
+				{$answers}
 			</div>
 			EOF;
 		}

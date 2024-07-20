@@ -63,6 +63,7 @@
 	class Question extends Post {
 		public $featured;
 		public $featuredAnswer;
+		public $answers;
 
 		public function __construct($element) {
 			parent::__construct($element);
@@ -70,6 +71,7 @@
 			$this->featured = (boolean) $element->getAttribute('featured');
 			$this->featuredAnswer = (string) $element->getAttribute('featuredAnswer');
 
+			$this->answers = \models\Answers::getAnswersByPost($this->id);
 			$this->reactions = [
 				'usefulness' => new \models\NumericReactionType($this->id, 'usefulness'),
 				'agreement' => new \models\NumericReactionType($this->id, 'agreement')

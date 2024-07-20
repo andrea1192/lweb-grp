@@ -4,9 +4,6 @@
 		public $post;
 		public $author;
 
-		public $title;
-		public $text;
-
 		public function __construct($element) {
 
 			$this->post = $element->getAttribute('post');
@@ -16,6 +13,8 @@
 		public static function generateReaction($element) {
 
 			switch ($element->nodeName) {
+				case 'answer':
+					return new Answer($element);
 				case 'like':
 					return new Like($element);
 				case 'usefulness':
@@ -35,6 +34,29 @@
 			parent::__construct($element);
 
 			$this->rating = $element->getAttribute('rating');
+		}
+	}
+
+	class Answer extends Reaction {
+		public $id;
+		public $date;
+
+		public $text;
+
+		public $reactions;
+
+		public function __construct($element) {
+			parent::__construct($element);
+
+			$this->id = $element->getAttribute('id');
+			$this->date = $element->getAttribute('date');
+
+			$this->text = $element->getElementsByTagName('text')->item(0)->textContent;
+
+			$this->reactions = [
+				'usefulness' => new \models\NumericReactionType($this->id, 'usefulness'),
+				'agreement' => new \models\NumericReactionType($this->id, 'agreement')
+			];
 		}
 	}
 
