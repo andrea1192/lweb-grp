@@ -2,6 +2,17 @@
 	
 	class Movie {
 
+		public static function generateCard($movie) {
+
+			return <<<EOF
+			<div class="card movie">
+				<div class="poster" style="background-image: url('na.webp')"><span class="material-symbols-outlined"></span></div>
+				<h1>{$movie->title}</h1>
+				<div>{$movie->year}</div>
+			</div>
+			EOF;
+		}
+
 		public static function generateTabs($movie, $current_tab) {
 			$base_URL = $_SERVER['SCRIPT_NAME'];
 			$list = '';
