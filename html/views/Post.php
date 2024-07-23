@@ -43,7 +43,7 @@
 						$html .= <<<EOF
 						<button class="text agreement" disabled="disabled">
 							<div class="tooltip">
-								<span class="material-symbols-outlined"></span>Useful?
+								<span class="material-symbols-outlined"></span>Agree?
 								<span class="rate">
 									<span class="material-symbols-outlined">star</span>
 									<span class="material-symbols-outlined">star</span>
