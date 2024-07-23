@@ -39,5 +39,9 @@
 				print(\views\Post::generateHTML($post));
 			}
 		}
+
+		public function render() {
+			require_once('templates/MovieDisplayTemplate.php');
+		}
 	}
 ?>
