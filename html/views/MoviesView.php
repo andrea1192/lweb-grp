@@ -27,5 +27,9 @@
 
 			print('</div>');
 		}
+
+		public function render() {
+			require_once('templates/MoviesListTemplate.php');
+		}
 	}
 ?>
