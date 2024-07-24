@@ -1,12 +1,11 @@
 <?php namespace controllers;
 
+	require_once('AbstractController.php');
 	require_once('views/MovieView.php');
 
-	new MovieController();
+	class MovieController extends AbstractController {
 
-	class MovieController {
-
-		public function __construct() {
+		public function route() {
 			$action = $_GET['action'] ?? '';
 
 			switch ($action) {
@@ -16,10 +15,12 @@
 					$mov = $_GET['id'] ?? 'm1';
 					$tab = $_GET['tab'] ?? 'question';
 
-					$view = new \views\MovieView($mov, $tab);
+					$view = new \views\MovieView($this->session, $mov, $tab);
 					$view->render();
 					break;
 			}
 		}
 	}
+
+	new MovieController();
 ?>

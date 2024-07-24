@@ -1,12 +1,14 @@
 <?php namespace views;
 
 	require_once('models/Movies.php');
+	require_once('views/AbstractView.php');
 	require_once('views/Movie.php');
 
-	class MoviesView {
+	class MoviesView extends AbstractView {
 		public $movies;
 
-		public function __construct() {
+		public function __construct($session) {
+			parent::__construct($session);
 
 			$this->movies = \models\Movies::getMovies();
 		}

@@ -11,7 +11,7 @@
 	</head>
 
 	<body>
-		<div id="header">Header</div>
+		<?php $this->printHeader() ?>
 
 		<?php $this->printOverview() ?>
 

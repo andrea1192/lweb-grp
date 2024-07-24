@@ -1,15 +1,17 @@
 <?php namespace views;
 
 	require_once('models/Movies.php');
+	require_once('views/AbstractView.php');
 	require_once('views/Movie.php');
 	require_once('views/Post.php');
 
-	class MovieView {
+	class MovieView extends AbstractView{
 		public $movie;
 		public $tab;
 		public $posts;
 
-		public function __construct($movie_id, $tab) {
+		public function __construct($session, $movie_id, $tab) {
+			parent::__construct($session);
 
 			$this->movie = \models\Movies::getMovieById($movie_id);
 			$this->tab = $tab;
