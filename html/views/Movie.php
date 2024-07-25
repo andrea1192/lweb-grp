@@ -35,7 +35,7 @@
 
 			foreach ($tabs as $tab => $label) {
 				$query = [
-					'id' => $this->movie,
+					'id' => $this->movie->id,
 					'tab' => $tab
 				];
 
