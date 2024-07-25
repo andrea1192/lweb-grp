@@ -167,7 +167,7 @@
 
 		public function render() {
 
-			$rating = (in_array('models\RatedPost', class_parents($this->post))) ? <<<EOF
+			$rating = ($this->post instanceof \models\RatedPost) ? <<<EOF
 			<div class="rating">
 				<span class="centered">{$this->post->rating}</span>
 			</div>
@@ -177,13 +177,13 @@
 
 			$reaction_buttons = $this->generateReactionButtons();
 
-			$action_buttons = ('models\Question' == get_class($this->post)) ? <<<EOF
+			$action_buttons = ($this->post instanceof \models\Question) ? <<<EOF
 			<button class="answer_compose">
 				<span class="material-symbols-outlined"></span><span class="label">Answer</span>
 			</button>
 			EOF : '';
 
-			$answers = ('models\Question' == get_class($this->post)) ?
+			$answers = ($this->post instanceof \models\Question) ?
 				$this->generateAnswers() : '';
 
 			echo <<<EOF
