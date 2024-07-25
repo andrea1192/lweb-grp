@@ -24,7 +24,8 @@
 			print('<div class="flex list">');
 
 			foreach ($this->movies as $movie) {
-				print(\views\Movie::generateCard($movie));
+				$view = new \views\Movie($this->session, $movie);
+				$view->renderCard();
 			}
 
 			print('</div>');

@@ -6,6 +6,13 @@
 	require_once('views/Post.php');
 
 	class MovieView extends AbstractView {
+		public const tabs = [
+				'review' => 'Reviews',
+				'question' => 'Q&amp;A',
+				'spoiler' => 'Spoilers',
+				'extra' => 'Extras'
+			];
+
 		public $movie;
 		public $tab;
 		public $posts;
@@ -19,21 +26,32 @@
 		}
 
 		public function printTitle() {
-
-			$tabs = [
-				'review' => 'Reviews',
-				'question' => 'Q&amp;A',
-				'spoiler' => 'Spoilers',
-				'extra' => 'Extras'
-			];
+			$tabs = self::tabs;
 
 			print("{$this->movie->title} ({$this->movie->year}) - {$tabs[$this->tab]} - grp");
 
 		}
 
 		public function printOverview() {
-			$view = new \views\Movie($this->session, $this->movie, $this->tab);
+			$view = new \views\Movie($this->session, $this->movie);
 			$view->render();
+		}
+
+		private function printTabs() {
+			$base_URL = $_SERVER['SCRIPT_NAME'];
+
+			foreach (self::tabs as $tab => $label) {
+				$query = [
+					'id' => $this->movie->id,
+					'tab' => $tab
+				];
+
+				$URL = $base_URL.'?'.http_build_query($query);
+
+				$active = ($this->tab == $tab) ? 'class="active"' : '';
+
+				print("<li><a href=\"{$URL}\" {$active}>{$label}</a></li>");
+			}
 		}
 
 		public function printPosts() {

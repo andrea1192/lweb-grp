@@ -2,18 +2,16 @@
 	
 	class Movie extends AbstractView {
 		private $movie;
-		private $tab;
 
-		public function __construct($session, $movie, $tab) {
+		public function __construct($session, $movie) {
 			parent::__construct($session);
 
 			$this->movie = $movie;
-			$this->tab = $tab;
 		}
 
-		public function generateCard() {
+		public function renderCard() {
 
-			return <<<EOF
+			echo <<<EOF
 			<div class="card movie">
 				<div class="poster" style="background-image: url('na.webp')"><span class="material-symbols-outlined"></span></div>
 				<h1>{$this->movie->title}</h1>
@@ -22,36 +20,7 @@
 			EOF;
 		}
 
-		private function generateTabs() {
-			$base_URL = $_SERVER['SCRIPT_NAME'];
-			$list = '';
-
-			$tabs = [
-				'review' => 'Reviews',
-				'question' => 'Q&amp;A',
-				'spoiler' => 'Spoilers',
-				'extra' => 'Extras'
-			];
-
-			foreach ($tabs as $tab => $label) {
-				$query = [
-					'id' => $this->movie->id,
-					'tab' => $tab
-				];
-
-				$URL = $base_URL.'?'.http_build_query($query);
-
-				$active = ($this->tab == $tab) ? 'class="active"' : '';
-
-				$list .= "<li><a href=\"{$URL}\" {$active}>{$label}</a></li>";
-			}
-
-			return $list;
-		}
-
 		public function render() {
-
-			$tabs = $this->generateTabs();
 
 			echo <<<EOF
 			<div id="backdrop" style="background-image: url('na.webp')">
@@ -80,12 +49,6 @@
 						</div>
 					</div>
 				</div>
-			</div>
-
-			<div id="tabs_bar">
-				<ul id="tabs" class="wrapper">
-					{$tabs}
-				</ul>
 			</div>
 			EOF;
 		}

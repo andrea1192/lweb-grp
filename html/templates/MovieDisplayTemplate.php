@@ -15,6 +15,12 @@
 
 		<?php $this->printOverview() ?>
 
+		<div id="tabs_bar">
+				<ul id="tabs" class="wrapper">
+					<?php $this->printTabs() ?>
+				</ul>
+			</div>
+
 		<div id="content" class="wrapper">
 			<?php $this->printPosts() ?>
 
