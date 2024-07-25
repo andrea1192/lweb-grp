@@ -12,15 +12,15 @@
 		private function generateDropdownMenu() {
 			$html = '';
 
-			if ($this->session->isAuthor($this->post) || $this->session->isMod()) {
+			if ($this->session->isAuthor($this->post) || $this->session->isAdmin()) {
 				$html .= '<li class="flex edit"><span class="material-symbols-outlined"></span><span class="label">Edit</span></li>';
 			}
 
-			if ($this->session->isAuthor($this->post) || $this->session->isAdmin()) {
+			if ($this->session->isAuthor($this->post) || $this->session->isMod()) {
 				$html .= '<li class="flex delete"><span class="material-symbols-outlined"></span><span class="label">Delete</span></li>';
 			}
 
-			if ($this->session->isRegistered()) {
+			if (!$this->session->isAuthor($this->post) && $this->session->isRegistered()) {
 				$html .= '<li class="flex report"><span class="material-symbols-outlined"></span><span class="label">Report</span></li>';
 			}
 
