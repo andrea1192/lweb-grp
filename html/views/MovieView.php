@@ -5,28 +5,12 @@
 	require_once('views/Movie.php');
 	require_once('views/Post.php');
 
-	class MovieView extends AbstractView {
-		public const tabs = [
-				'review' => 'Reviews',
-				'question' => 'Q&amp;A',
-				'spoiler' => 'Spoilers',
-				'extra' => 'Extras'
-			];
-
+	abstract class AbstractMovieView extends AbstractView {
 		public $movie;
-		public $tab;
 		public $posts;
 
-		public function __construct($session, $movie_id, $tab) {
-			parent::__construct($session);
-
-			$this->movie = \models\Movies::getMovieById($movie_id);
-			$this->tab = $tab;
-			$this->posts = \models\Posts::getPostsByMovie($movie_id, $tab);
-		}
-
 		public function printTitle() {
-			$tabs = self::tabs;
+			$tabs = static::tabs;
 
 			print("{$this->movie->title} ({$this->movie->year}) - {$tabs[$this->tab]} - grp");
 
@@ -40,7 +24,7 @@
 		private function printTabs() {
 			$base_URL = $_SERVER['SCRIPT_NAME'];
 
-			foreach (self::tabs as $tab => $label) {
+			foreach (static::tabs as $tab => $label) {
 				$query = [
 					'id' => $this->movie->id,
 					'tab' => $tab
@@ -64,6 +48,38 @@
 
 		public function render() {
 			require_once('templates/MovieDisplayTemplate.php');
+		}
+	}
+
+	class MovieView extends AbstractMovieView {
+		public const tabs = [
+				'review' => 'Reviews',
+				'question' => 'Q&amp;A',
+				'spoiler' => 'Spoilers',
+				'extra' => 'Extras'
+			];
+
+		public $tab;
+
+		public function __construct($session, $movie_id, $tab) {
+			parent::__construct($session);
+
+			$this->movie = \models\Movies::getMovieById($movie_id);
+			$this->posts = \models\Posts::getPostsByMovie($movie_id, $tab);
+			$this->tab = $tab;
+		}
+	}
+
+	class RequestView extends AbstractMovieView {
+		public const tabs = ['comment' => 'Comments'];
+
+		public $tab = 'comment';
+
+		public function __construct($session, $movie_id) {
+			parent::__construct($session);
+
+			$this->movie = \models\Requests::getRequestById($movie_id);
+			$this->posts = \models\Comments::getCommentsByRequest($movie_id);
 		}
 	}
 ?>

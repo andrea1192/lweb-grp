@@ -27,11 +27,63 @@
 		}
 	}
 
+	class Requests extends Movies {
+		protected const DOCUMENT_NAME = 'requests';
+		protected static $document;
+		protected static $xpath;
+
+		public static function getRequests() {
+			$query = "/requests/*";
+
+			$requests = self::queryDocument($query);
+
+			return new \models\RequestList($requests);
+		}
+
+		private static function getRequestsByStatus($status) {
+			$query = "/requests/*[status='{$status}']";
+
+			$requests = self::queryDocument($query);
+
+			return new \models\RequestList($requests);
+		}
+
+		public static function getSubmittedRequests() {
+			return self::getRequestsByStatus('submitted');
+		}
+
+		public static function getAcceptedRequests() {
+			return self::getRequestsByStatus('accepted');
+		}
+
+		public static function getRejectedRequests() {
+			return self::getRequestsByStatus('rejected');
+		}
+
+		public static function getRequestById($id) {
+
+			if (!(self::$document))
+				self::loadDocument();
+
+			$request = self::$document->getElementById($id);
+
+			return new \models\Request($request);
+		}
+	}
+
 	class MovieList extends \IteratorIterator {
 
 		public function current(): \models\Movie {
 
 			return new \models\Movie(parent::current());
+		}
+	}
+
+	class RequestList extends \IteratorIterator {
+
+		public function current(): \models\Request {
+
+			return new \models\Request(parent::current());
 		}
 	}
 ?>

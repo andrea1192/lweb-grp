@@ -12,11 +12,20 @@
 
 				default:
 				case 'display':
-					$mov = $_GET['id'] ?? 'm1';
-					$tab = $_GET['tab'] ?? 'question';
+					$movie_id = $_GET['id'] ?? 'm1';
 
-					$view = new \views\MovieView($this->session, $mov, $tab);
-					$view->render();
+					if (preg_match('/m[0-9]*/', $movie_id)) {
+
+						$tab = $_GET['tab'] ?? 'question';
+
+						$view = new \views\MovieView($this->session, $movie_id, $tab);
+						$view->render();
+					} else {
+
+						$view = new \views\RequestView($this->session, $movie_id);
+						$view->render();
+					}
+
 					break;
 			}
 		}

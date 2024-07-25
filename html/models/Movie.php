@@ -20,12 +20,37 @@
 
 			$this->title = $element->getElementsByTagName('title')->item(0)->textContent;
 			$this->year = $element->getElementsByTagName('year')->item(0)->textContent;
-			$this->duration = $element->getElementsByTagName('duration')->item(0)->textContent;
-			$this->summary = $element->getElementsByTagName('summary')->item(0)->textContent;
-			$this->director = $element->getElementsByTagName('director')->item(0)->textContent;
-			$this->writer = $element->getElementsByTagName('writer')->item(0)->textContent;
+
+			$unavail = new class {public $textContent = 'N/A';};
+
+			$this->duration =
+				($element->getElementsByTagName('duration')->item(0) ?? $unavail)
+				->textContent;
+
+			$this->summary =
+				($element->getElementsByTagName('summary')->item(0) ?? $unavail)
+				->textContent;
+
+			$this->director =
+				($element->getElementsByTagName('director')->item(0) ?? $unavail)
+				->textContent;
+
+			$this->writer =
+				($element->getElementsByTagName('writer')->item(0) ?? $unavail)
+				->textContent;
 
 			$this->posts = \models\Posts::getPostsByMovie($this->id);
+		}
+	}
+
+	class Request extends Movie {
+		public $status;
+
+		public function __construct($element) {
+			parent::__construct($element);
+
+			$this->status = $element->getAttribute('status');
+			$this->posts = \models\Comments::getCommentsByRequest($this->id);
 		}
 	}
 ?>

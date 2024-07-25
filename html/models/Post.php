@@ -27,6 +27,8 @@
 		public static function generatePost($element) {
 
 			switch ($element->nodeName) {
+				case 'comment':
+					return new Comment($element);
 				case 'review':
 					return new Review($element);
 				case 'question':
@@ -48,6 +50,8 @@
 			$this->rating = $element->getElementsByTagName('rating')->item(0)->textContent;
 		}
 	}
+
+	class Comment extends RatedPost {}
 
 	class Review extends RatedPost {
 
