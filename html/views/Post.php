@@ -24,12 +24,17 @@
 				$html .= '<li class="flex report"><span class="material-symbols-outlined"></span><span class="label">Report</span></li>';
 			}
 
+			if ($html == '') return $html;
+
 			return <<<EOF
-			<div class="dropdown">
-				<ul>
-					{$html}
-				</li>
-			</div>
+			<button class="right text kebab">
+				<span class="material-symbols-outlined"></span>
+				<div class="dropdown">
+					<ul>
+						{$html}
+					</li>
+				</div>
+			</button>
 			EOF;
 		}
 
@@ -192,10 +197,7 @@
 							<span class="date">{$this->post->date}</span>
 						</div>
 					</div>
-					<button class="right text kebab">
-						<span class="material-symbols-outlined"></span>
-						{$dropdown_menu}
-					</button>
+					{$dropdown_menu}
 				</div>
 				<div class="content">
 					<p>{$this->post->text}</p>
