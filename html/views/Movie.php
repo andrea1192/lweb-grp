@@ -1,8 +1,8 @@
 <?php namespace views;
 	
 	class Movie extends AbstractView {
-		public $movie;
-		public $tab;
+		private $movie;
+		private $tab;
 
 		public function __construct($session, $movie, $tab) {
 			parent::__construct($session);
@@ -22,7 +22,7 @@
 			EOF;
 		}
 
-		public function generateTabs() {
+		private function generateTabs() {
 			$base_URL = $_SERVER['SCRIPT_NAME'];
 			$list = '';
 

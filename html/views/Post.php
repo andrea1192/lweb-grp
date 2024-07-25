@@ -1,7 +1,7 @@
 <?php namespace views;
 	
 	class Post extends AbstractView {
-		public $post;
+		private $post;
 
 		public function __construct($session, $post) {
 			parent::__construct($session);
@@ -9,7 +9,7 @@
 			$this->post = $post;
 		}
 
-		public function generateDropdownMenu() {
+		private function generateDropdownMenu() {
 			$html = '';
 
 			if ($this->session->isAuthor($this->post) || $this->session->isMod()) {
@@ -33,7 +33,7 @@
 			EOF;
 		}
 
-		public function generateReactionButtons($post = null) {
+		private function generateReactionButtons($post = null) {
 			$html = '';
 
 			$reaction_types = ($post) ? $post->reactions : $this->post->reactions;
@@ -124,7 +124,7 @@
 			return $html;
 		}
 
-		public function generateAnswers() {
+		private function generateAnswers() {
 			$html = '';
 
 			$answers = $this->post->answers;
