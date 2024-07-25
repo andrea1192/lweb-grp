@@ -5,7 +5,7 @@
 	require_once('views/Movie.php');
 	require_once('views/Post.php');
 
-	class MovieView extends AbstractView{
+	class MovieView extends AbstractView {
 		public $movie;
 		public $tab;
 		public $posts;
@@ -32,13 +32,15 @@
 		}
 
 		public function printOverview() {
-			print(\views\Movie::generateHTML($this->movie, $this->tab));
+			$view = new \views\Movie($this->session, $this->movie, $this->tab);
+			$view->render();
 		}
 
 		public function printPosts() {
 
 			foreach ($this->posts as $post) {
-				print(\views\Post::generateHTML($post));
+				$view = new \views\Post($this->session, $post);
+				$view->render();
 			}
 		}
 

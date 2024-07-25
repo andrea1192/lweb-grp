@@ -1,9 +1,42 @@
 <?php namespace views;
 	
-	class Post {
+	class Post extends AbstractView {
+		public $post;
 
-		public static function generateReactionButtons($reaction_types) {
+		public function __construct($session, $post) {
+			parent::__construct($session);
+
+			$this->post = $post;
+		}
+
+		public function generateDropdownMenu() {
 			$html = '';
+
+			if ($this->session->isAuthor($this->post) || $this->session->isMod()) {
+				$html .= '<li class="flex edit"><span class="material-symbols-outlined"></span><span class="label">Edit</span></li>';
+			}
+
+			if ($this->session->isAuthor($this->post) || $this->session->isAdmin()) {
+				$html .= '<li class="flex delete"><span class="material-symbols-outlined"></span><span class="label">Delete</span></li>';
+			}
+
+			if ($this->session->isRegistered()) {
+				$html .= '<li class="flex report"><span class="material-symbols-outlined"></span><span class="label">Report</span></li>';
+			}
+
+			return <<<EOF
+			<div class="dropdown">
+				<ul>
+					{$html}
+				</li>
+			</div>
+			EOF;
+		}
+
+		public function generateReactionButtons($post = null) {
+			$html = '';
+
+			$reaction_types = ($post) ? $post->reactions : $this->post->reactions;
 
 			if (!$reaction_types) return $html;
 
@@ -91,12 +124,14 @@
 			return $html;
 		}
 
-		public static function generateAnswers($post, $answers) {
+		public function generateAnswers() {
 			$html = '';
 
+			$answers = $this->post->answers;
+
 			foreach ($answers as $answer) {
-				$selected = ($answer->id == $post->featuredAnswer) ? 'selected' : '';
-				$reaction_buttons = self::generateReactionButtons($answer->reactions);
+				$selected = ($answer->id == $this->post->featuredAnswer) ? 'selected' : '';
+				$reaction_buttons = $this->generateReactionButtons($answer);
 
 				$html .= <<<EOF
 				<div class="answer {$selected}">
@@ -125,49 +160,45 @@
 			EOF;
 		}
 
-		public static function generateHTML($post) {
+		public function render() {
 
-			$rating = (in_array('models\RatedPost', class_parents($post))) ? <<<EOF
+			$rating = (in_array('models\RatedPost', class_parents($this->post))) ? <<<EOF
 			<div class="rating">
-				<span class="centered">{$post->rating}</span>
+				<span class="centered">{$this->post->rating}</span>
 			</div>
 			EOF : '';
 
-			$reaction_buttons = self::generateReactionButtons($post->reactions);
+			$dropdown_menu = $this->generateDropdownMenu();
 
-			$action_buttons = ('models\Question' == get_class($post)) ? <<<EOF
+			$reaction_buttons = $this->generateReactionButtons();
+
+			$action_buttons = ('models\Question' == get_class($this->post)) ? <<<EOF
 			<button class="answer_compose">
 				<span class="material-symbols-outlined"></span><span class="label">Answer</span>
 			</button>
 			EOF : '';
 
-			$answers = ('models\Question' == get_class($post)) ?
-				self::generateAnswers($post, $post->answers) : '';
+			$answers = ('models\Question' == get_class($this->post)) ?
+				$this->generateAnswers() : '';
 
-			return <<<EOF
+			echo <<<EOF
 			<div class="card post">
 				<div class="flex header">
 					{$rating}
 					<div class="details">
-						<h1>{$post->title}</h1>
+						<h1>{$this->post->title}</h1>
 						<div class="flex published">
-							<span class="author">{$post->author}</span>
-							<span class="date">{$post->date}</span>
+							<span class="author">{$this->post->author}</span>
+							<span class="date">{$this->post->date}</span>
 						</div>
 					</div>
 					<button class="right text kebab">
 						<span class="material-symbols-outlined"></span>
-						<div class="dropdown">
-							<ul>
-								<li class="flex edit"><span class="material-symbols-outlined"></span><span class="label">Edit</span></li>
-								<li class="flex delete"><span class="material-symbols-outlined"></span><span class="label">Delete</span></li>
-								<li class="flex report"><span class="material-symbols-outlined"></span><span class="label">Report</span></li>
-							</ul>
-						</div>
+						{$dropdown_menu}
 					</button>
 				</div>
 				<div class="content">
-					<p>{$post->text}</p>
+					<p>{$this->post->text}</p>
 				</div>
 				<div class="flex footer">
 					<div class="flex left">
