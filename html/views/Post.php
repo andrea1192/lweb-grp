@@ -165,13 +165,33 @@
 			EOF;
 		}
 
+		private function generateRating() {
+
+			if (!is_numeric($this->post->rating)) {
+				$icon = '';
+
+				switch ($this->post->rating) {
+					case 'ok': $icon = 'thumb_up'; break;
+					case 'okma': $icon = 'thumbs_up_down'; break;
+					case 'ko': $icon = 'thumb_down'; break;
+				}
+
+				$rating = "<span class=\"material-symbols-outlined\">{$icon}</span>";
+			} else {
+
+				$rating = $this->post->rating;
+			}
+
+			return <<<EOF
+			<div class="rating">
+				<span class="centered">{$rating}</span>
+			</div>
+			EOF;
+		}
+
 		public function render() {
 
-			$rating = ($this->post instanceof \models\RatedPost) ? <<<EOF
-			<div class="rating">
-				<span class="centered">{$this->post->rating}</span>
-			</div>
-			EOF : '';
+			$rating = ($this->post instanceof \models\RatedPost) ? $this->generateRating() : '';
 
 			$dropdown_menu = $this->generateDropdownMenu();
 
