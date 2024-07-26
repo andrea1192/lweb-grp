@@ -9,14 +9,6 @@
 			$this->post = $post;
 		}
 
-		public static function generatePost($session, $post) {
-
-			if ($post instanceof \models\Question) return new Question($session, $post);
-			if ($post instanceof \models\Comment) return new Comment($session, $post);
-			if ($post instanceof \models\RatedPost) return new RatedPost($session, $post);
-			return new Post($session, $post);
-		}
-
 		public function render() {
 			$rating = $this->generateRating();
 			$dropdown_menu = $this->generateDropdownMenu();

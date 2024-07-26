@@ -17,7 +17,7 @@
 		}
 
 		public function printOverview() {
-			$view = \views\Movie::generateMovie($this->session, $this->movie);
+			$view = \views\Movie::factoryMethod($this->session, $this->movie);
 			$view->render();
 		}
 
@@ -41,7 +41,7 @@
 		public function printPosts() {
 
 			foreach ($this->posts as $post) {
-				$view = \views\Post::generatePost($this->session, $post);
+				$view = \views\Post::factoryMethod($this->session, $post);
 				$view->render();
 			}
 		}

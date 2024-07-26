@@ -9,12 +9,6 @@
 			$this->movie = $movie;
 		}
 
-		public static function generateMovie($session, $movie) {
-
-			if ($movie instanceof \models\Request) return new Request($session, $movie);
-			return new Movie($session, $movie);
-		}
-
 		public function renderCard() {
 
 			echo <<<EOF
