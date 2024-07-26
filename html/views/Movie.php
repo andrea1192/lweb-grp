@@ -1,7 +1,7 @@
 <?php namespace views;
 	
-	class Movie extends AbstractView {
-		private $movie;
+	abstract class AbstractMovie extends AbstractView {
+		protected $movie;
 
 		public function __construct($session, $movie) {
 			parent::__construct($session);
@@ -22,15 +22,19 @@
 
 		public function render() {
 
+			$status = $this->generateStatus();
+
+			$action_buttons = $this->generateActionButtons();
+
 			echo <<<EOF
 			<div id="backdrop" style="background-image: url('na.webp')">
 				<div class="blur">
 					<div id="overview" class="wrapper">
 						<div id="poster" class="poster" style="background-image: url('na.webp')">
 							<span class="material-symbols-outlined"></span>
-							<div class="flex status"><span class="material-symbols-outlined"></span>Pending approval</div>
+							{$status}
 						</div>
-						<div id="description">
+						<div id="description" class="flex column">
 							<h1>{$this->movie->title}</h1>
 							<div>{$this->movie->year}, {$this->movie->duration}'</div>
 
@@ -46,8 +50,80 @@
 									<div>{$this->movie->writer}</div>
 								</div>
 							</div>
+							{$action_buttons}
 						</div>
 					</div>
+				</div>
+			</div>
+			EOF;
+		}
+	}
+
+	class Movie extends AbstractMovie {
+
+		public function generateStatus() {
+			return '';
+		}
+
+		public function generateActionButtons() {
+			return '';
+		}
+	}
+
+	class Request extends AbstractMovie {
+
+		public function generateStatus() {
+			$label = '';
+
+			switch ($this->movie->status) {
+				default:
+				case 'submitted': $label = 'Pending approval'; break;
+				case 'accepted': $label = 'Accepted'; break;
+				case 'rejected': $label = 'Rejected'; break;
+			}
+
+			return <<< EOF
+			<div class="flex status {$this->movie->status}">
+				<span class="material-symbols-outlined"></span>
+				<span class="label">{$label}</span>
+			</div>
+			EOF;
+		}
+
+		public function generateActionButtons() {
+			$left = '';
+			$right = '';
+
+			if ($this->session->isMod()) {
+				$left .= <<<EOF
+				<button class="accept">
+					<span class="material-symbols-outlined"></span><span class="label">Approve request</span>
+				</button>
+				<button class="reject">
+					<span class="material-symbols-outlined"></span><span class="label">Decline request</span>
+				</button>
+				EOF;
+			}
+
+			if ($this->session->isAdmin()) {
+				$right .= <<<EOF
+				<button class="edit">
+					<span class="material-symbols-outlined"></span>
+				</button>
+				<button class="delete">
+					<span class="material-symbols-outlined"></span>
+				</button>
+				EOF;
+			}
+
+			return <<<EOF
+			<div class="flex bottom">
+				<div class="flex left">
+					{$left}
+				</div>
+
+				<div class="flex right">
+					{$right}
 				</div>
 			</div>
 			EOF;
