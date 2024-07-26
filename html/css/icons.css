@@ -38,8 +38,30 @@ button >.material-symbols-outlined:not(:has(+.label)) {
 	font-size: 48px;
 }
 
-.status >.material-symbols-outlined::before {
+.status.submitted >.material-symbols-outlined::before {
 	content: 'pending_actions';
+}
+
+.status.accepted >.material-symbols-outlined::before {
+	content: 'thumb_up';
+}
+
+.status.rejected >.material-symbols-outlined::before {
+	content: 'thumb_down';
+}
+
+.status >.material-symbols-outlined {
+	margin-right: 4px;
+}
+
+.accept >.material-symbols-outlined::before {
+	content: 'check';
+	color: green;
+}
+
+.reject >.material-symbols-outlined::before {
+	content: 'close';
+	color: red;
 }
 
 .likes >.material-symbols-outlined::before {

@@ -13,8 +13,18 @@
 	margin-right: 10px;
 }
 
+.flex.column {
+	flex-direction: column;
+	align-items: revert;
+	margin-right: revert;
+}
+
 .right {
 	margin-left: auto;
+}
+
+.bottom {
+	margin-top: auto;
 }
 
 .blur {
@@ -68,6 +78,7 @@ body {
 	padding: 2px;
 	color: #999;
 	font-size: 0.7rem;
+	font-weight: 500;
 	text-transform: uppercase;
 	background-color: white;
 }
@@ -138,7 +149,7 @@ body {
 	border-bottom: 2px solid dodgerblue;
 }
 
-/* ==== Parti vista ArchiveView ============================================ */
+/* ==== Parti vista MoviesView ============================================ */
 
 .flex.list {
 	flex-wrap: wrap;

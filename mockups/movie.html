@@ -18,9 +18,9 @@
 				<div id="overview" class="wrapper">
 					<div id="poster" class="poster" style="background-image: url('na.webp')">
 						<span class="material-symbols-outlined"></span>
-						<div class="flex status"><span class="material-symbols-outlined"></span>Pending approval</div>
+						<div class="flex status submitted"><span class="material-symbols-outlined"></span><span class="label">Pending approval</span></div>
 					</div>
-					<div id="description">
+					<div id="description" class="flex column">
 						<h1>The Martian</h1>
 						<div>2015, 141'</div>
 
@@ -34,6 +34,26 @@
 							<div class="flex detail">
 								<div>Writer</div>
 								<div>Andy Weir</div>
+							</div>
+						</div>
+
+						<div class="flex bottom">
+							<div class="flex left">
+								<button class="accept">
+									<span class="material-symbols-outlined"></span><span class="label">Approve request</span>
+								</button>
+								<button class="reject">
+									<span class="material-symbols-outlined"></span><span class="label">Decline request</span>
+								</button>
+							</div>
+
+							<div class="flex right">
+								<button class="edit">
+									<span class="material-symbols-outlined"></span>
+								</button>
+								<button class="delete">
+									<span class="material-symbols-outlined"></span>
+								</button>
 							</div>
 						</div>
 
@@ -61,7 +81,7 @@
 					<div>2015</div>
 				</div>
 				<div class="card movie">
-					<div class="poster" style="background-image: url('poster.jpg')"><div class="flex status"><span class="material-symbols-outlined"></span></div></div>
+					<div class="poster" style="background-image: url('poster.jpg')"><div class="flex status submitted"><span class="material-symbols-outlined"></span></div></div>
 					<h1>The Secret Life of Walter Mitty</h1>
 					<div>2013</div>
 				</div>
