@@ -1,7 +1,7 @@
 <?php namespace views;
 	
 	class Post extends AbstractView {
-		private $post;
+		protected $post;
 
 		public function __construct($session, $post) {
 			parent::__construct($session);
@@ -9,7 +9,55 @@
 			$this->post = $post;
 		}
 
-		private function generateDropdownMenu() {
+		public static function generatePost($session, $post) {
+
+			if ($post instanceof \models\Question) return new Question($session, $post);
+			if ($post instanceof \models\Comment) return new Comment($session, $post);
+			if ($post instanceof \models\RatedPost) return new RatedPost($session, $post);
+			return new Post($session, $post);
+		}
+
+		public function render() {
+			$rating = $this->generateRating();
+			$dropdown_menu = $this->generateDropdownMenu();
+			$reaction_buttons = $this->generateReactionButtons();
+			$action_buttons = $this->generateActionButtons();
+			$answers = $this->generateAnswers();
+
+			echo <<<EOF
+			<div class="card post">
+				<div class="flex header">
+					{$rating}
+					<div class="details">
+						<h1>{$this->post->title}</h1>
+						<div class="flex published">
+							<span class="author">{$this->post->author}</span>
+							<span class="date">{$this->post->date}</span>
+						</div>
+					</div>
+					{$dropdown_menu}
+				</div>
+				<div class="content">
+					<p>{$this->post->text}</p>
+				</div>
+				<div class="flex footer">
+					<div class="flex left">
+						{$reaction_buttons}
+					</div>
+					<div class="flex right">
+						{$action_buttons}
+					</div>
+				</div>
+				{$answers}
+			</div>
+			EOF;
+		}
+
+		protected function generateRating() {
+			return '';
+		}
+
+		protected function generateDropdownMenu() {
 			$html = '';
 
 			if ($this->session->isAuthor($this->post) || $this->session->isAdmin()) {
@@ -38,7 +86,7 @@
 			EOF;
 		}
 
-		private function generateReactionButtons($post = null) {
+		protected function generateReactionButtons($post = null) {
 			$html = '';
 
 			$reaction_types = ($post) ? $post->reactions : $this->post->reactions;
@@ -129,7 +177,60 @@
 			return $html;
 		}
 
-		private function generateAnswers() {
+		protected function generateActionButtons() {
+			return '';
+		}
+
+		protected function generateAnswers() {
+			return '';
+		}
+	}
+
+	class RatedPost extends Post {
+
+		protected function generateRating() {
+			$rating = $this->post->rating;
+
+			return <<<EOF
+			<div class="rating">
+				<span class="centered">{$rating}</span>
+			</div>
+			EOF;
+		}
+	}
+
+	class Comment extends Post {
+
+		protected function generateRating() {
+			$icon = '';
+
+			switch ($this->post->rating) {
+				case 'ok': $icon = 'thumb_up'; break;
+				case 'okma': $icon = 'thumbs_up_down'; break;
+				case 'ko': $icon = 'thumb_down'; break;
+			}
+
+			$rating = "<span class=\"material-symbols-outlined\">{$icon}</span>";
+
+			return <<<EOF
+			<div class="rating">
+				<span class="centered">{$rating}</span>
+			</div>
+			EOF;
+		}
+	}
+
+	class Question extends Post {
+
+		protected function generateActionButtons() {
+			return <<<EOF
+			<button class="answer_compose">
+				<span class="material-symbols-outlined"></span><span class="label">Answer</span>
+			</button>
+			EOF;
+		}
+
+		protected function generateAnswers() {
 			$html = '';
 
 			$answers = $this->post->answers;
@@ -161,76 +262,6 @@
 			return <<<EOF
 			<div class="answers">
 				{$html}
-			</div>
-			EOF;
-		}
-
-		private function generateRating() {
-
-			if (!is_numeric($this->post->rating)) {
-				$icon = '';
-
-				switch ($this->post->rating) {
-					case 'ok': $icon = 'thumb_up'; break;
-					case 'okma': $icon = 'thumbs_up_down'; break;
-					case 'ko': $icon = 'thumb_down'; break;
-				}
-
-				$rating = "<span class=\"material-symbols-outlined\">{$icon}</span>";
-			} else {
-
-				$rating = $this->post->rating;
-			}
-
-			return <<<EOF
-			<div class="rating">
-				<span class="centered">{$rating}</span>
-			</div>
-			EOF;
-		}
-
-		public function render() {
-
-			$rating = ($this->post instanceof \models\RatedPost) ? $this->generateRating() : '';
-
-			$dropdown_menu = $this->generateDropdownMenu();
-
-			$reaction_buttons = $this->generateReactionButtons();
-
-			$action_buttons = ($this->post instanceof \models\Question) ? <<<EOF
-			<button class="answer_compose">
-				<span class="material-symbols-outlined"></span><span class="label">Answer</span>
-			</button>
-			EOF : '';
-
-			$answers = ($this->post instanceof \models\Question) ?
-				$this->generateAnswers() : '';
-
-			echo <<<EOF
-			<div class="card post">
-				<div class="flex header">
-					{$rating}
-					<div class="details">
-						<h1>{$this->post->title}</h1>
-						<div class="flex published">
-							<span class="author">{$this->post->author}</span>
-							<span class="date">{$this->post->date}</span>
-						</div>
-					</div>
-					{$dropdown_menu}
-				</div>
-				<div class="content">
-					<p>{$this->post->text}</p>
-				</div>
-				<div class="flex footer">
-					<div class="flex left">
-						{$reaction_buttons}
-					</div>
-					<div class="flex right">
-						{$action_buttons}
-					</div>
-				</div>
-				{$answers}
 			</div>
 			EOF;
 		}

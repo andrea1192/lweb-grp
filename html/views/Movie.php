@@ -1,12 +1,18 @@
 <?php namespace views;
 	
-	abstract class AbstractMovie extends AbstractView {
+	class Movie extends AbstractView {
 		protected $movie;
 
 		public function __construct($session, $movie) {
 			parent::__construct($session);
 
 			$this->movie = $movie;
+		}
+
+		public static function generateMovie($session, $movie) {
+
+			if ($movie instanceof \models\Request) return new Request($session, $movie);
+			return new Movie($session, $movie);
 		}
 
 		public function renderCard() {
@@ -57,22 +63,19 @@
 			</div>
 			EOF;
 		}
-	}
 
-	class Movie extends AbstractMovie {
-
-		public function generateStatus() {
+		protected function generateStatus() {
 			return '';
 		}
 
-		public function generateActionButtons() {
+		protected function generateActionButtons() {
 			return '';
 		}
 	}
 
-	class Request extends AbstractMovie {
+	class Request extends Movie {
 
-		public function generateStatus() {
+		protected function generateStatus() {
 			$label = '';
 
 			switch ($this->movie->status) {
@@ -90,7 +93,7 @@
 			EOF;
 		}
 
-		public function generateActionButtons() {
+		protected function generateActionButtons() {
 			$left = '';
 			$right = '';
 

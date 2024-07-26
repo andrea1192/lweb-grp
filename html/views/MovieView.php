@@ -16,6 +16,11 @@
 
 		}
 
+		public function printOverview() {
+			$view = \views\Movie::generateMovie($this->session, $this->movie);
+			$view->render();
+		}
+
 		private function printTabs() {
 			$base_URL = $_SERVER['SCRIPT_NAME'];
 
@@ -36,7 +41,7 @@
 		public function printPosts() {
 
 			foreach ($this->posts as $post) {
-				$view = new \views\Post($this->session, $post);
+				$view = \views\Post::generatePost($this->session, $post);
 				$view->render();
 			}
 		}
@@ -63,11 +68,6 @@
 			$this->posts = \models\Posts::getPostsByMovie($movie_id, $tab);
 			$this->tab = $tab;
 		}
-
-		public function printOverview() {
-			$view = new \views\Movie($this->session, $this->movie);
-			$view->render();
-		}
 	}
 
 	class RequestView extends AbstractMovieView {
@@ -80,11 +80,6 @@
 
 			$this->movie = \models\Requests::getRequestById($movie_id);
 			$this->posts = \models\Comments::getCommentsByRequest($movie_id);
-		}
-
-		public function printOverview() {
-			$view = new \views\Request($this->session, $this->movie);
-			$view->render();
 		}
 	}
 ?>
