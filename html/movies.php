@@ -11,11 +11,15 @@
 			switch ($action) {
 
 				default:
-				case 'list':
+				case 'list_movies':
 					$view = new \views\MoviesView($this->session);
-					$view->render();
+					break;
+				case 'list_requests':
+					$view = new \views\RequestsView($this->session);
 					break;
 			}
+
+			$view->render();
 		}
 	}
 

@@ -24,9 +24,8 @@
 		private function generateMainMenu() {
 			return <<<EOF
 			<ul class="menu">
-				<li><a href="movies.php">All Movies</a></li>
-				<li><a href="movies.php">Accepted</a></li>
-				<li><a href="movies.php">Submitted</a></li>
+				<li><a href="movies.php?action=list_movies">Movies</a></li>
+				<li><a href="movies.php?action=list_requests">Submissions</a></li>
 			</ul>
 			EOF;
 		}

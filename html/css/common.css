@@ -124,6 +124,11 @@ body {
 	background-color: white;
 }
 
+#content >h1 {
+	font-size: 1.4rem;
+	font-weight: 500;
+}
+
 #footer {
 	padding: 15px;
 	background-color: #EEE;
@@ -177,9 +182,8 @@ body {
 
 .flex.list {
 	flex-wrap: wrap;
-	justify-content: center;
-	gap: 40px;
-	margin: 40px 0;
+	gap: 25px;
+	margin: 20px 0;
 }
 
 .flex.list >.movie {
