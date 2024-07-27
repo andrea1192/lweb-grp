@@ -21,13 +21,60 @@
 			}
 		}
 
-		protected function printHeader() {
+		private function generateMainMenu() {
+			return <<<EOF
+			<ul class="menu">
+				<li><a href="movies.php">All Movies</a></li>
+				<li><a href="movies.php">Accepted</a></li>
+				<li><a href="movies.php">Submitted</a></li>
+			</ul>
+			EOF;
+		}
+
+		private function generateUserMenu() {
 
 			if ($this->session->isLoggedIn()) {
-				print('<div id="header">Logged-in header</div>');
+				$initials = substr($this->session->getUsername(), 0, 2);
+
+				return <<<EOF
+				<button class="account">
+					<span class="centered initials">{$initials}</span>
+					<div class="dropdown">
+						<ul class="menu">
+							<li><a href="" class="flex profile"><span class="material-symbols-outlined"></span><span class="label">Profile</span></a></li>
+							<li><a href="" class="flex users"><span class="material-symbols-outlined"></span><span class="label">Users</span></a></li>
+							<li><a href="" class="flex report"><span class="material-symbols-outlined"></span><span class="label">Reports</span></a></li>
+						</ul>
+					</div>
+				</button>
+				EOF;
 			} else {
-				print('<div id="header">Logged-out header</div>');
+
+				return <<<EOF
+				<button class="login">
+					<span class="material-symbols-outlined"></span><div class="label">Sign in</div>
+				</button>
+				EOF;
 			}
+		}
+
+		protected function printHeader() {
+			$main_menu = $this->generateMainMenu();
+			$user_menu = $this->generateUserMenu();
+
+			echo <<< EOF
+			<div id="header">
+				<div class="flex wrapper">
+					<div class="flex left">
+						<div id="logo">grp</div>
+						{$main_menu}
+					</div>
+					<div class="flex right">
+						{$user_menu}
+					</div>
+				</div>
+			</div>
+			EOF;
 		}
 	}
 ?>

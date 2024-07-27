@@ -29,6 +29,14 @@ button >.material-symbols-outlined:not(:has(+.label)) {
 	content:'login';
 }
 
+.profile >.material-symbols-outlined::before {
+	content:'person';
+}
+
+.users >.material-symbols-outlined::before {
+	content:'group';
+}
+
 .poster >.material-symbols-outlined::before {
 	content: 'movie';
 	position: absolute;

@@ -44,6 +44,13 @@
 	backdrop-filter: contrast(50%) blur(100px);
 }
 
+.centered {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	translate: -50% -50%;
+}
+
 /* ==== Parti vista qualsiasi ============================================== */
 
 * {
@@ -65,12 +72,33 @@ body {
 #header {
 	position: sticky;
 	top: 0;
-	height: 64px;
 	border-bottom: 1px solid #AAA;
-	padding-top: 10px;
-	text-align: center;
+	padding: 10px 0;
 	background-color: #FFFF;
 	z-index: 100;
+}
+
+#logo {
+	margin-right: 25px;
+	font-size: 1.6rem;
+	font-weight: 300;
+}
+
+#header .left .menu {
+	margin: 0;
+}
+
+#header .left .menu >li {
+	border-radius: 4px;
+}
+
+#header .left .menu >li >a {
+	padding: 10px 25px;
+}
+
+.account .initials {
+	font-size: 1.2rem;
+	font-weight: 300;
 }
 
 .poster {
@@ -182,13 +210,6 @@ body {
 	border: 1px solid #AAA;
 	border-radius: 50%;
 	font-size: 1.6rem;
-}
-
-.header .rating >span:only-child {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	translate: -50% -50%;
 }
 
 .header h1 {
