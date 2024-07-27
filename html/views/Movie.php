@@ -10,10 +10,14 @@
 		}
 
 		public function renderCard() {
+			$status = $this->generateStatus();
 
 			echo <<<EOF
 			<div class="card movie">
-				<div class="poster" style="background-image: url('na.webp')"><span class="material-symbols-outlined"></span></div>
+				<div class="poster" style="background-image: url('na.webp')">
+					<span class="material-symbols-outlined"></span>
+					{$status}
+				</div>
 				<h1>{$this->movie->title}</h1>
 				<div>{$this->movie->year}</div>
 			</div>
@@ -21,9 +25,7 @@
 		}
 
 		public function render() {
-
 			$status = $this->generateStatus();
-
 			$action_buttons = $this->generateActionButtons();
 
 			echo <<<EOF
