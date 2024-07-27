@@ -53,15 +53,15 @@
 			$html = '';
 
 			if ($this->session->isAuthor($this->post) || $this->session->isAdmin()) {
-				$html .= '<li class="flex edit"><span class="material-symbols-outlined"></span><span class="label">Edit</span></li>';
+				$html .= '<li><a href="" class="flex edit"><span class="material-symbols-outlined"></span><span class="label">Edit</span></a></li>';
 			}
 
 			if ($this->session->isAuthor($this->post) || $this->session->isMod()) {
-				$html .= '<li class="flex delete"><span class="material-symbols-outlined"></span><span class="label">Delete</span></li>';
+				$html .= '<li><a href="" class="flex delete"><span class="material-symbols-outlined"></span><span class="label">Delete</span></a></li>';
 			}
 
 			if (!$this->session->isAuthor($this->post) && $this->session->isRegistered()) {
-				$html .= '<li class="flex report"><span class="material-symbols-outlined"></span><span class="label">Report</span></li>';
+				$html .= '<li><a href="" class="flex report"><span class="material-symbols-outlined"></span><span class="label">Report</span></a></li>';
 			}
 
 			if ($html == '') return $html;
@@ -70,7 +70,7 @@
 			<button class="right text kebab">
 				<span class="material-symbols-outlined"></span>
 				<div class="dropdown">
-					<ul>
+					<ul class="menu">
 						{$html}
 					</li>
 				</div>

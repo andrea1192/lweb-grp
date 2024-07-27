@@ -13,7 +13,7 @@ button.fab,
 
 /* Elemento interattivo (cambio colore su hover) */
 button:hover,
-.dropdown ul >li:hover {
+.menu li:hover {
 	background-color: #CCC3;
 }
 
@@ -81,7 +81,6 @@ button:not(:has(>.label)) {
 .dropdown {
 	visibility: hidden;
 	position: absolute;
-	display: flex;
 	top: 0;
 	right: 0;
 	width: max-content;
@@ -95,13 +94,12 @@ button:not(:has(>.label)) {
 	z-index: 100;
 }
 
-.dropdown ul {
-	list-style-type: none;
+.dropdown >.menu {
+	display: revert;
 	margin: 0;
-	padding: 0;
 }
 
-.dropdown ul >li {
+.dropdown >.menu >li >a {
 	padding: 12px;
 }
 

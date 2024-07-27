@@ -15,8 +15,8 @@
 
 		<?php $this->printOverview() ?>
 
-		<div id="tabs_bar">
-				<ul id="tabs" class="wrapper">
+		<div id="tabs">
+				<ul class="menu wrapper">
 					<?php $this->printTabs() ?>
 				</ul>
 			</div>
