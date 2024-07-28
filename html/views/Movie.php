@@ -9,11 +9,18 @@
 			$this->movie = $movie;
 		}
 
+		private function generateURL() {
+
+			return "movie.php?id={$this->movie->id}";
+		}
+
 		public function renderCard() {
+			$href = $this->generateURL();
 			$status = $this->generateStatus();
 
 			echo <<<EOF
 			<div class="card movie">
+				<a href="{$href}"></a>
 				<div class="poster" style="background-image: url('na.webp')">
 					<span class="material-symbols-outlined"></span>
 					{$status}
