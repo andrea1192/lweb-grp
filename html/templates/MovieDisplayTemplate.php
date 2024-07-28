@@ -27,7 +27,7 @@
 			<button class="fab new_post"><span class="material-symbols-outlined"></span><span class="label">New post</span></button>
 		</div>
 
-		<div id="footer"><div class="wrapper">Lorem ipsum dolor</div></div>
+		<?php $this->printFooter() ?>
 	</body>
 
 </html>

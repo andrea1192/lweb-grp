@@ -75,5 +75,11 @@
 			</div>
 			EOF;
 		}
+
+		protected function printFooter() {
+			echo <<<EOF
+			<div id="footer" class="bottom"><div class="wrapper">Lorem ipsum dolor</div></div>
+			EOF;
+		}
 	}
 ?>

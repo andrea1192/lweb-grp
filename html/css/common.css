@@ -58,6 +58,9 @@
 }
 
 body {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
 	margin: 0;
 	font-family: "Roboto", system-ui, sans-serif;
 	letter-spacing: 0.4pt;
