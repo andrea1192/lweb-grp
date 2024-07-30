@@ -72,6 +72,12 @@ button >.material-symbols-outlined:not(:has(+.label)) {
 	color: red;
 }
 
+.notfound >.material-symbols-outlined::before {
+	content: 'search';
+	margin-right: 12px;
+	font-size: 48px;
+}
+
 .likes >.material-symbols-outlined::before {
 	content:'thumb_up';
 }

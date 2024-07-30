@@ -40,6 +40,16 @@
 
 		public function printPosts() {
 
+			if (!$this->posts->count()) {
+				echo <<<EOF
+				<div class="card flex notfound">
+					<span class="material-symbols-outlined"></span>
+					<span>No posts of type "{$this->tab}" found.</span>
+				</div>
+				EOF;
+				return;
+			}
+
 			foreach ($this->posts as $post) {
 				$view = \views\Post::factoryMethod($this->session, $post);
 				$view->render();
