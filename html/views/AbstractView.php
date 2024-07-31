@@ -36,6 +36,18 @@
 				$initials = $this->session->getUsername()[0];
 				$username = $this->session->getUsername();
 
+				$html = '<li><a href="" class="flex profile"><span class="material-symbols-outlined"></span><span class="label">Profile</span></a></li>';
+
+				if ($this->session->isAdmin()) {
+					$html .= '<li><a href="" class="flex users"><span class="material-symbols-outlined"></span><span class="label">Users</span></a></li>';
+				}
+
+				if ($this->session->isMod()) {
+					$html .= '<li><a href="" class="flex report"><span class="material-symbols-outlined"></span><span class="label">Reports</span></a></li>';
+				}
+
+				$html .= '<li><a href="" class="flex logout"><span class="material-symbols-outlined"></span><span class="label">Sign out</span></a></li>';
+
 				return <<<EOF
 				<button class="account">
 					<span class="centered initials">{$initials}</span>
@@ -53,10 +65,7 @@
 							</div>
 						</div>
 						<ul class="menu">
-							<li><a href="" class="flex profile"><span class="material-symbols-outlined"></span><span class="label">Profile</span></a></li>
-							<li><a href="" class="flex users"><span class="material-symbols-outlined"></span><span class="label">Users</span></a></li>
-							<li><a href="" class="flex report"><span class="material-symbols-outlined"></span><span class="label">Reports</span></a></li>
-							<li><a href="" class="flex logout"><span class="material-symbols-outlined"></span><span class="label">Sign out</span></a></li>
+							{$html}
 						</ul>
 					</div>
 				</button>
