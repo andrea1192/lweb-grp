@@ -88,11 +88,16 @@ button:not(:has(>.label)) {
 	border: 1px solid #AAA;
 	border-radius: 4px;
 	padding: 4px 0;
+	text-align: left;
 	font-size: 0.9rem;
 	font-weight: normal;
 	color: #666;
 	background-color: #FFFF;
 	z-index: 100;
+}
+
+.dropdown >.header {
+	padding: 8px 12px;
 }
 
 .dropdown >.menu {

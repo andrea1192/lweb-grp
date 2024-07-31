@@ -29,6 +29,10 @@ button >.material-symbols-outlined:not(:has(+.label)) {
 	content:'login';
 }
 
+.logout >.material-symbols-outlined::before {
+	content:'logout';
+}
+
 .profile >.material-symbols-outlined::before {
 	content:'person';
 }

@@ -22,7 +22,7 @@
 					{$rating}
 					<div class="details">
 						<h1>{$this->post->title}</h1>
-						<div class="flex published">
+						<div class="flex small">
 							<span class="author">{$this->post->author}</span>
 							<span class="date">{$this->post->date}</span>
 						</div>
@@ -184,8 +184,8 @@
 			$rating = $this->post->rating;
 
 			return <<<EOF
-			<div class="rating">
-				<span class="centered">{$rating}</span>
+			<div class="featured">
+				<span class="centered rating">{$rating}</span>
 			</div>
 			EOF;
 		}
@@ -205,8 +205,8 @@
 			$rating = "<span class=\"material-symbols-outlined\">{$icon}</span>";
 
 			return <<<EOF
-			<div class="rating">
-				<span class="centered">{$rating}</span>
+			<div class="featured">
+				<span class="centered rating">{$rating}</span>
 			</div>
 			EOF;
 		}
@@ -235,7 +235,7 @@
 				<div class="answer {$selected}">
 					<span class="material-symbols-outlined"></span>
 					<div class="flex header">
-						<div class="flex published">
+						<div class="flex small">
 							<span class="author">{$answer->author}</span>
 							<span class="date">{$answer->date}</span>
 						</div>

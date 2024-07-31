@@ -33,16 +33,30 @@
 		private function generateUserMenu() {
 
 			if ($this->session->isLoggedIn()) {
-				$initials = substr($this->session->getUsername(), 0, 2);
+				$initials = $this->session->getUsername()[0];
+				$username = $this->session->getUsername();
 
 				return <<<EOF
 				<button class="account">
 					<span class="centered initials">{$initials}</span>
 					<div class="dropdown">
+						<div class="flex header">
+							<div class="featured">
+								<span class="centered initials">{$initials}</span>
+							</div>
+							<div class="details">
+								<h1>{$username}</h1>
+								<div class="flex small">
+									<span class="privileges">{$this->session->getUserType()}</span>
+									<span class="reputation">Reputation {$this->session->getReputation()}</span>
+								</div>
+							</div>
+						</div>
 						<ul class="menu">
 							<li><a href="" class="flex profile"><span class="material-symbols-outlined"></span><span class="label">Profile</span></a></li>
 							<li><a href="" class="flex users"><span class="material-symbols-outlined"></span><span class="label">Users</span></a></li>
 							<li><a href="" class="flex report"><span class="material-symbols-outlined"></span><span class="label">Reports</span></a></li>
+							<li><a href="" class="flex logout"><span class="material-symbols-outlined"></span><span class="label">Sign out</span></a></li>
 						</ul>
 					</div>
 				</button>

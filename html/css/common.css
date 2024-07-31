@@ -21,15 +21,14 @@
 	align-items: center;
 }
 
-.flex >div:not(:last-child),
-.flex >button:not(:last-child) {
+.flex:not(.column) >div:not(:last-child),
+.flex:not(.column) >button:not(:last-child) {
 	margin-right: 10px;
 }
 
 .flex.column {
 	flex-direction: column;
 	align-items: revert;
-	margin-right: revert;
 }
 
 .right {
@@ -97,11 +96,6 @@ body {
 
 #header .left .menu >li >a {
 	padding: 10px 25px;
-}
-
-.account .initials {
-	font-size: 1.2rem;
-	font-weight: 300;
 }
 
 .poster {
@@ -224,27 +218,36 @@ body {
 
 /* ==== Parti vista MovieView ============================================== */
 
-.header .rating {
+.featured {
 	position: relative;
 	flex-shrink: 0;
 	width: 40px;
 	height: 40px;
 	border: 1px solid #AAA;
 	border-radius: 50%;
+}
+
+.rating {
 	font-size: 1.6rem;
 }
 
-.header h1 {
-	margin: 0;
+.initials {
 	font-size: 1.2rem;
-	font-weight: normal;
+	font-weight: 300;
+	text-transform: uppercase;
 }
 
-.header .published {
+.header h1 {
+	margin: 0 0 2px 0;
+	font-size: 1rem;
+	font-weight: 500;
+}
+
+.header .flex.small {
 	font-size: 0.8rem;
 }
 
-.header .published >span:not(:last-child)::after {
+.header .flex.small >span:not(:last-child)::after {
 	content: '\00b7';
 	margin: 0 4px;
 }
