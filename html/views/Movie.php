@@ -38,7 +38,7 @@
 			echo <<<EOF
 			<div id="backdrop" style="background-image: url('na.webp')">
 				<div class="blur">
-					<div id="overview" class="wrapper">
+					<div id="overview" class="flex wrapper">
 						<div id="poster" class="poster" style="background-image: url('na.webp')">
 							<span class="material-symbols-outlined"></span>
 							{$status}
