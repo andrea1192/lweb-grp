@@ -18,6 +18,9 @@
 
 .flex {
 	display: flex !important;
+}
+
+.flex.align {
 	align-items: center;
 }
 
@@ -28,7 +31,6 @@
 
 .flex.column {
 	flex-direction: column;
-	align-items: revert;
 }
 
 .right {

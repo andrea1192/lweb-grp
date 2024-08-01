@@ -42,7 +42,7 @@
 
 			if (!$this->posts->count()) {
 				echo <<<EOF
-				<div class="card flex notfound">
+				<div class="card flex align notfound">
 					<span class="material-symbols-outlined"></span>
 					<span>No posts of type "{$this->tab}" found.</span>
 				</div>

@@ -18,11 +18,11 @@
 
 			echo <<<EOF
 			<div class="card post">
-				<div class="flex header">
+				<div class="flex align header">
 					{$rating}
 					<div class="details">
 						<h1>{$this->post->title}</h1>
-						<div class="flex small">
+						<div class="flex align small">
 							<span class="author">{$this->post->author}</span>
 							<span class="date">{$this->post->date}</span>
 						</div>
@@ -32,11 +32,11 @@
 				<div class="content">
 					<p>{$this->post->text}</p>
 				</div>
-				<div class="flex footer">
-					<div class="flex left">
+				<div class="flex align footer">
+					<div class="flex align left">
 						{$reaction_buttons}
 					</div>
-					<div class="flex right">
+					<div class="flex align right">
 						{$action_buttons}
 					</div>
 				</div>
@@ -53,15 +53,15 @@
 			$html = '';
 
 			if ($this->session->isAuthor($this->post) || $this->session->isAdmin()) {
-				$html .= '<li><a href="" class="flex edit"><span class="material-symbols-outlined"></span><span class="label">Edit</span></a></li>';
+				$html .= '<li><a href="" class="flex align edit"><span class="material-symbols-outlined"></span><span class="label">Edit</span></a></li>';
 			}
 
 			if ($this->session->isAuthor($this->post) || $this->session->isMod()) {
-				$html .= '<li><a href="" class="flex delete"><span class="material-symbols-outlined"></span><span class="label">Delete</span></a></li>';
+				$html .= '<li><a href="" class="flex align delete"><span class="material-symbols-outlined"></span><span class="label">Delete</span></a></li>';
 			}
 
 			if (!$this->session->isAuthor($this->post) && $this->session->isRegistered()) {
-				$html .= '<li><a href="" class="flex report"><span class="material-symbols-outlined"></span><span class="label">Report</span></a></li>';
+				$html .= '<li><a href="" class="flex align report"><span class="material-symbols-outlined"></span><span class="label">Report</span></a></li>';
 			}
 
 			if ($html == '') return $html;
@@ -234,8 +234,8 @@
 				$html .= <<<EOF
 				<div class="answer {$selected}">
 					<span class="material-symbols-outlined"></span>
-					<div class="flex header">
-						<div class="flex small">
+					<div class="flex align header">
+						<div class="flex align small">
 							<span class="author">{$answer->author}</span>
 							<span class="date">{$answer->date}</span>
 						</div>
@@ -244,7 +244,7 @@
 					<div class="content">
 						<p>{$answer->text}</p>
 					</div>
-					<div class="flex footer">
+					<div class="flex align footer">
 						{$reaction_buttons}
 					</div>
 				</div>
