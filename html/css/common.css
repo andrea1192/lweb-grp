@@ -132,6 +132,40 @@ body {
 	font-weight: 500;
 }
 
+.featured {
+	position: relative;
+	flex-shrink: 0;
+	width: 40px;
+	height: 40px;
+	border: 1px solid #AAA;
+	border-radius: 50%;
+}
+
+.rating {
+	font-size: 1.6rem;
+}
+
+.initials {
+	font-size: 1.2rem;
+	font-weight: 300;
+	text-transform: uppercase;
+}
+
+.header h1 {
+	margin: 0 0 2px 0;
+	font-size: 1rem;
+	font-weight: 500;
+}
+
+.header .flex.small {
+	font-size: 0.8rem;
+}
+
+.header .flex.small >span:not(:last-child)::after {
+	content: '\00b7';
+	margin: 0 4px;
+}
+
 #footer {
 	padding: 15px;
 	background-color: #EEE;
@@ -174,6 +208,19 @@ body {
 	border-bottom: 2px solid dodgerblue;
 }
 
+.post >.content {
+	position: relative;
+}
+
+.post >.answers >.answer {
+	position: relative;
+	top: 15px;
+	margin: 0 -15px;
+	border-top: 1px solid #AAA;
+	padding: 10px 15px 10px 35px;
+	font-size: 0.9rem;
+}
+
 /* ==== Parti vista MoviesView ============================================ */
 
 .flex.list {
@@ -213,53 +260,4 @@ body {
 
 .flex.list >.movie >a:hover {
 	background-color: #CCC3;
-}
-
-/* ==== Parti vista MovieView ============================================== */
-
-.featured {
-	position: relative;
-	flex-shrink: 0;
-	width: 40px;
-	height: 40px;
-	border: 1px solid #AAA;
-	border-radius: 50%;
-}
-
-.rating {
-	font-size: 1.6rem;
-}
-
-.initials {
-	font-size: 1.2rem;
-	font-weight: 300;
-	text-transform: uppercase;
-}
-
-.header h1 {
-	margin: 0 0 2px 0;
-	font-size: 1rem;
-	font-weight: 500;
-}
-
-.header .flex.small {
-	font-size: 0.8rem;
-}
-
-.header .flex.small >span:not(:last-child)::after {
-	content: '\00b7';
-	margin: 0 4px;
-}
-
-.post >.content {
-	position: relative;
-}
-
-.post >.answers >.answer {
-	position: relative;
-	top: 15px;
-	margin: 0 -15px;
-	border-top: 1px solid #AAA;
-	padding: 10px 15px 10px 35px;
-	font-size: 0.9rem;
 }
