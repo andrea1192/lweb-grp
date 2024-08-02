@@ -52,7 +52,7 @@
 				<button class="account">
 					<span class="centered initials">{$initials}</span>
 					<div class="dropdown">
-						<div class="flex header">
+						<div class="header">
 							<div class="featured">
 								<span class="centered initials">{$initials}</span>
 							</div>

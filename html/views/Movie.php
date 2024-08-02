@@ -50,11 +50,11 @@
 							<p>{$this->movie->summary}</p>
 
 							<div id="details">
-								<div class="flex align detail">
+								<div class="flex detail">
 									<div>Director</div>
 									<div>{$this->movie->director}</div>
 								</div>
-								<div class="flex align detail">
+								<div class="flex detail">
 									<div>Writer</div>
 									<div>{$this->movie->writer}</div>
 								</div>
@@ -89,7 +89,7 @@
 			}
 
 			return <<< EOF
-			<div class="flex align status {$this->movie->status}">
+			<div class="status {$this->movie->status}">
 				<span class="material-symbols-outlined"></span>
 				<span class="label">{$label}</span>
 			</div>
@@ -123,12 +123,12 @@
 			}
 
 			return <<<EOF
-			<div class="flex align bottom">
-				<div class="flex align left">
+			<div class="flex bottom">
+				<div class="flex left">
 					{$left}
 				</div>
 
-				<div class="flex align right">
+				<div class="flex right">
 					{$right}
 				</div>
 			</div>

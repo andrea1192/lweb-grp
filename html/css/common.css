@@ -24,7 +24,6 @@
 	align-items: center;
 }
 
-.flex:not(.column) >div:not(:last-child),
 .flex:not(.column) >button:not(:last-child) {
 	margin-right: 10px;
 }
@@ -116,6 +115,8 @@ body {
 
 .poster .status {
 	position: absolute;
+	display: flex;
+	align-items: center;
 	top: 4%;
 	left: 4%;
 	border-radius: 4px;
@@ -149,6 +150,12 @@ body {
 	font-size: 1.2rem;
 	font-weight: 300;
 	text-transform: uppercase;
+}
+
+.header {
+	display: flex;
+	align-items: center;
+	gap: 10px;
 }
 
 .header h1 {
