@@ -21,6 +21,12 @@ button >.material-symbols-outlined:not(:has(+.label)) {
 	translate: -50% -50%;
 }
 
+button.colored >.material-symbols-outlined,
+button.filled >.material-symbols-outlined,
+button.fab >.material-symbols-outlined {
+	color: inherit;
+}
+
 .dropdown >.menu >li >a .material-symbols-outlined {
 	margin-right: 12px;
 }

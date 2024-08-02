@@ -43,8 +43,22 @@ button {
 	background-color: #FFFF;
 }
 
+button:not([disabled]) {
+	cursor: pointer;
+}
+
 button.text {
 	border-width: 0;
+}
+
+button.colored {
+	color: dodgerblue;
+}
+
+button.filled {
+	border-width: 0px;
+	background-color: dodgerblue;
+	color: white;
 }
 
 button.fab {
@@ -54,6 +68,7 @@ button.fab {
 	height: 56px;
 	border-radius: 16px;
 	padding: 16px;
+	color: dodgerblue;
 }
 
 button:not(:has(>.label)) {
@@ -76,6 +91,7 @@ button:not(:has(>.label)) {
 	color: #666;
 	background-color: #FFFF;
 	z-index: 100;
+	cursor: default;
 }
 
 .dropdown {
@@ -94,6 +110,7 @@ button:not(:has(>.label)) {
 	color: #666;
 	background-color: #FFFF;
 	z-index: 100;
+	cursor: default;
 }
 
 .dropdown >.header {

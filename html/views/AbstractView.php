@@ -73,7 +73,7 @@
 			} else {
 
 				return <<<EOF
-				<button class="login">
+				<button class="colored login">
 					<span class="material-symbols-outlined"></span><div class="label">Sign in</div>
 				</button>
 				EOF;

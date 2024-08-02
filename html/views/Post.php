@@ -216,7 +216,7 @@
 
 		protected function generateActionButtons() {
 			return <<<EOF
-			<button class="answer_compose">
+			<button class="colored answer_compose">
 				<span class="material-symbols-outlined"></span><span class="label">Answer</span>
 			</button>
 			EOF;
