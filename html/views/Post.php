@@ -33,7 +33,7 @@
 					<p>{$this->post->text}</p>
 				</div>
 				<div class="flex footer">
-					<div class="flex left">
+					<div class="flex left reactions">
 						{$reaction_buttons}
 					</div>
 					<div class="flex right">
@@ -244,7 +244,7 @@
 					<div class="content">
 						<p>{$answer->text}</p>
 					</div>
-					<div class="flex footer">
+					<div class="flex footer reactions">
 						{$reaction_buttons}
 					</div>
 				</div>

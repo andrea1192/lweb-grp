@@ -102,7 +102,7 @@
 
 			if ($this->session->isMod()) {
 				$left .= <<<EOF
-				<button class="accept">
+				<button class="tonal accept">
 					<span class="material-symbols-outlined"></span><span class="label">Approve request</span>
 				</button>
 				<button class="reject">
