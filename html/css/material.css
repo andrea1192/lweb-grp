@@ -153,3 +153,97 @@ button:hover >.dropdown {
 	border-color: transparent;
 	background-color: transparent;
 }*/
+
+label {
+	position: relative;
+	display: block;
+	flex-grow: 1;
+}
+
+label >span.label {
+	position: absolute;
+	top: 0;
+	left: 14px;
+	translate: 0 -50%;
+	font-size: 0.7rem;
+	padding: 2px;
+	background-color: #FFFF;
+}
+
+label >span.label:has(+input:focus),
+label >span.label:has(+textarea:focus) {
+	color: dodgerblue;
+}
+
+label >span.label:has(+input.filled),
+label >span.label:has(+textarea.filled) {
+	top: 10px;
+	background-color: #FFF0;
+}
+
+label >input,
+label >textarea {
+	width: 100%;
+	border: 1px solid #AAA;
+	border-radius: 4px;
+	padding: 16px;
+	font-family: inherit;
+	font-size: 1rem;
+}
+
+label >textarea {
+	height: 8em;
+	resize: none;
+}
+
+label >input:focus,
+label >textarea:focus {
+	border: 2px solid dodgerblue;
+	outline: none;
+}
+
+label >input.filled,
+label >textarea.filled {
+	border-width: 0;
+	border-bottom: 1px solid #AAA;
+	border-radius: 4px 4px 0 0;
+	padding: 24px 16px 8px 16px;
+	background-color: #FFF3;
+	color: inherit;
+}
+
+label >input.filled:focus,
+label >textarea.filled:focus {
+	border: none;
+	border-bottom: 2px solid dodgerblue;
+	outline: none;
+}
+
+/* Regole per campi contenenti dati non validi */
+
+label >span.supp {
+	position: absolute;
+	bottom: -4px;
+	left: 16px;
+	translate: 0 100%;
+	font-size: 0.7rem;
+	color: red;
+}
+
+label >span.material-symbols-outlined {
+	position: absolute;
+	bottom: 50%;
+	right: 16px;
+	translate: 0 50%;
+	font-size: 24px;
+	color: red;
+}
+
+label.invalid >span.label {
+	color: red;
+}
+
+label.invalid >input {
+	border-color: red;
+	padding-right: 56px;
+}

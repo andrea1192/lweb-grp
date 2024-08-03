@@ -202,6 +202,10 @@ body {
 	height: 450px;
 }
 
+#description {
+	flex-grow: 1;
+}
+
 #description h1 {
 	margin-bottom: 5px;
 	font-size: 1.8rem;
@@ -275,4 +279,19 @@ body {
 
 .flex.list >.movie >a:hover {
 	background-color: #CCC3;
+}
+
+/* ==== Parti vista LoginView ============================================= */
+
+#login {
+	width: 440px;
+	margin: 40px auto;
+	padding: 30px;
+	gap: 25px;
+}
+
+#prompt {
+	font-size: 1.8em;
+	font-weight: 300;
+	text-align: center;
 }
