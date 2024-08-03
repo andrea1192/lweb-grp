@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<title>Test</title>
+
+		<link rel="stylesheet" href="../html/css/common.css" type="text/css" />
+	</head>
+
+	<body>
+		<div id="header">
+			<div class="flex wrapper">
+				<div class="flex left">
+					<div id="logo">grp</div>
+					<ul class="menu">
+						<li><a href="" class="active">All Movies</a></li>
+						<li><a href="">Accepted</a></li>
+						<li><a href="">Submitted</a></li>
+					</ul>
+				</div>
+				<div class="flex right">
+					<button class="account">
+						<span class="centered initials">F</span>
+						<div class="dropdown">
+							<div class="flex header">
+								<div class="featured">
+									<span class="centered initials">F</span>
+								</div>
+								<div class="details">
+									<h1>foo</h1>
+									<div class="flex small">
+										<span class="privileges">Moderator</span>
+										<span class="reputation">Reputation 42</span>
+									</div>
+								</div>
+							</div>
+							<ul class="menu">
+								<li><a href="" class="flex profile"><span class="material-symbols-outlined"></span><span class="label">Profile</span></a></li>
+								<li><a href="" class="flex users"><span class="material-symbols-outlined"></span><span class="label">Users</span></a></li>
+								<li><a href="" class="flex report"><span class="material-symbols-outlined"></span><span class="label">Reports</span></a></li>
+								<li><a href="" class="flex logout"><span class="material-symbols-outlined"></span><span class="label">Sign out</span></a></li>
+							</ul>
+						</div>
+					</button>
+					<button class="colored login">
+						<span class="material-symbols-outlined"></span><div class="label">Sign in</div>
+					</button>
+				</div>
+			</div>
+		</div>
+
+
+		<h1 style="font-size: 1.4em; font-weight: 500">View: Login form</h1>
+			
+		<form id="login" class="card flex column" action="" method="get">
+			<div><span class="material-symbols-outlined" style="font-size: 24px;">login</span></div>
+			<div id="prompt">Sign in</div>
+			<label>
+				<span class="label">Username</span>
+				<input name="user" type="text" />
+			</label>
+			<label>
+				<span class="label">Password</span>
+				<input name="pass" type="password" />
+			</label>
+			<label class="invalid">
+				<span class="label">Foo</span>
+				<input name="err" type="password" />
+				<span class="supp">Error description</span>
+				<span class="material-symbols-outlined">error</span>
+			</label>
+			<div id="controls" class="flex">
+				<div class="flex left align">
+					<button class="text colored">
+						<span class="label">Create account</span>
+					</button>
+				</div>
+				<div class="flex right align">
+					<button class="filled">
+						<span class="label">Sign in</span>
+					</button>
+				</div>
+			</div>
+		</form>
+
+		<div id="footer" class="bottom"><div class="wrapper">Lorem ipsum dolor</div></div>
+	</body>
+
+</html>
