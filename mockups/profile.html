@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<title>Test</title>
+
+		<link rel="stylesheet" href="../html/css/common.css" type="text/css" />
+	</head>
+
+	<body>
+		<div id="header">
+			<div class="flex wrapper">
+				<div class="flex left">
+					<div id="logo">grp</div>
+					<ul class="menu">
+						<li><a href="" class="active">All Movies</a></li>
+						<li><a href="">Accepted</a></li>
+						<li><a href="">Submitted</a></li>
+					</ul>
+				</div>
+				<div class="flex right">
+					<button class="account">
+						<span class="centered initials">F</span>
+						<div class="dropdown">
+							<div class="flex header">
+								<div class="featured">
+									<span class="centered initials">F</span>
+								</div>
+								<div class="details">
+									<h1>foo</h1>
+									<div class="flex small">
+										<span class="privileges">Moderator</span>
+										<span class="reputation">Reputation 42</span>
+									</div>
+								</div>
+							</div>
+							<ul class="menu">
+								<li><a href="" class="flex profile"><span class="material-symbols-outlined"></span><span class="label">Profile</span></a></li>
+								<li><a href="" class="flex users"><span class="material-symbols-outlined"></span><span class="label">Users</span></a></li>
+								<li><a href="" class="flex report"><span class="material-symbols-outlined"></span><span class="label">Reports</span></a></li>
+								<li><a href="" class="flex logout"><span class="material-symbols-outlined"></span><span class="label">Sign out</span></a></li>
+							</ul>
+						</div>
+					</button>
+				</div>
+			</div>
+		</div>
+
+
+		<h1 style="font-size: 1.4em; font-weight: 500">View: Profile dialog</h1>
+			
+		<form id="profile" class="dialog flex column" action="" method="get">
+			<div><span class="material-symbols-outlined" style="font-size: 24px;">account_circle</span></div>
+			<div id="prompt">Profile</div>
+			<label>
+				<span class="label">Username</span>
+				<input name="user" type="text" value="foo"/>
+			</label>
+			<label>
+				<span class="label">Password</span>
+				<input name="pass" type="password" />
+			</label>
+			<label>
+				<span class="label">Name</span>
+				<input name="name" type="text" value="John Doe"/>
+			</label>
+			<label>
+				<span class="label">Address</span>
+				<input name="address" type="text" />
+			</label>
+			<label>
+				<span class="label">Primary e-mail</span>
+				<input name="mail_pri" type="text" />
+			</label>
+			<label>
+				<span class="label">Secondary e-mail</span>
+				<input name="mail_sec" type="text" />
+			</label>
+			<div id="controls" class="flex">
+				<div class="flex left align">
+					<button class="text colored" style="color: red">
+						<span class="material-symbols-outlined">delete</span>
+						<span class="label">Delete account</span>
+					</button>
+				</div>
+				<div class="flex right align">
+					<button class="filled">
+						<span class="material-symbols-outlined">save</span>
+						<span class="label">Save changes</span>
+					</button>
+				</div>
+			</div>
+		</form>
+
+		<div id="footer" class="bottom"><div class="wrapper">Lorem ipsum dolor</div></div>
+	</body>
+
+</html>

@@ -51,6 +51,10 @@
 	translate: -50% -50%;
 }
 
+.small {
+	font-size: 0.8rem;
+}
+
 /* ==== Parti vista qualsiasi ============================================== */
 
 * {
@@ -162,10 +166,6 @@ body {
 	margin: 0 0 2px 0;
 	font-size: 1rem;
 	font-weight: 500;
-}
-
-.header .flex.small {
-	font-size: 0.8rem;
 }
 
 .header .flex.small >span:not(:last-child)::after {
@@ -281,14 +281,7 @@ body {
 	background-color: #CCC3;
 }
 
-/* ==== Parti vista LoginView ============================================= */
-
-#login {
-	width: 440px;
-	margin: 40px auto;
-	padding: 30px;
-	gap: 25px;
-}
+/* ==== Parti viste dialogo =============================================== */
 
 #prompt {
 	font-size: 1.8em;

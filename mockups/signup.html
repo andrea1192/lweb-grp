@@ -29,28 +29,48 @@
 		</div>
 
 
-		<h1 style="font-size: 1.4em; font-weight: 500">View: Login dialog</h1>
+		<h1 style="font-size: 1.4em; font-weight: 500">View: Account creation dialog</h1>
 			
-		<form id="login" class="dialog flex column" action="" method="get">
-			<div><span class="material-symbols-outlined" style="font-size: 24px;">login</span></div>
-			<div id="prompt">Sign in</div>
-			<label>
-				<span class="label">Username</span>
+		<form id="signup" class="dialog flex column" action="" method="get">
+			<div><span class="material-symbols-outlined" style="font-size: 24px;">account_circle</span></div>
+			<div id="prompt">Create account</div>
+			<label class="invalid">
+				<span class="label">Username*</span>
 				<input name="user" type="text" />
+				<span class="supp">Username already taken.</span>
+				<span class="material-symbols-outlined">error</span>
 			</label>
 			<label>
-				<span class="label">Password</span>
+				<span class="label">Password*</span>
 				<input name="pass" type="password" />
+			</label>
+			<label>
+				<span class="label">Name</span>
+				<input name="name" type="text" />
+			</label>
+			<label>
+				<span class="label">Address</span>
+				<input name="address" type="text" />
+			</label>
+			<label>
+				<span class="label">Primary e-mail</span>
+				<input name="mail_pri" type="text" />
+			</label>
+			<label>
+				<span class="label">Secondary e-mail</span>
+				<input name="mail_sec" type="text" />
 			</label>
 			<div id="controls" class="flex">
 				<div class="flex left align">
 					<button class="text colored">
-						<span class="label">Create account</span>
+						<span class="material-symbols-outlined">refresh</span>
+						<span class="label">Reset</span>
 					</button>
 				</div>
 				<div class="flex right align">
 					<button class="filled">
-						<span class="label">Sign in</span>
+						<span class="material-symbols-outlined">person_add</span>
+						<span class="label">Create account</span>
 					</button>
 				</div>
 			</div>

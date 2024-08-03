@@ -4,6 +4,7 @@
 
 /* Elemento "elevato" (con ombra) */
 .card,
+.dialog,
 button.elevated,
 button.fab,
 .tooltip,
@@ -19,12 +20,20 @@ button:hover,
 
 /* ==== Elementi comuni ==================================================== */
 
-.card {
+.card,
+.dialog {
 	position: relative;
 	margin: 20px 0;
 	border: 1px solid #AAA;
 	border-radius: 12px;
 	padding: 15px;
+}
+
+.dialog {
+	width: 440px;
+	margin: 40px auto;
+	padding: 30px;
+	gap: 26px;
 }
 
 button {
