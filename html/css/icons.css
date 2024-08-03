@@ -21,9 +21,7 @@ button >.material-symbols-outlined:not(:has(+.label)) {
 	translate: -50% -50%;
 }
 
-button.colored >.material-symbols-outlined,
-button.filled >.material-symbols-outlined,
-button.fab >.material-symbols-outlined {
+button >.material-symbols-outlined {
 	color: inherit;
 }
 
@@ -74,12 +72,10 @@ button.fab >.material-symbols-outlined {
 
 .accept >.material-symbols-outlined::before {
 	content: 'check';
-	color: green;
 }
 
 .reject >.material-symbols-outlined::before {
 	content: 'close';
-	color: red;
 }
 
 .notfound >.material-symbols-outlined::before {

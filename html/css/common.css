@@ -192,6 +192,10 @@ body {
 	color: white;
 }
 
+#overview button:not(.tonal) {
+	border-color: inherit;
+}
+
 #poster {
 	flex-shrink: 0;
 	width: 300px;
@@ -226,6 +230,10 @@ body {
 	border-top: 1px solid #AAA;
 	padding: 10px 15px 10px 35px;
 	font-size: 0.9rem;
+}
+
+.reactions >button {
+	font-weight: normal;
 }
 
 /* ==== Parti vista MoviesView ============================================ */

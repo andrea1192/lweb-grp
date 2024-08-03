@@ -34,13 +34,13 @@ button {
 	height: 40px;
 	border: 1px solid #AAA;
 	border-radius: 20px;
-	padding: 6px 12px;
+	padding: 6px 16px;
 	font-family: inherit;
 	font-size: 0.9rem;
 	font-weight: 500;
 	letter-spacing: 0.1pt;
-	color: #333;
-	background-color: #FFFF;
+	color: inherit;
+	background-color: transparent;
 }
 
 button:not([disabled]) {
@@ -49,10 +49,16 @@ button:not([disabled]) {
 
 button.text {
 	border-width: 0;
+	padding: 6px 12px;
 }
 
 button.colored {
 	color: dodgerblue;
+}
+
+button.tonal {
+	color: #666;
+	background-color: #FFFF;
 }
 
 button.filled {
