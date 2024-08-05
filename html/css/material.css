@@ -2,17 +2,22 @@
 
 /* ==== Proprietà applicate a più elementi ================================= */
 
-/* Elemento "elevato" (con ombra) */
-.card,
+/* Elementi centrati (margine laterale automatico) */
+.pane,
 .dialog,
-button.elevated,
+.wrapper {
+	margin: 0 auto;
+}
+
+/* Elementi "elevati" (con ombra) */
+.elevated,
 button.fab,
 .tooltip,
 .dropdown {
 	box-shadow: 0 1px 3px rgba(0,0,0,0.15);
 }
 
-/* Elemento interattivo (cambio colore su hover) */
+/* Elementi interattivi (cambio colore su hover) */
 button:hover,
 .menu li:hover {
 	background-color: #CCC3;
@@ -20,20 +25,40 @@ button:hover,
 
 /* ==== Elementi comuni ==================================================== */
 
-.card,
+/* Pane: contenitore flessibile, con margini e padding */
+.pane {
+	position: relative;
+	width: 50%;
+	min-width: 960px;
+	margin-top: 40px;
+	border-radius: 12px;
+	padding: 15px 30px;
+	background-color: #FFFF;
+}
+
+/* Wrapper: contenitore flessibile, senza margini e padding */
+.wrapper {
+	width: 50%;
+	min-width: 960px;
+}
+
+/* Dialog: contenitore stretto (a larghezza costante) */
 .dialog {
+	position: relative;
+	width: 440px;
+	margin-top: 40px;
+	border-radius: 12px;
+	padding: 30px;
+	background-color: #FFFF;
+	gap: 26px;
+}
+
+.card {
 	position: relative;
 	margin: 20px 0;
 	border: 1px solid #AAA;
 	border-radius: 12px;
 	padding: 15px;
-}
-
-.dialog {
-	width: 440px;
-	margin: 40px auto;
-	padding: 30px;
-	gap: 26px;
 }
 
 button {
@@ -83,6 +108,7 @@ button.fab {
 	height: 56px;
 	border-radius: 16px;
 	padding: 16px;
+	background-color: #FFFF;
 	color: dodgerblue;
 }
 

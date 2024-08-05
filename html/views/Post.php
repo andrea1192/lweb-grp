@@ -17,7 +17,7 @@
 			$answers = $this->generateAnswers();
 
 			echo <<<EOF
-			<div class="card post">
+			<div class="post">
 				<div class="header">
 					{$rating}
 					<div class="details">
@@ -30,7 +30,7 @@
 					{$dropdown_menu}
 				</div>
 				<div class="content">
-					<p>{$this->post->text}</p>
+					{$this->post->text}
 				</div>
 				<div class="flex footer">
 					<div class="flex left reactions">
@@ -228,12 +228,15 @@
 			$answers = $this->post->answers;
 
 			foreach ($answers as $answer) {
-				$selected = ($answer->id == $this->post->featuredAnswer) ? 'selected' : '';
+				$selected_answer = (bool) $answer->id == $this->post->featuredAnswer;
+				$selected_class = $selected_answer ? 'selected' : '';
+				$selected_icon = $selected_answer ? '<span class="material-symbols-outlined"></span>' : '';
+
 				$reaction_buttons = $this->generateReactionButtons($answer);
 
 				$html .= <<<EOF
-				<div class="answer {$selected}">
-					<span class="material-symbols-outlined"></span>
+				<div class="answer {$selected_class}">
+					{$selected_icon}
 					<div class="header">
 						<div class="flex small">
 							<span class="author">{$answer->author}</span>
@@ -242,7 +245,7 @@
 						<div class="right flag"><span class="material-symbols-outlined"></span></div>
 					</div>
 					<div class="content">
-						<p>{$answer->text}</p>
+						{$answer->text}
 					</div>
 					<div class="flex footer reactions">
 						{$reaction_buttons}

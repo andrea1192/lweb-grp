@@ -110,10 +110,6 @@ button >.material-symbols-outlined {
 	left: 12px;
 }
 
-.answer:not(.selected) >.material-symbols-outlined::before {
-	content:'mode_comment';
-}
-
 .answer.selected >.material-symbols-outlined::before {
 	content:'check_circle';
 	color: green;

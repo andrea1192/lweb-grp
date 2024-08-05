@@ -15,17 +15,17 @@
 
 		<?php $this->printOverview() ?>
 
-		<div id="tabs">
-				<ul class="menu wrapper">
+		<div id="content" class="elevated pane">
+			<div id="tabs">
+				<ul class="menu">
 					<?php $this->printTabs() ?>
 				</ul>
 			</div>
 
-		<div id="content" class="wrapper">
 			<?php $this->printPosts() ?>
-
-			<button class="fab new_post"><span class="material-symbols-outlined"></span><span class="label">New post</span></button>
 		</div>
+
+		<button class="fab new_post"><span class="material-symbols-outlined"></span><span class="label">New post</span></button>
 
 		<?php $this->printFooter() ?>
 	</body>

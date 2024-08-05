@@ -13,11 +13,12 @@
 	<body>
 		<?php $this->printHeader() ?>
 
-		<div id="content" class="wrapper">
+		<div id="content" class="pane">
 			<?php $this->printList() ?>
 
-			<button class="fab new_post"><span class="material-symbols-outlined"></span><span class="label">Add movie</span></button>
 		</div>
+
+		<button class="fab new_post"><span class="material-symbols-outlined"></span><span class="label">Add movie</span></button>
 
 		<?php $this->printFooter() ?>
 	</body>
