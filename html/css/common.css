@@ -129,11 +129,6 @@ body {
 	background-color: white;
 }
 
-#content >h1 {
-	font-size: 1.4rem;
-	font-weight: 500;
-}
-
 .featured {
 	position: relative;
 	flex-shrink: 0;
@@ -299,12 +294,4 @@ body {
 
 .flex.list >.movie >a:hover {
 	background-color: #CCC3;
-}
-
-/* ==== Parti viste dialogo =============================================== */
-
-#prompt {
-	font-size: 1.8em;
-	font-weight: 300;
-	text-align: center;
 }

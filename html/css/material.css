@@ -36,6 +36,11 @@ button:hover,
 	background-color: #FFFF;
 }
 
+.pane >h1 {
+	font-size: 1.4rem;
+	font-weight: 300;
+}
+
 /* Wrapper: contenitore flessibile, senza margini e padding */
 .wrapper {
 	width: 50%;
@@ -51,6 +56,13 @@ button:hover,
 	padding: 30px;
 	background-color: #FFFF;
 	gap: 26px;
+}
+
+.dialog >h1 {
+	margin: 0;
+	font-size: 1.8em;
+	font-weight: 300;
+	text-align: center;
 }
 
 .card {
