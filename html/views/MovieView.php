@@ -18,7 +18,7 @@
 
 		public function printOverview() {
 			$view = \views\Movie::factoryMethod($this->session, $this->movie);
-			$view->render();
+			$view->display();
 		}
 
 		private function printTabs() {
@@ -52,7 +52,7 @@
 
 			foreach ($this->posts as $post) {
 				$view = \views\Post::factoryMethod($this->session, $post);
-				$view->render();
+				$view->display();
 			}
 		}
 

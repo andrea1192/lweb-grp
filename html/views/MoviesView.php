@@ -36,7 +36,7 @@
 
 			foreach ($this->movies as $movie) {
 				$view = new \views\Movie($this->session, $movie);
-				$view->renderCard();
+				$view->displayCard();
 			}
 
 			print('</div>');
@@ -61,7 +61,7 @@
 
 			foreach ($this->requests as $request) {
 				$view = new \views\Request($this->session, $request);
-				$view->renderCard();
+				$view->displayCard();
 			}
 
 			print('</div>');

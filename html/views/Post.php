@@ -9,7 +9,7 @@
 			$this->post = $post;
 		}
 
-		public function render() {
+		public function display() {
 			$rating = $this->generateRating();
 			$dropdown_menu = $this->generateDropdownMenu();
 			$reaction_buttons = $this->generateReactionButtons();

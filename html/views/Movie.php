@@ -14,7 +14,7 @@
 			return "movie.php?id={$this->movie->id}";
 		}
 
-		public function renderCard() {
+		public function displayCard() {
 			$href = $this->generateURL();
 			$status = $this->generateStatus();
 
@@ -31,7 +31,7 @@
 			EOF;
 		}
 
-		public function render() {
+		public function display() {
 			$status = $this->generateStatus();
 			$action_buttons = $this->generateActionButtons();
 
