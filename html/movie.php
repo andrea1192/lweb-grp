@@ -7,25 +7,15 @@
 
 		public function route() {
 			$action = $_GET['action'] ?? '';
+			$movie = $_GET['id'] ?? 'm1';
+			$tab = $_GET['tab'] ?? 'question';
 
 			switch ($action) {
 
 				default:
 				case 'display':
-					$movie_id = $_GET['id'] ?? 'm1';
-
-					if (preg_match('/m[0-9]*/', $movie_id)) {
-
-						$tab = $_GET['tab'] ?? 'question';
-
-						$view = new \views\MovieView($this->session, $movie_id, $tab);
-						$view->render();
-					} else {
-
-						$view = new \views\RequestView($this->session, $movie_id);
-						$view->render();
-					}
-
+					$view = new \views\MovieView($this->session, $movie, $tab);
+					$view->render();
 					break;
 			}
 		}
