@@ -89,4 +89,21 @@
 			require_once('templates/MovieDisplayTemplate.php');
 		}
 	}
+
+	class MovieEditView extends MovieView {
+
+		public function printTitle() {
+			print("Editing {$this->movie->title} ({$this->movie->year}) - grp");
+
+		}
+
+		public function editOverview() {
+			$view = \views\Movie::factoryMethod($this->session, $this->movie);
+			$view->edit();
+		}
+
+		public function render() {
+			require_once('templates/MovieEditTemplate.php');
+		}
+	}
 ?>

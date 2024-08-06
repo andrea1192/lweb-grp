@@ -9,9 +9,13 @@
 			$this->movie = $movie;
 		}
 
-		private function generateURL() {
+		private function generateURL($action = 'display') {
 
-			return "movie.php?id={$this->movie->id}";
+			switch ($action) {
+				default:
+				case 'display': return "movie.php?id={$this->movie->id}";
+				case 'edit': return "movie.php?id={$this->movie->id}&action=edit";
+			}
 		}
 
 		public function displayCard() {
@@ -33,7 +37,7 @@
 
 		public function display() {
 			$status = $this->generateStatus();
-			$action_buttons = $this->generateActionButtons();
+			$approve_buttons = $this->generateApproveButtons();
 
 			echo <<<EOF
 			<div id="backdrop" style="background-image: url('na.webp')">
@@ -59,7 +63,58 @@
 									<div>{$this->movie->writer}</div>
 								</div>
 							</div>
-							{$action_buttons}
+							{$approve_buttons}
+						</div>
+					</div>
+				</div>
+			</div>
+			EOF;
+		}
+
+		public function edit() {
+			$status = $this->generateStatus();
+			$save_buttons = $this->generateSaveButtons();
+
+			echo <<<EOF
+			<div id="backdrop" style="background-image: url('na.webp')">
+				<div class="blur">
+					<div id="overview" class="flex wrapper">
+						<div id="poster" class="poster" style="background-image: url('na.webp')">
+							<span class="material-symbols-outlined"></span>
+							{$status}
+						</div>
+						<div id="description" class="flex column" style="gap: 25px">
+							<label>
+								<span class="label">Title</span>
+								<input class="filled" name="title" type="text" value="{$this->movie->title}" />
+							</label>
+							<div class="flex" style="gap: 25px; width: 30%">
+								<label>
+									<span class="label">Year</span>
+									<input class="filled" name="year" type="text" value="{$this->movie->year}" />
+								</label>
+								<label>
+									<span class="label">Duration</span>
+									<input class="filled" name="duration" type="text" value="{$this->movie->duration}" />
+								</label>
+							</div>
+
+							<label>
+								<span class="label">Summary</span>
+								<textarea class="filled" rows="5" cols="80">{$this->movie->summary}</textarea>
+							</label>
+
+							<div class="flex column" style="gap: 25px; width: 40%">
+								<label>
+									<span class="label">Director</span>
+									<input class="filled" name="director" type="text" value="{$this->movie->director}" />
+								</label>
+								<label>
+									<span class="label">Writer</span>
+									<input class="filled" name="writer" type="text" value="{$this->movie->writer}" />
+								</label>
+							</div>
+							{$save_buttons}
 						</div>
 					</div>
 				</div>
@@ -71,8 +126,34 @@
 			return '';
 		}
 
-		protected function generateActionButtons() {
+		protected function generateApproveButtons() {
 			return '';
+		}
+
+		protected function generateSaveButtons() {
+			$left = '';
+			$right = '';
+
+			$right .= <<<EOF
+			<button class="">
+				<span class="label">Cancel</span>
+			</button>
+			<button class="filled">
+				<span class="material-symbols-outlined">save</span><span class="label">Save changes</span>
+			</button>
+			EOF;
+
+			return <<<EOF
+			<div class="flex bottom">
+				<div class="flex left">
+					{$left}
+				</div>
+
+				<div class="flex right">
+					{$right}
+				</div>
+			</div>
+			EOF;
 		}
 	}
 
@@ -96,7 +177,7 @@
 			EOF;
 		}
 
-		protected function generateActionButtons() {
+		protected function generateApproveButtons() {
 			$left = '';
 			$right = '';
 

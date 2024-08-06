@@ -17,6 +17,11 @@
 					$view = new \views\MovieView($this->session, $movie, $tab);
 					$view->render();
 					break;
+
+				case 'edit':
+					// TODO: Aggiungi controlli privilegi con ev. redirect
+					$view = new \views\MovieEditView($this->session, $movie);
+					$view->render();
 			}
 		}
 	}
