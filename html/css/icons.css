@@ -139,6 +139,7 @@ button >.material-symbols-outlined {
 	content:'report';
 }
 
+.new_movie >.material-symbols-outlined::before,
 .new_post >.material-symbols-outlined::before {
 	content:'add';
 	font-size: 24px;

@@ -18,7 +18,12 @@
 
 		</div>
 
-		<button class="fab new_post"><span class="material-symbols-outlined"></span><span class="label">Add movie</span></button>
+		<div>
+			<button class="fab new_movie">
+				<span class="material-symbols-outlined"></span>
+				<span class="label">New movie</span>
+			</button>
+		</div>
 
 		<?php $this->printFooter() ?>
 	</body>
