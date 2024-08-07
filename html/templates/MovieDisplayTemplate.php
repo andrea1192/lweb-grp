@@ -26,10 +26,10 @@
 		</div>
 
 		<div>
-			<button class="fab new_post">
+			<a class="button fab new_post" href="">
 				<span class="material-symbols-outlined"></span>
 				<span class="label">New post</span>
-			</button>
+			</a>
 		</div>
 
 		<?php $this->printFooter() ?>

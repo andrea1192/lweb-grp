@@ -9,7 +9,7 @@
 			$this->movie = $movie;
 		}
 
-		private function generateURL($action = 'display') {
+		protected function generateURL($action = 'display') {
 
 			switch ($action) {
 				default:
@@ -135,12 +135,13 @@
 			$right = '';
 
 			$right .= <<<EOF
-			<button class="">
+			<a class="button" href="">
 				<span class="label">Cancel</span>
-			</button>
-			<button class="filled">
-				<span class="material-symbols-outlined">save</span><span class="label">Save changes</span>
-			</button>
+			</a>
+			<a class="button filled" href="">
+				<span class="material-symbols-outlined">save</span>
+				<span class="label">Save changes</span>
+			</a>
 			EOF;
 
 			return <<<EOF
@@ -183,23 +184,25 @@
 
 			if ($this->session->isMod()) {
 				$left .= <<<EOF
-				<button class="tonal accept">
-					<span class="material-symbols-outlined"></span><span class="label">Approve request</span>
-				</button>
-				<button class="reject">
-					<span class="material-symbols-outlined"></span><span class="label">Decline request</span>
-				</button>
+				<a class="button tonal accept" href="">
+					<span class="material-symbols-outlined"></span>
+					<span class="label">Approve request</span>
+				</a>
+				<a class="button reject" href="">
+					<span class="material-symbols-outlined"></span>
+					<span class="label">Decline request</span>
+				</a>
 				EOF;
 			}
 
 			if ($this->session->isAdmin()) {
 				$right .= <<<EOF
-				<button class="edit">
+				<a class="button edit" href="{$this->generateURL('edit')}">
 					<span class="material-symbols-outlined"></span>
-				</button>
-				<button class="delete">
+				</a>
+				<a class="button delete" href="">
 					<span class="material-symbols-outlined"></span>
-				</button>
+				</a>
 				EOF;
 			}
 

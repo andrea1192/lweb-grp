@@ -91,17 +91,19 @@
 					case 'like':
 						$html .= <<<EOF
 						<button class="text likes">
-							<span class="material-symbols-outlined"></span><span class="label">{$stats->count_up}</span>
+							<span class="material-symbols-outlined"></span>
+							<span class="label">{$stats->count_up}</span>
 						</button>
 						<button class="text dislikes">
-							<span class="material-symbols-outlined"></span><span class="label">{$stats->count_down}</span>
+							<span class="material-symbols-outlined"></span>
+							<span class="label">{$stats->count_down}</span>
 						</button>
 						EOF;
 						break;
 
 					case 'usefulness':
 						$html .= <<<EOF
-						<button class="text usefulness" disabled="disabled">
+						<button class="text usefulness">
 							<div class="tooltip">
 								<span class="material-symbols-outlined"></span>Useful?
 								<span class="rate">
@@ -119,7 +121,7 @@
 
 					case 'agreement':
 						$html .= <<<EOF
-						<button class="text agreement" disabled="disabled">
+						<button class="text agreement">
 							<div class="tooltip">
 								<span class="material-symbols-outlined"></span>Agree?
 								<span class="rate">
@@ -216,9 +218,10 @@
 
 		protected function generateActionButtons() {
 			return <<<EOF
-			<button class="colored answer_compose">
-				<span class="material-symbols-outlined"></span><span class="label">Answer</span>
-			</button>
+			<a class="button colored answer_compose" href="">
+				<span class="material-symbols-outlined"></span>
+				<span class="label">Answer</span>
+			</a>
 			EOF;
 		}
 

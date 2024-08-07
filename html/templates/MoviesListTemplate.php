@@ -19,10 +19,10 @@
 		</div>
 
 		<div>
-			<button class="fab new_movie">
+			<a class="button fab new_movie" href="">
 				<span class="material-symbols-outlined"></span>
 				<span class="label">New movie</span>
-			</button>
+			</a>
 		</div>
 
 		<?php $this->printFooter() ?>

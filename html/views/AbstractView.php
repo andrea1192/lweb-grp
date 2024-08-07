@@ -73,9 +73,9 @@
 			} else {
 
 				return <<<EOF
-				<button class="colored login">
+				<a class="button colored login" href="">
 					<span class="material-symbols-outlined"></span><div class="label">Sign in</div>
-				</button>
+				</a>
 				EOF;
 			}
 		}

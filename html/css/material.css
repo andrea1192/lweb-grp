@@ -9,16 +9,35 @@
 	margin: 0 auto;
 }
 
-/* Elementi "elevati" (con ombra) */
+/* Elementi "elevati" (con box shadow) */
 .elevated,
 button.fab,
+.button.fab,
 .tooltip,
 .dropdown {
 	box-shadow: 0 1px 3px rgba(0,0,0,0.15);
 }
 
-/* Elementi interattivi (cambio colore su hover) */
+/* Elementi interattivi (cambio colore o elevazione su hover) */
 button:hover,
+.button:hover {
+	background-color: #CCC3;
+}
+
+button.tonal:hover,
+.button.tonal:hover,
+button.filled:hover,
+.button.filled:hover {
+	box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+
+button.elevated:hover,
+.button.elevated:hover,
+button.fab:hover,
+.button.fab:hover {
+	box-shadow: 0 1px 3px rgba(0,0,0,0.30);
+}
+
 .menu li:hover {
 	background-color: #CCC3;
 }
@@ -73,7 +92,19 @@ button:hover,
 	padding: 15px;
 }
 
-button {
+/* Bottone su anchor: conduce ad altra vista */
+a.button {
+	text-decoration: none;
+}
+
+/* Bottone senza anchor: da definire */
+button:not([disabled]) {
+	cursor: pointer;
+}
+
+/* Bottone di base (outlined) */
+button,
+.button {
 	position: relative;
 	display: flex;
 	align-items: center;
@@ -89,31 +120,38 @@ button {
 	background-color: transparent;
 }
 
-button:not([disabled]) {
-	cursor: pointer;
+/* Bottone con testo colorato (qualsiasi tipo) */
+button.colored,
+.button.colored {
+	color: dodgerblue;
 }
 
-button.text {
+/* Bottone testuale (text) */
+button.text,
+.button.text {
 	border-width: 0;
 	padding: 6px 12px;
 }
 
-button.colored {
-	color: dodgerblue;
-}
-
-button.tonal {
+/* Bottone con fondo opaco (tonal) */
+button.tonal,
+.button.tonal {
+	border-width: 0;
+	background-color: #F0F0F0;
 	color: #666;
-	background-color: #FFFF;
 }
 
-button.filled {
+/* Bottone con fondo colorato (filled) */
+button.filled,
+.button.filled {
 	border-width: 0px;
 	background-color: dodgerblue;
 	color: white;
 }
 
-button.fab {
+/* Bottone azione primaria (FAB) */
+button.fab,
+.button.fab {
 	position: fixed;
 	bottom: 16px;
 	right: 16px;
@@ -124,11 +162,14 @@ button.fab {
 	color: dodgerblue;
 }
 
-button:not(:has(>.label)) {
+/* Bottone senza etichetta (=> tondo, solo icona) */
+button:not(:has(>.label)),
+.button:not(:has(>.label)) {
 	width: 40px;
 	border-radius: 50%;
 }
 
+/* Pannello a comparsa, sopra al contenitore */
 .tooltip {
 	visibility: hidden;
 	position: absolute;
@@ -147,6 +188,7 @@ button:not(:has(>.label)) {
 	cursor: default;
 }
 
+/* Pannello a comparsa, sotto al contenitore */
 .dropdown {
 	visibility: hidden;
 	position: absolute;
@@ -179,13 +221,12 @@ button:not(:has(>.label)) {
 	padding: 12px;
 }
 
+/* Attivazione dei pannelli a comparsa */
 button:hover >.tooltip,
-button:hover >.dropdown {
+button:hover >.dropdown,
+.button:hover >.tooltip,
+.button:hover >.dropdown {
 	visibility: visible;
-}
-
-.tooltip >.rate {
-	margin-left: 8px;
 }
 
 /*.tooltip::after {

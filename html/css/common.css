@@ -25,7 +25,8 @@
 	align-items: center;
 }
 
-.flex:not(.column) >button:not(:last-child) {
+.flex:not(.column) >button:not(:last-child),
+.flex:not(.column) >.button:not(:last-child) {
 	margin-right: 10px;
 }
 
@@ -188,7 +189,7 @@ body {
 	color: white;
 }
 
-#overview button:not(.tonal) {
+#overview .button {
 	border-color: inherit;
 }
 
@@ -253,6 +254,10 @@ body {
 
 .reactions >button {
 	font-weight: normal;
+}
+
+.tooltip >.rate {
+	margin-left: 8px;
 }
 
 /* ==== Parti vista MoviesView ============================================ */
