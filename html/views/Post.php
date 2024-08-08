@@ -50,125 +50,104 @@
 		}
 
 		protected function generateDropdownMenu() {
-			$html = '';
+			$items = '';
 
 			if ($this->session->isAuthor($this->post) || $this->session->isAdmin()) {
-				$html .= '<li><a href="" class="flex edit"><span class="material-symbols-outlined"></span><span class="label">Edit</span></a></li>';
+				$items .= UIComponents::getDropdownItem('Edit', 'edit');
 			}
 
 			if ($this->session->isAuthor($this->post) || $this->session->isMod()) {
-				$html .= '<li><a href="" class="flex delete"><span class="material-symbols-outlined"></span><span class="label">Delete</span></a></li>';
+				$items .= UIComponents::getDropdownItem('Delete', 'delete');;
 			}
 
 			if (!$this->session->isAuthor($this->post) && $this->session->isRegistered()) {
-				$html .= '<li><a href="" class="flex report"><span class="material-symbols-outlined"></span><span class="label">Report</span></a></li>';
+				$items .= UIComponents::getDropdownItem('Report', 'report');;
 			}
 
-			if ($html == '') return $html;
+			if ($items == '')
+				return '';
 
-			return <<<EOF
-			<button class="right text kebab">
-				<span class="material-symbols-outlined"></span>
-				<div class="dropdown">
-					<ul class="menu">
-						{$html}
-					</li>
-				</div>
-			</button>
-			EOF;
+			else
+				$dropdown = UIComponents::getDropdownMenu($items);
+
+			return UIComponents::getOverflowMenu($dropdown);
 		}
 
 		protected function generateReactionButtons($post = null) {
-			$html = '';
+			$buttons = '';
 
 			$reaction_types = ($post) ? $post->reactions : $this->post->reactions;
 
-			if (!$reaction_types) return $html;
+			if (!$reaction_types) return '';
 
 			foreach ($reaction_types as $type => $stats) {
 
 				switch ($type) {
 					case 'like':
-						$html .= <<<EOF
-						<button class="text likes">
-							<span class="material-symbols-outlined"></span>
-							<span class="label">{$stats->count_up}</span>
-						</button>
-						<button class="text dislikes">
-							<span class="material-symbols-outlined"></span>
-							<span class="label">{$stats->count_down}</span>
-						</button>
-						EOF;
+						$buttons .= UIComponents::getTextButton($stats->count_up, 'thumb_up');
+						$buttons .= UIComponents::getTextButton($stats->count_down, 'thumb_down');
 						break;
 
 					case 'usefulness':
-						$html .= <<<EOF
-						<button class="text usefulness">
-							<div class="tooltip">
-								<span class="material-symbols-outlined"></span>Useful?
-								<span class="rate">
-									<span class="material-symbols-outlined">star</span>
-									<span class="material-symbols-outlined">star</span>
-									<span class="material-symbols-outlined">star</span>
-									<span class="material-symbols-outlined">star</span>
-									<span class="material-symbols-outlined">star</span>
-								</span>
-							</div>
-							<span class="material-symbols-outlined"></span><span class="label">{$stats->average}</span>
-						</button>
+						$tooltip = <<<EOF
+						<div class="tooltip">
+							<span class="material-symbols-outlined"></span>Useful?
+							<span class="rate">
+								<span class="material-symbols-outlined">star</span>
+								<span class="material-symbols-outlined">star</span>
+								<span class="material-symbols-outlined">star</span>
+								<span class="material-symbols-outlined">star</span>
+								<span class="material-symbols-outlined">star</span>
+							</span>
+						</div>
 						EOF;
+						$buttons .= UIComponents::getTextButton($stats->average, 'lightbulb');
 						break;
 
 					case 'agreement':
-						$html .= <<<EOF
-						<button class="text agreement">
-							<div class="tooltip">
-								<span class="material-symbols-outlined"></span>Agree?
-								<span class="rate">
-									<span class="material-symbols-outlined">star</span>
-									<span class="material-symbols-outlined">star</span>
-									<span class="material-symbols-outlined">star</span>
-									<span class="material-symbols-outlined">star</span>
-									<span class="material-symbols-outlined">star</span>
-								</span>
-							</div>
-							<span class="material-symbols-outlined"></span><span class="label">{$stats->average}</span>
-						</button>
+						$tooltip = <<<EOF
+						<div class="tooltip">
+							<span class="material-symbols-outlined"></span>Agree?
+							<span class="rate">
+								<span class="material-symbols-outlined">star</span>
+								<span class="material-symbols-outlined">star</span>
+								<span class="material-symbols-outlined">star</span>
+								<span class="material-symbols-outlined">star</span>
+								<span class="material-symbols-outlined">star</span>
+							</span>
+						</div>
 						EOF;
+						$buttons .= UIComponents::getTextButton($stats->average, 'thumb_up');
 						break;
 
 					case 'spoilage':
-						$html .= <<<EOF
-						<button class="text spoil_level" disabled="disabled">
-							<div class="tooltip">
-								<span class="material-symbols-outlined"></span>Spoiler level:
-								<span class="rate">
-									<select name="rating">
-										<option value="1">1</option>
-										<option value="2">2</option>
-										<option value="3">3</option>
-										<option value="4">4</option>
-										<option value="5">5</option>
-										<option value="6">6</option>
-										<option value="7">7</option>
-										<option value="8">8</option>
-										<option value="9">9</option>
-										<option value="10">10</option>
-									</select>
-								</span>
-							</div>
-							<span class="material-symbols-outlined"></span><span class="label">{$stats->average}</span>
-						</button>
+						$tooltip = <<<EOF
+						<div class="tooltip">
+							<span class="material-symbols-outlined"></span>Spoiler level:
+							<span class="rate">
+								<select name="rating">
+									<option value="1">1</option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+									<option value="4">4</option>
+									<option value="5">5</option>
+									<option value="6">6</option>
+									<option value="7">7</option>
+									<option value="8">8</option>
+									<option value="9">9</option>
+									<option value="10">10</option>
+								</select>
+							</span>
+						</div>
 						EOF;
+						$buttons .= UIComponents::getTextButton($stats->average, 'speed');
 						break;
 
-					default:
-						$html .= '<div>Unknown reaction type</div>';
-						break;
+					default: break;
 				}
 			}
 
-			return $html;
+			return $buttons;
 		}
 
 		protected function generateActionButtons() {
@@ -204,7 +183,7 @@
 				case 'ko': $icon = 'thumb_down'; break;
 			}
 
-			$rating = "<span class=\"material-symbols-outlined\">{$icon}</span>";
+			$rating = UIComponents::getIcon($icon);
 
 			return <<<EOF
 			<div class="featured">
@@ -217,12 +196,7 @@
 	class Question extends Post {
 
 		protected function generateActionButtons() {
-			return <<<EOF
-			<a class="button colored answer_compose" href="">
-				<span class="material-symbols-outlined"></span>
-				<span class="label">Answer</span>
-			</a>
-			EOF;
+			return UIComponents::getOutlinedButton('Answer', 'comment', '#', cls: 'colored');
 		}
 
 		protected function generateAnswers() {

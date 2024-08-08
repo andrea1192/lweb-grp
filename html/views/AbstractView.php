@@ -1,5 +1,7 @@
 <?php namespace views;
 
+	require_once('views/UIComponents.php');
+
 	abstract class AbstractView {
 		protected $session;
 
@@ -36,47 +38,44 @@
 				$initials = $this->session->getUsername()[0];
 				$username = $this->session->getUsername();
 
-				$html = '<li><a href="" class="flex profile"><span class="material-symbols-outlined"></span><span class="label">Profile</span></a></li>';
+				$dropdown_header = <<<EOF
+				<div class="header">
+					<div class="featured">
+						<span class="centered initials">{$initials}</span>
+					</div>
+					<div class="details">
+						<h1>{$username}</h1>
+						<div class="flex small">
+							<span class="privileges">{$this->session->getUserType()}</span>
+							<span class="reputation">Reputation {$this->session->getReputation()}</span>
+						</div>
+					</div>
+				</div>
+				EOF;
+
+				$dropdown_items = UIComponents::getDropdownItem('Profile', 'person');
 
 				if ($this->session->isAdmin()) {
-					$html .= '<li><a href="" class="flex users"><span class="material-symbols-outlined"></span><span class="label">Users</span></a></li>';
+					$dropdown_items .= UIComponents::getDropdownItem('Users', 'group');
 				}
 
 				if ($this->session->isMod()) {
-					$html .= '<li><a href="" class="flex report"><span class="material-symbols-outlined"></span><span class="label">Reports</span></a></li>';
+					$dropdown_items .= UIComponents::getDropdownItem('Reports', 'report');
 				}
 
-				$html .= '<li><a href="" class="flex logout"><span class="material-symbols-outlined"></span><span class="label">Sign out</span></a></li>';
+				$dropdown_items .= UIComponents::getDropdownItem('Sign out', 'logout');
+
+				$dropdown_menu = UIComponents::getDropdownMenu($dropdown_items, $dropdown_header);
 
 				return <<<EOF
 				<button class="account">
 					<span class="centered initials">{$initials}</span>
-					<div class="dropdown">
-						<div class="header">
-							<div class="featured">
-								<span class="centered initials">{$initials}</span>
-							</div>
-							<div class="details">
-								<h1>{$username}</h1>
-								<div class="flex small">
-									<span class="privileges">{$this->session->getUserType()}</span>
-									<span class="reputation">Reputation {$this->session->getReputation()}</span>
-								</div>
-							</div>
-						</div>
-						<ul class="menu">
-							{$html}
-						</ul>
-					</div>
+					{$dropdown_menu}
 				</button>
 				EOF;
 			} else {
 
-				return <<<EOF
-				<a class="button colored login" href="">
-					<span class="material-symbols-outlined"></span><div class="label">Sign in</div>
-				</a>
-				EOF;
+				return UIComponents::getOutlinedButton('Sign in', 'login', '#', cls: 'colored');
 			}
 		}
 

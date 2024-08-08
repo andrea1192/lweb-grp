@@ -92,6 +92,21 @@ button.fab:hover,
 	padding: 15px;
 }
 
+.overlay {
+	position: absolute;
+	display: flex;
+	align-items: center;
+	top: 4%;
+	left: 4%;
+	border-radius: 4px;
+	padding: 2px;
+	color: #999;
+	font-size: 0.7rem;
+	font-weight: 500;
+	text-transform: uppercase;
+	background-color: white;
+}
+
 /* Bottone su anchor: conduce ad altra vista */
 a.button {
 	text-decoration: none;

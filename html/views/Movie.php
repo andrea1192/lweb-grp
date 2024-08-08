@@ -134,15 +134,8 @@
 			$left = '';
 			$right = '';
 
-			$right .= <<<EOF
-			<a class="button" href="">
-				<span class="label">Cancel</span>
-			</a>
-			<a class="button filled" href="">
-				<span class="material-symbols-outlined">save</span>
-				<span class="label">Save changes</span>
-			</a>
-			EOF;
+			$right .= UIComponents::getOutlinedButton('Cancel', '', '#');
+			$right .= UIComponents::getFilledButton('Save changes', 'save', '#');
 
 			return <<<EOF
 			<div class="flex bottom">
@@ -165,45 +158,37 @@
 
 			switch ($this->movie->status) {
 				default:
-				case 'submitted': $label = 'Pending approval'; break;
-				case 'accepted': $label = 'Accepted'; break;
-				case 'rejected': $label = 'Rejected'; break;
+				case 'submitted':
+					$label = 'Pending approval';
+					$icon = 'pending_actions';
+					break;
+				case 'accepted':
+					$label = 'Accepted';
+					$icon = 'thumb_up';
+					break;
+				case 'rejected':
+					$label = 'Rejected';
+					$icon = 'thumb_down';
+					break;
 			}
 
-			return <<< EOF
-			<div class="status {$this->movie->status}">
-				<span class="material-symbols-outlined"></span>
-				<span class="label">{$label}</span>
-			</div>
-			EOF;
+			return UIComponents::getOverlay($label, $icon, 'status');
 		}
 
 		protected function generateApproveButtons() {
 			$left = '';
 			$right = '';
 
+			$components = '\views\UIComponents';
+
 			if ($this->session->isMod()) {
-				$left .= <<<EOF
-				<a class="button tonal accept" href="">
-					<span class="material-symbols-outlined"></span>
-					<span class="label">Approve request</span>
-				</a>
-				<a class="button reject" href="">
-					<span class="material-symbols-outlined"></span>
-					<span class="label">Decline request</span>
-				</a>
-				EOF;
+				$left .= UIComponents::getTonalButton('Approve request', 'check', '#');
+				$left .= UIComponents::getOutlinedButton('Decline request', 'close', '#');
 			}
 
 			if ($this->session->isAdmin()) {
-				$right .= <<<EOF
-				<a class="button edit" href="{$this->generateURL('edit')}">
-					<span class="material-symbols-outlined"></span>
-				</a>
-				<a class="button delete" href="">
-					<span class="material-symbols-outlined"></span>
-				</a>
-				EOF;
+				$right .= UIComponents::getOutlinedButton('', 'edit', $this->generateURL('edit'));
+				$right .= UIComponents::getOutlinedButton('', 'delete', '#');
 			}
 
 			return <<<EOF

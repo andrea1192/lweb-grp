@@ -114,21 +114,6 @@ body {
 	background-size: cover;
 }
 
-.poster .status {
-	position: absolute;
-	display: flex;
-	align-items: center;
-	top: 4%;
-	left: 4%;
-	border-radius: 4px;
-	padding: 2px;
-	color: #999;
-	font-size: 0.7rem;
-	font-weight: 500;
-	text-transform: uppercase;
-	background-color: white;
-}
-
 .featured {
 	position: relative;
 	flex-shrink: 0;
