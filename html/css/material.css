@@ -15,7 +15,7 @@ button.fab,
 .button.fab,
 .tooltip,
 .dropdown {
-	box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+	box-shadow: 0 1px 3px 0px #0006;
 }
 
 /* Elementi interattivi (cambio colore o elevazione su hover) */
@@ -28,14 +28,14 @@ button.tonal:hover,
 .button.tonal:hover,
 button.filled:hover,
 .button.filled:hover {
-	box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+	box-shadow: 0 1px 3px 0px #0006;
 }
 
 button.elevated:hover,
 .button.elevated:hover,
 button.fab:hover,
 .button.fab:hover {
-	box-shadow: 0 1px 3px rgba(0,0,0,0.30);
+	box-shadow: 0 1px 3px 1px #0006;
 }
 
 .menu li:hover {

@@ -80,10 +80,9 @@ body {
 #header {
 	position: sticky;
 	top: 0;
-	border-bottom: 1px solid #AAA;
 	padding: 10px 0;
 	background-color: #FFFF;
-	box-shadow: 0 1px 3px rgba(0,0,0,0.30);
+	box-shadow: 0 1px 3px 0px #0006;
 	z-index: 100;
 }
 
