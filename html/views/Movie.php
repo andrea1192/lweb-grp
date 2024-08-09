@@ -1,6 +1,9 @@
 <?php namespace views;
 	
 	class Movie extends AbstractView {
+		protected const BACKDROPS_PATH = 'static/backdrops/';
+		protected const POSTERS_PATH = 'static/posters/';
+		protected const MEDIA_EXT = '.jpg';
 		protected $movie;
 
 		public function __construct($session, $movie) {
@@ -20,15 +23,12 @@
 
 		public function displayCard() {
 			$href = $this->generateURL();
-			$status = $this->generateStatus();
+			$poster = $this->generatePoster();
 
 			echo <<<EOF
 			<div class="card movie">
 				<a href="{$href}"></a>
-				<div class="poster" style="background-image: url('na.webp')">
-					<span class="material-symbols-outlined"></span>
-					{$status}
-				</div>
+				{$poster}
 				<h1>{$this->movie->title}</h1>
 				<div>{$this->movie->year}</div>
 			</div>
@@ -36,17 +36,15 @@
 		}
 
 		public function display() {
-			$status = $this->generateStatus();
+			$backdrop = $this->generateBackdrop();
+			$poster = $this->generatePoster();
 			$approve_buttons = $this->generateApproveButtons();
 
 			echo <<<EOF
-			<div id="backdrop" style="background-image: url('na.webp')">
+			<div id="backdrop" {$backdrop}>
 				<div class="blur">
 					<div id="overview" class="flex wrapper">
-						<div id="poster" class="poster" style="background-image: url('na.webp')">
-							<span class="material-symbols-outlined"></span>
-							{$status}
-						</div>
+						{$poster}
 						<div id="description" class="flex column">
 							<h1>{$this->movie->title}</h1>
 							<div>{$this->movie->year}, {$this->movie->duration}'</div>
@@ -72,17 +70,15 @@
 		}
 
 		public function edit() {
-			$status = $this->generateStatus();
+			$backdrop = $this->generateBackdrop();
+			$poster = $this->generatePoster();
 			$save_buttons = $this->generateSaveButtons();
 
 			echo <<<EOF
-			<div id="backdrop" style="background-image: url('na.webp')">
+			<div id="backdrop" {$backdrop}>
 				<div class="blur">
 					<div id="overview" class="flex wrapper">
-						<div id="poster" class="poster" style="background-image: url('na.webp')">
-							<span class="material-symbols-outlined"></span>
-							{$status}
-						</div>
+						{$poster}
 						<div id="description" class="flex column" style="gap: 25px">
 							<label>
 								<span class="label">Title</span>
@@ -118,6 +114,32 @@
 						</div>
 					</div>
 				</div>
+			</div>
+			EOF;
+		}
+
+		protected function generateBackdrop() {
+			$backdrop = static::BACKDROPS_PATH . $this->movie->id . static::MEDIA_EXT;
+
+			return "style=\"background-image: url('{$backdrop}')\"";
+		}
+
+		protected function generatePoster() {
+			$poster = static::POSTERS_PATH . $this->movie->id . static::MEDIA_EXT;
+			$status = $this->generateStatus();
+
+			if (file_exists($poster)) {
+				$poster = "style=\"background-image: url('{$poster}')\"";
+				$placeholder = '';
+			} else {
+				$poster = '';
+				$placeholder = UIComponents::getIcon('movie', 'placeholder');
+			}
+
+			return <<<EOF
+			<div id="poster" class="poster" {$poster}>
+				{$status}
+				{$placeholder}
 			</div>
 			EOF;
 		}
