@@ -101,7 +101,7 @@
 							</span>
 						</div>
 						EOF;
-						$buttons .= UIComponents::getTextButton($stats->average, 'lightbulb');
+						$buttons .= UIComponents::getTextButton($stats->average, 'lightbulb', content: $tooltip);
 						break;
 
 					case 'agreement':
@@ -117,7 +117,7 @@
 							</span>
 						</div>
 						EOF;
-						$buttons .= UIComponents::getTextButton($stats->average, 'thumb_up');
+						$buttons .= UIComponents::getTextButton($stats->average, 'thumb_up', content: $tooltip);
 						break;
 
 					case 'spoilage':
@@ -140,7 +140,7 @@
 							</span>
 						</div>
 						EOF;
-						$buttons .= UIComponents::getTextButton($stats->average, 'speed');
+						$buttons .= UIComponents::getTextButton($stats->average, 'speed', content: $tooltip);
 						break;
 
 					default: break;
