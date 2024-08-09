@@ -26,7 +26,7 @@
 		</div>
 
 		<div>
-			<?= UIComponents::getFAB('New post', 'add', '#') ?>
+			<?php $this->printActionButton() ?>
 		</div>
 
 		<?php $this->printFooter() ?>

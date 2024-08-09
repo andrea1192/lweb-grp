@@ -87,6 +87,12 @@
 			}
 		}
 
+		public function printActionButton() {
+
+			if ($this->session->isAllowed())
+				print(UIComponents::getFAB('New post', 'add', '#'));
+		}
+
 		public function render() {
 			require_once('templates/MovieDisplayTemplate.php');
 		}

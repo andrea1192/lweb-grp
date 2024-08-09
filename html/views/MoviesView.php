@@ -13,6 +13,12 @@
 			print("{$title} - grp");
 		}
 
+		public function printActionButton() {
+
+			if ($this->session->isAllowed())
+				print(UIComponents::getFAB('Add movie', 'add', '#'));
+		}
+
 		public function render() {
 			require_once('templates/MoviesListTemplate.php');
 		}

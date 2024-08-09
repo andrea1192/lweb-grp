@@ -52,6 +52,9 @@
 		protected function generateDropdownMenu() {
 			$items = '';
 
+			if (!$this->session->isAllowed())
+				return '';
+
 			if ($this->session->isAuthor($this->post) || $this->session->isAdmin()) {
 				$items .= UIComponents::getDropdownItem('Edit', 'edit');
 			}
@@ -60,13 +63,12 @@
 				$items .= UIComponents::getDropdownItem('Delete', 'delete');;
 			}
 
-			if (!$this->session->isAuthor($this->post) && $this->session->isRegistered()) {
+			if (!$this->session->isAuthor($this->post)) {
 				$items .= UIComponents::getDropdownItem('Report', 'report');;
 			}
 
 			if ($items == '')
 				return '';
-
 			else
 				$dropdown = UIComponents::getDropdownMenu($items);
 
@@ -82,10 +84,25 @@
 
 			foreach ($reaction_types as $type => $stats) {
 
+				if (!$this->session->isLoggedIn())
+					$login_prompt = '<div class="tooltip">Sign in to react</div>';
+				else
+					$login_prompt = '<div class="tooltip">Your account has been disabled</div>';
+
+				$status = $this->session->isAllowed();
+
 				switch ($type) {
 					case 'like':
-						$buttons .= UIComponents::getTextButton($stats->count_up, 'thumb_up');
-						$buttons .= UIComponents::getTextButton($stats->count_down, 'thumb_down');
+						$buttons .= UIComponents::getTextButton(
+								$stats->count_up,
+								'thumb_up',
+								enabled: $status,
+								content: $status ? '' : $login_prompt);
+						$buttons .= UIComponents::getTextButton(
+								$stats->count_down,
+								'thumb_down',
+								enabled: $status,
+								content: $status ? '' : $login_prompt);
 						break;
 
 					case 'usefulness':
@@ -101,7 +118,11 @@
 							</span>
 						</div>
 						EOF;
-						$buttons .= UIComponents::getTextButton($stats->average, 'lightbulb', content: $tooltip);
+						$buttons .= UIComponents::getTextButton(
+								$stats->average,
+								'lightbulb',
+								enabled: $status,
+								content: $status ? $tooltip : $login_prompt);
 						break;
 
 					case 'agreement':
@@ -117,7 +138,11 @@
 							</span>
 						</div>
 						EOF;
-						$buttons .= UIComponents::getTextButton($stats->average, 'thumb_up', content: $tooltip);
+						$buttons .= UIComponents::getTextButton(
+								$stats->average,
+								'thumb_up',
+								enabled: $status,
+								content: $status ? $tooltip : $login_prompt);
 						break;
 
 					case 'spoilage':
@@ -140,7 +165,11 @@
 							</span>
 						</div>
 						EOF;
-						$buttons .= UIComponents::getTextButton($stats->average, 'speed', content: $tooltip);
+						$buttons .= UIComponents::getTextButton(
+								$stats->average,
+								'speed',
+								enabled: $status,
+								content: $status ? $tooltip : $login_prompt);
 						break;
 
 					default: break;
@@ -196,7 +225,9 @@
 	class Question extends Post {
 
 		protected function generateActionButtons() {
-			return UIComponents::getOutlinedButton('Answer', 'comment', '#', cls: 'colored');
+
+			if ($this->session->isAllowed())
+				return UIComponents::getOutlinedButton('Answer', 'comment', '#', cls: 'colored');
 		}
 
 		protected function generateAnswers() {

@@ -6,7 +6,11 @@
 		private $reputation = 42;
 
 		public function getUsername() {
-			return $this->username;
+			return ($this->isLoggedIn()) ? $this->username : '';
+		}
+
+		public function getReputation() {
+			return ($this->isLoggedIn()) ? $this->reputation : 0;
 		}
 
 		public function getUserType() {
@@ -24,23 +28,20 @@
 			return isset($this->username);
 		}
 
-		public function isRegistered() {
-			return (bool) ($this->privilege >= 1);
+		public function isAllowed() {
+			return (bool) (($this->isLoggedIn()) && ($this->privilege >= 1));
 		}
 
 		public function isMod() {
-			return (bool) ($this->privilege >= 2);
+			return (bool) (($this->isLoggedIn()) && ($this->privilege >= 2));
 		}
 
 		public function isAdmin() {
-			return (bool) ($this->privilege == 3);
+			return (bool) (($this->isLoggedIn()) && ($this->privilege == 3));
 		}
 
 		public function isAuthor($object) {
-			return (bool) ($this->username == $object->author);
-		}
-
-		public function getReputation() {
-			return $this->reputation;
+			return (bool) (($this->isLoggedIn()) && ($this->getUsername() == $object->author));
 		}
 	}
+?>

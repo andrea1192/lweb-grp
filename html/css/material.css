@@ -19,22 +19,22 @@ button.fab,
 }
 
 /* Elementi interattivi (cambio colore o elevazione su hover) */
-button:hover,
-.button:hover {
+button:enabled:hover,
+.button:enabled:hover {
 	background-color: #CCC3;
 }
 
-button.tonal:hover,
-.button.tonal:hover,
-button.filled:hover,
-.button.filled:hover {
+button.tonal:enabled:hover,
+.button.tonal:enabled:hover,
+button.filled:enabled:hover,
+.button.filled:enabled:hover {
 	box-shadow: 0 1px 3px 0px #0006;
 }
 
-button.elevated:hover,
-.button.elevated:hover,
-button.fab:hover,
-.button.fab:hover {
+button.elevated:enabled:hover,
+.button.elevated:enabled:hover,
+button.fab:enabled:hover,
+.button.fab:enabled:hover {
 	box-shadow: 0 1px 3px 1px #0006;
 }
 

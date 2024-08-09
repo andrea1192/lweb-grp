@@ -19,7 +19,7 @@
 		</div>
 
 		<div>
-			<?= UIComponents::getFAB('Add movie', 'add', '#') ?>
+			<?php $this->printActionButton() ?>
 		</div>
 
 		<?php $this->printFooter() ?>
