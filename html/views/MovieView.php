@@ -70,10 +70,10 @@
 		public function printPosts() {
 
 			if (!$this->posts->count()) {
-				$icon = UIComponents::getIcon('search');
+				$icon = UIComponents::getIcon('search', 'no_results');
 
 				echo <<<EOF
-				<div class="flex align notfound">
+				<div class="flex align">
 					{$icon}
 					<span>No posts of type "{$this->tab}" found.</span>
 				</div>

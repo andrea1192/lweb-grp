@@ -5,46 +5,38 @@
 	font-size: 18px;
 }
 
-button >.material-symbols-outlined:has(+.label),
-.button >.material-symbols-outlined:has(+.label) {
-	margin-right: 8px;
-}
-
-button >.material-symbols-outlined:not(:has(+.label)),
-.button >.material-symbols-outlined:not(:has(+.label)) {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	translate: -50% -50%;
-}
-
-button >.material-symbols-outlined,
-.button >.material-symbols-outlined {
+button >.icon,
+.button >.icon {
 	color: inherit;
 }
 
-.dropdown >.menu >li >a .material-symbols-outlined {
+/* Pulsante con etichetta: aggiungi margine dopo icona */
+button:has(>.label) >.icon,
+.button:has(>.label) >.icon {
+	margin-right: 8px;
+}
+
+/* Pulsante senza etichetta: centra icona */
+button:not(:has(>.label)) >.icon,
+.button:not(:has(>.label)) >.icon {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	translate: -50% -50%;
+}
+
+/* Icona di dropdown item (elemento di un menu a tendina) */
+.dropdown >.menu >li >a .icon {
 	margin-right: 12px;
 }
 
-.login >.material-symbols-outlined::before {
-	content:'login';
+/* Icona di overlay (es. stato di approvazione di una scheda) */
+.overlay >.icon {
+	margin-right: 4px;
 }
 
-.logout >.material-symbols-outlined::before {
-	content:'logout';
-}
-
-.profile >.material-symbols-outlined::before {
-	content:'person';
-}
-
-.users >.material-symbols-outlined::before {
-	content:'group';
-}
-
-.poster >.material-symbols-outlined::before {
-	content: 'movie';
+/* Icona placeholder (es. in sostituzione di poster mancante) */
+.icon.placeholder {
 	position: absolute;
 	top: 50%;
 	left: 50%;
@@ -52,93 +44,16 @@ button >.material-symbols-outlined,
 	font-size: 48px;
 }
 
-.status.submitted >.material-symbols-outlined::before {
-	content: 'pending_actions';
-}
-
-.status.accepted >.material-symbols-outlined::before {
-	content: 'thumb_up';
-}
-
-.status.rejected >.material-symbols-outlined::before {
-	content: 'thumb_down';
-}
-
-.status >.material-symbols-outlined {
-	margin-right: 4px;
-}
-
-.accept >.material-symbols-outlined::before {
-	content: 'check';
-}
-
-.reject >.material-symbols-outlined::before {
-	content: 'close';
-}
-
-.notfound >.material-symbols-outlined::before {
-	content: 'search';
+/* Icona vista vuota (es. scheda senza post) */
+.icon.no_results {
 	margin-right: 12px;
 	font-size: 48px;
 }
 
-.likes >.material-symbols-outlined::before {
-	content:'thumb_up';
-}
-
-.dislikes >.material-symbols-outlined::before {
-	content:'thumb_down';
-}
-
-.usefulness >.material-symbols-outlined::before {
-	content:'lightbulb';
-}
-
-.agreement >.material-symbols-outlined::before {
-	content:'thumb_up';
-}
-
-.answer_compose >.material-symbols-outlined::before {
-	content:'comment';
-}
-
-.answer >.material-symbols-outlined {
+/* Icona risposta selezionata */
+.icon.selected_answer {
 	position: absolute;
-	top: 8px;
+	top: 6px;
 	left: 12px;
-}
-
-.answer.selected >.material-symbols-outlined::before {
-	content:'check_circle';
 	color: green;
-}
-
-.spoiler_show >.material-symbols-outlined::before {
-	content:'visibility';
-}
-
-.spoil_level >.material-symbols-outlined::before {
-	content:'speed';
-}
-
-.kebab >.material-symbols-outlined::before {
-	content:'more_vert';
-}
-
-.edit >.material-symbols-outlined::before {
-	content:'edit';
-}
-
-.delete >.material-symbols-outlined::before {
-	content:'delete';
-}
-
-.report >.material-symbols-outlined::before {
-	content:'report';
-}
-
-.new_movie >.material-symbols-outlined::before,
-.new_post >.material-symbols-outlined::before {
-	content:'add';
-	font-size: 24px;
 }

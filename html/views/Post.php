@@ -206,8 +206,12 @@
 
 			foreach ($answers as $answer) {
 				$selected_answer = (bool) $answer->id == $this->post->featuredAnswer;
-				$selected_class = $selected_answer ? 'selected' : '';
-				$selected_icon = $selected_answer ? '<span class="material-symbols-outlined"></span>' : '';
+				$selected_class = $selected_answer ?
+						'selected' :
+						'';
+				$selected_icon =  $selected_answer ?
+						UIComponents::getIcon('check_circle', 'selected_answer') :
+						'';
 
 				$reaction_buttons = $this->generateReactionButtons($answer);
 
@@ -219,7 +223,7 @@
 							<span class="author">{$answer->author}</span>
 							<span class="date">{$answer->date}</span>
 						</div>
-						<div class="right flag"><span class="material-symbols-outlined"></span></div>
+						<div class="right"></div>
 					</div>
 					<div class="content">
 						{$answer->text}

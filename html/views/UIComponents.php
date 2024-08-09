@@ -3,28 +3,27 @@
 	class UIComponents {
 		private const ICONS_CLASS = 'material-symbols-outlined';
 
-		public static function getIcon($icon) {
+		public static function getIcon($icon, $cls = '') {
 			$icons = static::ICONS_CLASS;
 
-			return "<span class=\"{$icons}\">{$icon}</span>";
+			return "<span class=\"icon {$icons} {$cls}\">{$icon}</span>";
 		}
 
 		public static function getOverlay($label, $icon, $cls = '') {
-			$icons = static::ICONS_CLASS;
+			$icon = static::getIcon($icon);
 
 			return <<<EOF
 			<div class="overlay {$cls}">
-				<span class="{$icons}">{$icon}</span>
+				{$icon}
 				<span class="label">{$label}</span>
 			</div>
 			EOF;
 		}
 
 		private static function generateButton($type, $label, $icon, $cls, $content) {
-			$icons = static::ICONS_CLASS;
 
 			if (!empty($icon))
-				$icon = "<span class=\"{$icons}\">{$icon}</span>";
+				$icon = static::getIcon($icon);
 
 			if (!empty($label) || $label == '0')
 				$label = "<span class=\"label\">{$label}</span>";
@@ -39,10 +38,9 @@
 		}
 
 		private static function generateActionButton($type, $label, $icon, $href, $cls, $content) {
-			$icons = static::ICONS_CLASS;
 
 			if (!empty($icon))
-				$icon = "<span class=\"{$icons}\">{$icon}</span>";
+				$icon = static::getIcon($icon);
 
 			if (!empty($label) || $label == '0')
 				$label = "<span class=\"label\">{$label}</span>";
@@ -106,6 +104,15 @@
 			return static::getButton('filled', $label, $icon, $href, $cls, $content);
 		}
 
+		public static function getFAB(
+				$label = '',
+				$icon = '',
+				$href = '',
+				$cls = '',
+				$content = '') {
+			return static::getButton('fab', $label, $icon, $href, $cls, $content);
+		}
+
 		public static function getOverflowMenu($dropdown) {
 			return static::getButton('text', '', 'more_vert', cls: 'right', content: $dropdown);
 		}
@@ -123,12 +130,12 @@
 		}
 
 		public static function getDropdownItem($label = '', $icon = '', $href = '', $cls = '') {
-			$icons = static::ICONS_CLASS;
+			$icon = static::getIcon($icon);
 
 			return <<<EOF
 			<li>
 				<a class="flex {$cls}" href="{$href}">
-					<span class="{$icons}">{$icon}</span>
+					{$icon}
 					<span class="label">{$label}</span>
 				</a>
 			</li>

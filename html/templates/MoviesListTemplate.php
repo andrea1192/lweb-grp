@@ -1,4 +1,4 @@
-<?php /* TODO: add XML prologue (xml version="1.0" encoding="UTF-8") */ ?>
+<?php namespace views; /* TODO: add XML prologue (xml version="1.0" encoding="UTF-8") */ ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
@@ -19,10 +19,7 @@
 		</div>
 
 		<div>
-			<a class="button fab new_movie" href="">
-				<span class="material-symbols-outlined"></span>
-				<span class="label">New movie</span>
-			</a>
+			<?= UIComponents::getFAB('Add movie', 'add', '#') ?>
 		</div>
 
 		<?php $this->printFooter() ?>
