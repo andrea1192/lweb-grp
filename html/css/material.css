@@ -20,21 +20,21 @@ button.fab,
 
 /* Elementi interattivi (cambio colore o elevazione su hover) */
 button:enabled:hover,
-.button:enabled:hover {
+.button:hover {
 	background-color: #CCC3;
 }
 
 button.tonal:enabled:hover,
-.button.tonal:enabled:hover,
 button.filled:enabled:hover,
-.button.filled:enabled:hover {
+.button.tonal:hover,
+.button.filled:hover {
 	box-shadow: 0 1px 3px 0px #0006;
 }
 
 button.elevated:enabled:hover,
-.button.elevated:enabled:hover,
 button.fab:enabled:hover,
-.button.fab:enabled:hover {
+.button.elevated:hover,
+.button.fab:hover {
 	box-shadow: 0 1px 3px 1px #0006;
 }
 
