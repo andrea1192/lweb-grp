@@ -5,10 +5,31 @@
 	require_once('views/Movie.php');
 	require_once('views/Post.php');
 
-	class PostView extends AbstractView {
-
+	abstract class AbstractPostView extends AbstractView {
 		public $post;
 		public $movie;
+
+		public function printMovieReference() {
+			$view = \views\Movie::factoryMethod($this->session, $this->movie);
+			$view->displayReference();
+		}
+
+		public function printPost() {
+			$view = \views\Post::factoryMethod($this->session, $this->post);
+			$view->display();
+		}
+
+		public function editPost() {
+			$view = \views\Movie::factoryMethod($this->session, $this->post);
+			$view->edit();
+		}
+
+		public function render() {
+			require_once('templates/PostEditTemplate.php');
+		}
+	}
+
+	class PostView extends AbstractPostView {
 
 		public function __construct($session, $post_id) {
 			parent::__construct($session);
@@ -27,16 +48,6 @@
 
 		}
 
-		public function printMovieReference() {
-			$view = \views\Movie::factoryMethod($this->session, $this->movie);
-			$view->displayReference();
-		}
-
-		public function printPost() {
-			$view = \views\Post::factoryMethod($this->session, $this->post);
-			$view->display();
-		}
-
 		public function render() {
 			require_once('templates/PostDisplayTemplate.php');
 		}
@@ -48,14 +59,40 @@
 			print("Editing post: {$this->post->title} - grp");
 
 		}
+	}
 
-		public function editPost() {
-			$view = \views\Movie::factoryMethod($this->session, $this->post);
-			$view->edit();
+	class PostCreateView extends AbstractPostView {
+
+		public function __construct($session, $post_type, $movie_id) {
+			parent::__construct($session);
+
+			switch ($post_type) {
+				case 'comment':
+					$this->post = new \models\Comment();
+					break;
+				case 'review':
+					$this->post = new \models\Review();
+					break;
+				case 'question':
+					$this->post = new \models\Question();
+					break;
+				case 'spoiler':
+					$this->post = new \models\Spoiler();
+					break;
+				case 'extra':
+					$this->post = new \models\Extra();
+					break;
+			}
+
+			if (preg_match('/m[0-9]*/', $movie_id))
+				$this->movie = \models\Movies::getMovieById($movie_id);
+			else
+				$this->movie = \models\Requests::getRequestById($movie_id);
 		}
 
-		public function render() {
-			require_once('templates/PostEditTemplate.php');
+		public function printTitle() {
+			print("New post - grp");
+
 		}
 	}
 ?>

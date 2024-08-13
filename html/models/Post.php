@@ -8,13 +8,18 @@
 		public $author;
 		public $date;
 
-		public $title;
-		public $text;
+		public $title = '';
+		public $text = '';
 
 		public $reactions;
 
-		public function __construct($element) {
+		public function __construct($element = null) {
 
+			if ($element)
+				static::loadXML($element);
+		}
+
+		protected function loadXML($element) {
 			$this->id = $element->getAttribute('id');
 			$this->movie = $element->getAttribute('movie');
 			$this->author = $element->getAttribute('author');
@@ -44,8 +49,8 @@
 	abstract class RatedPost extends Post {
 		public $rating;
 
-		public function __construct($element) {
-			parent::__construct($element);
+		protected function loadXML($element) {
+			parent::loadXML($element);
 
 			$this->rating = $element->getElementsByTagName('rating')->item(0)->textContent;
 		}
@@ -54,8 +59,8 @@
 	class Comment extends RatedPost {
 		public $request;
 
-		public function __construct($element) {
-			parent::__construct($element);
+		protected function loadXML($element) {
+			parent::loadXML($element);
 
 			$this->request = $element->getAttribute('request');
 		}
@@ -63,8 +68,8 @@
 
 	class Review extends RatedPost {
 
-		public function __construct($element) {
-			parent::__construct($element);
+		protected function loadXML($element) {
+			parent::loadXML($element);
 
 			$this->reactions = [
 				'like' => new \models\BinaryReactionType($this->id, 'like', 'like', 'dislike')
@@ -77,8 +82,8 @@
 		public $featuredAnswer;
 		public $answers;
 
-		public function __construct($element) {
-			parent::__construct($element);
+		protected function loadXML($element) {
+			parent::loadXML($element);
 
 			$this->featured = (boolean) $element->getAttribute('featured');
 			$this->featuredAnswer = (string) $element->getAttribute('featuredAnswer');
@@ -93,8 +98,8 @@
 
 	class Spoiler extends RatedPost {
 
-		public function __construct($element) {
-			parent::__construct($element);
+		protected function loadXML($element) {
+			parent::loadXML($element);
 
 			$this->reactions = [
 				'spoilage' => new \models\NumericReactionType($this->id, 'spoilage')
@@ -105,8 +110,8 @@
 	class Extra extends Post {
 		public $reputation;
 
-		public function __construct($element) {
-			parent::__construct($element);
+		protected function loadXML($element) {
+			parent::loadXML($element);
 
 			$this->reputation = $element->getAttribute('reputation');
 		}

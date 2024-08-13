@@ -90,7 +90,7 @@
 		public function printActionButton() {
 
 			if ($this->session->isAllowed())
-				print(UIComponents::getFAB('New post', 'add', '#'));
+				print(UIComponents::getFAB('New post', 'add', "post.php?action=create&tab={$this->tab}&movie={$this->movie->id}"));
 		}
 
 		public function render() {
