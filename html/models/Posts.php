@@ -55,6 +55,16 @@
 
 			return new \models\PostList($matches);
 		}
+
+		public static function getCommentById($id) {
+
+			if (!(self::$document))
+				self::loadDocument();
+
+			$comment = self::$document->getElementById($id);
+
+			return \models\Post::generatePost($comment);
+		}
 	}
 
 	class PostList extends \IteratorIterator implements \Countable {

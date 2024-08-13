@@ -51,7 +51,15 @@
 		}
 	}
 
-	class Comment extends RatedPost {}
+	class Comment extends RatedPost {
+		public $request;
+
+		public function __construct($element) {
+			parent::__construct($element);
+
+			$this->request = $element->getAttribute('request');
+		}
+	}
 
 	class Review extends RatedPost {
 
