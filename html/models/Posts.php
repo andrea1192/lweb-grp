@@ -23,6 +23,16 @@
 
 			return new \models\PostList($matches);
 		}
+
+		public static function getPostById($id) {
+
+			if (!(self::$document))
+				self::loadDocument();
+
+			$post = self::$document->getElementById($id);
+
+			return \models\Post::generatePost($post);
+		}
 	}
 
 	class Comments extends Posts {

@@ -21,6 +21,25 @@
 			}
 		}
 
+		public function displayReference() {
+			$backdrop = $this->generateBackdrop();
+			$poster = $this->generatePoster();
+
+			echo <<<EOF
+			<div id="backdrop" {$backdrop}>
+				<div class="blur">
+					<div id="reference" class="header wrapper">
+						{$poster}
+						<div class="details">
+							<h1>{$this->movie->title}</h1>
+							<div>{$this->movie->year}, {$this->movie->duration}'</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			EOF;
+		}
+
 		public function displayCard() {
 			$href = $this->generateURL();
 			$poster = $this->generatePoster();
