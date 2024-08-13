@@ -5,16 +5,22 @@
 	class Movie {
 		public $id;
 
-		public $title;
-		public $year;
-		public $duration;
-		public $summary;
-		public $director;
-		public $writer;
+		public $title = '';
+		public $year = '';
+		public $duration = '';
+		public $summary = '';
+		public $director = '';
+		public $writer = '';
 
 		public $posts;
 
-		public function __construct($element) {
+		public function __construct($element = null) {
+
+			if ($element)
+				static::loadXML($element);
+		}
+
+		protected function loadXML($element) {
 
 			$this->id = $element->getAttribute('id');
 
@@ -46,8 +52,8 @@
 	class Request extends Movie {
 		public $status;
 
-		public function __construct($element) {
-			parent::__construct($element);
+		protected function loadXML($element) {
+			parent::loadXML($element);
 
 			$this->status = $element->getAttribute('status');
 			$this->posts = \models\Comments::getCommentsByRequest($this->id);

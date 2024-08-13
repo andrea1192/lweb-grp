@@ -16,7 +16,7 @@
 		public function printActionButton() {
 
 			if ($this->session->isAllowed())
-				print(UIComponents::getFAB('Add movie', 'add', '#'));
+				print(UIComponents::getFAB('Add movie', 'add', 'movie.php?action=create'));
 		}
 
 		public function render() {

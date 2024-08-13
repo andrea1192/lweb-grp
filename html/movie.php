@@ -22,6 +22,11 @@
 					// TODO: Aggiungi controlli privilegi con ev. redirect
 					$view = new \views\MovieEditView($this->session, $movie);
 					$view->render();
+
+				case 'create':
+					// TODO: Aggiungi controlli privilegi con ev. redirect
+					$view = new \views\MovieCreateView($this->session);
+					$view->render();
 			}
 		}
 	}

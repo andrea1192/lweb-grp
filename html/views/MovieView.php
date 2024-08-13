@@ -98,12 +98,8 @@
 		}
 	}
 
-	class MovieEditView extends MovieView {
-
-		public function printTitle() {
-			print("Editing {$this->movie->title} ({$this->movie->year}) - grp");
-
-		}
+	abstract class AbstractEditView extends AbstractView {
+		public $movie;
 
 		public function editOverview() {
 			$view = \views\Movie::factoryMethod($this->session, $this->movie);
@@ -112,6 +108,37 @@
 
 		public function render() {
 			require_once('templates/MovieEditTemplate.php');
+		}
+	}
+
+	class MovieEditView extends AbstractEditView {
+
+		public function __construct($session, $movie_id) {
+			parent::__construct($session);
+
+			if (preg_match('/m[0-9]*/', $movie_id))
+				$this->movie = \models\Movies::getMovieById($movie_id);
+			else
+				$this->movie = \models\Requests::getRequestById($movie_id);
+		}
+
+		public function printTitle() {
+			print("Editing {$this->movie->title} ({$this->movie->year}) - grp");
+
+		}
+	}
+
+	class MovieCreateView extends AbstractEditView {
+
+		public function __construct($session) {
+			parent::__construct($session);
+
+			$this->movie = new \models\Request();
+		}
+
+		public function printTitle() {
+			print("New movie - grp");
+
 		}
 	}
 ?>

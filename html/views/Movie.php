@@ -17,7 +17,7 @@
 			switch ($action) {
 				default:
 				case 'display': return "movie.php?id={$this->movie->id}";
-				case 'edit': return "movie.php?id={$this->movie->id}&action=edit";
+				case 'edit': return "movie.php?id={$this->movie->id}&action=add";
 			}
 		}
 
