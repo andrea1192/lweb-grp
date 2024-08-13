@@ -9,6 +9,15 @@
 			$this->post = $post;
 		}
 
+		protected function generateURL($action = 'display') {
+
+			switch ($action) {
+				default:
+				case 'display': return "post.php?id={$this->post->id}";
+				case 'edit': return "post.php?id={$this->post->id}&action=edit";
+			}
+		}
+
 		public function display() {
 			$rating = $this->generateRating();
 			$dropdown_menu = $this->generateDropdownMenu();
@@ -45,6 +54,33 @@
 			EOF;
 		}
 
+		public function edit() {
+			$save_buttons = $this->generateSaveButtons();
+
+			echo <<<EOF
+			<div class="post">
+				<div class="flex column" style="gap: 10px">
+					<label>
+						<span class="label">Title</span>
+						<input class="" name="title" type="text" value="{$this->post->title}" />
+					</label>
+					<label>
+						<span class="label">Text</span>
+						<textarea class="" rows="5" cols="80">{$this->post->text}</textarea>
+					</label>
+					<div class="flex footer">
+						<div class="flex left">
+							{$save_buttons}
+						</div>
+
+						<div class="flex right">
+						</div>
+					</div>
+				</div>
+			</div>
+			EOF;
+		}
+
 		protected function generateRating() {
 			return '';
 		}
@@ -56,7 +92,7 @@
 				return '';
 
 			if ($this->session->isAuthor($this->post) || $this->session->isAdmin()) {
-				$items .= UIComponents::getDropdownItem('Edit', 'edit');
+				$items .= UIComponents::getDropdownItem('Edit', 'edit', $this->generateURL('edit'));
 			}
 
 			if ($this->session->isAuthor($this->post) || $this->session->isMod()) {
@@ -177,6 +213,10 @@
 			}
 
 			return $buttons;
+		}
+
+		protected function generateSaveButtons() {
+			return UIComponents::getFilledButton('Save changes', 'save', '#');;
 		}
 
 		protected function generateActionButtons() {

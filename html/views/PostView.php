@@ -13,8 +13,13 @@
 		public function __construct($session, $post_id) {
 			parent::__construct($session);
 
-			$this->post = \models\Posts::getPostById($post_id);
-			$this->movie = \models\Movies::getMovieById($this->post->movie);
+			if (!preg_match('/c[0-9]*/', $post_id)) {
+				$this->post = \models\Posts::getPostById($post_id);
+				$this->movie = \models\Movies::getMovieById($this->post->movie);
+			} else {
+				$this->post = \models\Comments::getCommentById($post_id);
+				$this->movie = \models\Requests::getRequestById($this->post->request);
+			}
 		}
 
 		public function printTitle() {
@@ -34,6 +39,23 @@
 
 		public function render() {
 			require_once('templates/PostDisplayTemplate.php');
+		}
+	}
+
+	class PostEditView extends PostView {
+
+		public function printTitle() {
+			print("Editing post: {$this->post->title} - grp");
+
+		}
+
+		public function editPost() {
+			$view = \views\Movie::factoryMethod($this->session, $this->post);
+			$view->edit();
+		}
+
+		public function render() {
+			require_once('templates/PostEditTemplate.php');
 		}
 	}
 ?>
