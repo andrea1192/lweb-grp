@@ -23,10 +23,6 @@
 			$view = \views\Movie::factoryMethod($this->session, $this->post);
 			$view->edit();
 		}
-
-		public function render() {
-			require_once('templates/PostEditTemplate.php');
-		}
 	}
 
 	class PostView extends AbstractPostView {
@@ -58,6 +54,10 @@
 		public function printTitle() {
 			print("Editing post: {$this->post->title} - grp");
 
+		}
+
+		public function render() {
+			require_once('templates/PostEditTemplate.php');
 		}
 	}
 
