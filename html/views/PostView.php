@@ -94,5 +94,9 @@
 			print("New post - grp");
 
 		}
+
+		public function render() {
+			require_once('templates/PostEditTemplate.php');
+		}
 	}
 ?>
