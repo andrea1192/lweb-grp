@@ -4,7 +4,13 @@
 		public $post;
 		public $author;
 
-		public function __construct($element) {
+		public function __construct($element = null) {
+
+			if ($element)
+				static::loadXML($element);
+		}
+
+		protected function loadXML($element) {
 
 			$this->post = $element->getAttribute('post');
 			$this->author = $element->getAttribute('author');
@@ -30,8 +36,8 @@
 	abstract class NumericRating extends Reaction {
 		public $rating;
 
-		public function __construct($element) {
-			parent::__construct($element);
+		public function loadXML($element) {
+			parent::loadXML($element);
 
 			$this->rating = $element->getAttribute('rating');
 		}
@@ -41,30 +47,35 @@
 		public $id;
 		public $date;
 
-		public $text;
+		public $text = '';
 
 		public $reactions;
 
-		public function __construct($element) {
+		public function __construct($element = null) {
 			parent::__construct($element);
+
+			if ($element)
+				$this->reactions = [
+					'usefulness' => new \models\NumericReactionType($this->id, 'usefulness'),
+					'agreement' => new \models\NumericReactionType($this->id, 'agreement')
+				];
+		}
+
+		protected function loadXML($element) {
+			parent::loadXML($element);
 
 			$this->id = $element->getAttribute('id');
 			$this->date = $element->getAttribute('date');
 
 			$this->text = $element->getElementsByTagName('text')->item(0)->textContent;
-
-			$this->reactions = [
-				'usefulness' => new \models\NumericReactionType($this->id, 'usefulness'),
-				'agreement' => new \models\NumericReactionType($this->id, 'agreement')
-			];
 		}
 	}
 
 	class Like extends Reaction {
 		public $type;
 
-		public function __construct($element) {
-			parent::__construct($element);
+		public function loadXML($element) {
+			parent::loadXML($element);
 
 			$this->type = $element->getAttribute('type');
 		}

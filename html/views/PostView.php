@@ -4,6 +4,7 @@
 	require_once('views/AbstractView.php');
 	require_once('views/Movie.php');
 	require_once('views/Post.php');
+	require_once('views/Reaction.php');
 
 	abstract class AbstractPostView extends AbstractView {
 		public $post;
@@ -93,6 +94,32 @@
 		public function printTitle() {
 			print("New post - grp");
 
+		}
+
+		public function render() {
+			require_once('templates/PostEditTemplate.php');
+		}
+	}
+
+	class ReactionCreateView extends PostView {
+		public $reaction;
+
+		public function __construct($session, $reaction_type, $post_id) {
+			parent::__construct($session, $post_id);
+
+			switch ($reaction_type) {
+				case 'answer':
+					$this->reaction = new \models\Answer();
+					break;
+				case 'report':
+					/*$this->reaction = new \models\Report();*/
+					break;
+			}
+		}
+
+		public function editPost() {
+			$view = \views\Reaction::factoryMethod($this->session, $this->reaction);
+			$view->displayForm($this->post);
 		}
 
 		public function render() {

@@ -18,12 +18,18 @@
 			}
 		}
 
-		public function display() {
+		public function displayReference($active = true, $reactions = '') {
 			$rating = $this->generateRating();
-			$dropdown_menu = $this->generateDropdownMenu();
-			$reaction_buttons = $this->generateReactionButtons();
-			$action_buttons = $this->generateActionButtons();
-			$answers = $this->generateAnswers();
+
+			if ($active) {
+				$dropdown_menu = $this->generateDropdownMenu();
+				$reaction_buttons = $this->generateReactionButtons();
+				$action_buttons = $this->generateActionButtons();
+			} else {
+				$dropdown_menu = '';
+				$reaction_buttons = '';
+				$action_buttons = '';
+			}
 
 			echo <<<EOF
 			<div class="post">
@@ -49,9 +55,14 @@
 						{$action_buttons}
 					</div>
 				</div>
-				{$answers}
+				{$reactions}
 			</div>
 			EOF;
+		}
+
+		public function display() {
+
+			static::displayReference();
 		}
 
 		public function edit() {
@@ -222,10 +233,6 @@
 		protected function generateActionButtons() {
 			return '';
 		}
-
-		protected function generateAnswers() {
-			return '';
-		}
 	}
 
 	class RatedPost extends Post {
@@ -264,10 +271,15 @@
 
 	class Question extends Post {
 
+		public function display() {
+
+			parent::displayReference(reactions: $this->generateAnswers());
+		}
+
 		protected function generateActionButtons() {
 
 			if ($this->session->isAllowed())
-				return UIComponents::getOutlinedButton('Answer', 'comment', '#', cls: 'colored');
+				return UIComponents::getOutlinedButton('Answer', 'comment', "post.php?action=answer&post={$this->post->id}", cls: 'colored');
 		}
 
 		protected function generateAnswers() {
