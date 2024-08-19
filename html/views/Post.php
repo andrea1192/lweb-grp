@@ -15,6 +15,7 @@
 				default:
 				case 'display': return "post.php?id={$this->post->id}";
 				case 'edit': return "post.php?id={$this->post->id}&action=edit";
+				case 'report': return "post.php?id={$this->post->id}&action=report";
 			}
 		}
 
@@ -107,11 +108,11 @@
 			}
 
 			if ($this->session->isAuthor($this->post) || $this->session->isMod()) {
-				$items .= UIComponents::getDropdownItem('Delete', 'delete');;
+				$items .= UIComponents::getDropdownItem('Delete', 'delete');
 			}
 
 			if (!$this->session->isAuthor($this->post)) {
-				$items .= UIComponents::getDropdownItem('Report', 'report');;
+				$items .= UIComponents::getDropdownItem('Report', 'report', $this->generateURL('report'));
 			}
 
 			if ($items == '')

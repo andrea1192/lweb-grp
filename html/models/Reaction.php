@@ -29,6 +29,8 @@
 					return new Agreement($element);
 				case 'spoilage':
 					return new Spoilage($element);
+				case 'report':
+					return new Report($element);
 			}
 		}
 	}
@@ -86,6 +88,19 @@
 	class Agreement extends NumericRating {}
 
 	class Spoilage extends NumericRating {}
+
+	class Report extends Reaction {
+		public $message = '';
+		public $response = '';
+
+		protected function loadXML($element) {
+			parent::loadXML($element);
+
+			$this->message = $element->getAttribute('message');
+			$this->response = $element->getAttribute('response');
+		}
+	}
+
 
 	abstract class ReactionType {
 		public $type;

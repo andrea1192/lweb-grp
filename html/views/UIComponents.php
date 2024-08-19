@@ -149,5 +149,27 @@
 			</li>
 			EOF;
 		}
+
+		public static function getTextContent($text) {
+			return "<div class=\"content\">{$text}</div>";
+		}
+
+		public static function getTextInput($label, $name) {
+			return <<<EOF
+			<label>
+				<span class="label">{$label}</span>
+				<input name="{$name}" type="text" />
+			</label>
+			EOF;
+		}
+
+		public static function getTextArea($label, $name) {
+			return <<<EOF
+			<label>
+				<span class="label">{$label}</span>
+				<textarea name="{$name}" rows="5" cols="80"></textarea>
+			</label>
+			EOF;
+		}
 	}
 ?>

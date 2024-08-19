@@ -37,6 +37,12 @@
 					$view = new \views\ReactionCreateView($this->session, 'answer', $post_ref);
 					$view->render();
 					break;
+
+				case 'report':
+					// TODO: Aggiungi controlli privilegi con ev. redirect
+					$view = new \views\ReactionCreateView($this->session, 'report', $post_ref);
+					$view->render();
+					break;
 			}
 		}
 	}

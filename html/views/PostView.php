@@ -112,7 +112,7 @@
 					$this->reaction = new \models\Answer();
 					break;
 				case 'report':
-					/*$this->reaction = new \models\Report();*/
+					$this->reaction = new \models\Report();
 					break;
 			}
 		}
