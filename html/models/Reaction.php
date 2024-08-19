@@ -96,8 +96,15 @@
 		protected function loadXML($element) {
 			parent::loadXML($element);
 
-			$this->message = $element->getAttribute('message');
-			$this->response = $element->getAttribute('response');
+			$unavail = new class {public $textContent = 'N/A';};
+
+			$this->message =
+				($element->getElementsByTagName('message')->item(0) ?? $unavail)
+				->textContent;
+
+			$this->response =
+				($element->getElementsByTagName('response')->item(0) ?? $unavail)
+				->textContent;
 		}
 	}
 
