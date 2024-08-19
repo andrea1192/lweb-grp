@@ -64,6 +64,33 @@
 		}
 	}
 
+	class Reports extends \models\XMLDocument {
+		protected const DOCUMENT_NAME = 'reports';
+		protected static $document;
+		protected static $xpath;
+
+		public static function getReports() {
+			$query = "/reports/*";
+			$matches = self::queryDocument($query);
+
+			return new \models\ReactionList($matches);
+		}
+
+		public static function getReportsByAuthor($author) {
+			$query = "/reports/report[@author='{$author}']";
+			$matches = self::queryDocument($query);
+
+			return new \models\ReactionList($matches);
+		}
+
+		public static function getReportByPostIdAuthor($post_id, $author) {
+			$query = "/reports/report[@post='{$post_id}' and @author='{$author}']";
+			$match = self::queryDocument($query)->item(0);
+
+			return \models\Reaction::generateReaction($match);
+		}
+	}
+
 	class ReactionList extends \IteratorIterator {
 
 		public function current(): \models\Reaction {
