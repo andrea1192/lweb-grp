@@ -31,6 +31,9 @@
 
 		public static function generatePost($element) {
 
+			if (!$element)
+				return new DeletedPost();
+
 			switch ($element->nodeName) {
 				case 'comment':
 					return new Comment($element);
@@ -116,4 +119,6 @@
 			$this->reputation = $element->getAttribute('reputation');
 		}
 	}
+
+	class DeletedPost extends Post {}
 ?>

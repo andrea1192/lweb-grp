@@ -3,6 +3,7 @@
 	require_once('models/Movies.php');
 	require_once('views/AbstractView.php');
 	require_once('views/Movie.php');
+	require_once('views/Post.php');
 	require_once('views/Reaction.php');
 
 	abstract class AbstractCollectionView extends AbstractView {
@@ -92,6 +93,23 @@
 				$this->title = 'Your Reports';
 				$this->items = \models\Reports::getReportsByAuthor($this->session->getUsername());
 			}
+		}
+
+		public function printList() {
+
+			print("<h1>{$this->title}</h1>");
+			print('<div>');
+
+			foreach ($this->items as $item) {
+				$post = \models\Posts::getPostById($item->post);
+				$postView = \views\AbstractView::factoryMethod($this->session, $post);
+				$reactionView = \views\AbstractView::factoryMethod($this->session, $item);
+
+				$reaction = $reactionView->generate();
+				$postView->displayReference(active: false, reactions: $reaction);
+			}
+
+			print('</div>');
 		}
 	}
 ?>

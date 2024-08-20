@@ -118,8 +118,11 @@
 		}
 
 		public function editPost() {
-			$view = \views\Reaction::factoryMethod($this->session, $this->reaction);
-			$view->displayForm($this->post);
+			$postView = \views\AbstractView::factoryMethod($this->session, $this->post);
+			$reactionView = \views\AbstractView::factoryMethod($this->session, $this->reaction);
+
+			$reaction = $reactionView->generateInsertForm();
+			$postView->displayReference(active: false, reactions: $reaction);
 		}
 
 		public function render() {

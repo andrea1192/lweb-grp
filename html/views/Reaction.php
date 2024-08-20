@@ -12,11 +12,11 @@
 
 	class Answer extends Reaction {
 
-		public function displayForm($post) {
-			$text = $this->generateTextField();
-			$save_buttons = $this->generateSaveButtons();
+		public function generateInsertForm() {
+			$text = UIComponents::getTextArea('Text', 'text');
+			$save_buttons = UIComponents::getFilledButton('Save changes', 'save', '#');
 
-			$form = <<<EOF
+			return <<<EOF
 			<div class="answers">
 				<div class="answer">
 					<div class="flex column" style="gap: 10px">
@@ -33,27 +33,65 @@
 				</div>
 			</div>
 			EOF;
-
-			$post_view = \views\Post::factoryMethod($this->session, $post);
-			$post_view->displayReference(active: false, reactions: $form);
-		}
-
-		protected function generateTextField() {
-			return UIComponents::getTextArea('Text', 'text');
-		}
-
-		protected function generateSaveButtons() {
-			return UIComponents::getFilledButton('Save changes', 'save', '#');
 		}
 	}
 
 	class Report extends Reaction {
 
-		public function displayForm($post) {
-			$message = $this->generateMessageField();
-			$save_buttons = $this->generateSaveButtons();
+		public function generate() {
 
-			$form = <<<EOF
+			if ($this->reaction->status == 'open') {
+				return ($this->session->isMod()) ?
+						$this->generateAdminForm() :
+						$this->generateDisplay();
+
+			} else {
+				return $this->generateDisplay();
+			}
+		}
+
+		public function generateDisplay() {
+			$message = <<<EOF
+			<div>
+				<div class="small">Message from {$this->reaction->author}:</div>
+				<div class="content">{$this->reaction->message}</div>
+			</div>
+			EOF;
+			$response = <<<EOF
+			<div>
+				<div class="small">Response from staff:</div>
+				<div class="content">{$this->reaction->response}</div>
+			</div>
+			EOF;
+
+			return <<<EOF
+			<div class="answers">
+				<div class="answer">
+					<div class="flex column" style="gap: 10px">
+						{$message}
+						{$response}
+						<div class="flex footer">
+							<div class="flex left">
+							</div>
+							<div class="flex right">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			EOF;
+		}
+
+		public function generateInsertForm() {
+
+			return $this->generateUserForm();
+		}
+
+		public function generateUserForm() {
+			$message = UIComponents::getTextArea('Message', 'message');
+			$save_buttons = UIComponents::getFilledButton('Send report', 'send', '#');
+
+			return <<<EOF
 			<div class="answers">
 				<div class="answer">
 					<div class="flex column" style="gap: 10px">
@@ -62,7 +100,6 @@
 							<div class="flex left">
 								{$save_buttons}
 							</div>
-
 							<div class="flex right">
 							</div>
 						</div>
@@ -70,17 +107,35 @@
 				</div>
 			</div>
 			EOF;
-
-			$post_view = \views\Post::factoryMethod($this->session, $post);
-			$post_view->displayReference(active: false, reactions: $form);
 		}
 
-		protected function generateMessageField() {
-			return UIComponents::getTextArea('Message', 'message');
-		}
+		public function generateAdminForm() {
+			$message = <<<EOF
+			<div>
+				<div class="small">Message from {$this->reaction->author}:</div>
+				<div class="content">{$this->reaction->message}</div>
+			</div>
+			EOF;
+			$response = UIComponents::getTextArea('Response', 'response');
+			$save_buttons = UIComponents::getFilledButton('Send response', 'send', '#');
 
-		protected function generateSaveButtons() {
-			return UIComponents::getFilledButton('Send report', 'send', '#');
+			return <<<EOF
+			<div class="answers">
+				<div class="answer">
+					<div class="flex column" style="gap: 10px">
+						{$message}
+						{$response}
+						<div class="flex footer">
+							<div class="flex left">
+								{$save_buttons}
+							</div>
+							<div class="flex right">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			EOF;
 		}
 	}
 

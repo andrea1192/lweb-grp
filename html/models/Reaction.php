@@ -93,10 +93,14 @@
 		public $message = '';
 		public $response = '';
 
+		public $status;
+
 		protected function loadXML($element) {
 			parent::loadXML($element);
 
 			$unavail = new class {public $textContent = 'N/A';};
+
+			$this->status = $element->getAttribute('status');
 
 			$this->message =
 				($element->getElementsByTagName('message')->item(0) ?? $unavail)
