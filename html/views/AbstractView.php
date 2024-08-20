@@ -59,9 +59,7 @@
 					$dropdown_items .= UIComponents::getDropdownItem('Users', 'group');
 				}
 
-				if ($this->session->isMod()) {
-					$dropdown_items .= UIComponents::getDropdownItem('Reports', 'report');
-				}
+				$dropdown_items .= UIComponents::getDropdownItem('Reports', 'report', 'reports.php');
 
 				$dropdown_items .= UIComponents::getDropdownItem('Sign out', 'logout');
 

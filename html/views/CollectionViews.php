@@ -87,7 +87,7 @@
 			parent::__construct($session);
 
 			if ($this->session->isMod()) {
-				$this->title = 'Reports';
+				$this->title = 'User Reports';
 				$this->items = \models\Reports::getReports();
 			} else {
 				$this->title = 'Your Reports';
