@@ -154,22 +154,30 @@
 			return "<div class=\"content\">{$text}</div>";
 		}
 
-		public static function getTextInput($label, $name) {
+		public static function getTextInput($label, $name, $value = '', $cls = '') {
 			return <<<EOF
 			<label>
 				<span class="label">{$label}</span>
-				<input name="{$name}" type="text" />
+				<input class="{$cls}" value="{$value}" name="{$name}" type="text" />
 			</label>
 			EOF;
 		}
 
-		public static function getTextArea($label, $name) {
+		public static function getTextArea($label, $name, $value = '', $cls = '') {
 			return <<<EOF
 			<label>
 				<span class="label">{$label}</span>
-				<textarea name="{$name}" rows="5" cols="80"></textarea>
+				<textarea class="{$cls}" name="{$name}" rows="5" cols="80">{$value}</textarea>
 			</label>
 			EOF;
+		}
+
+		public static function getFilledTextInput($label, $name, $value = '', $cls = '') {
+			return static::getTextInput($label, $name, $value, "filled {$cls}");
+		}
+
+		public static function getFilledTextArea($label, $name, $value = '', $cls = '') {
+			return static::getTextArea($label, $name, $value, "filled {$cls}");
 		}
 	}
 ?>

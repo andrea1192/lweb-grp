@@ -91,41 +91,23 @@
 			$poster = $this->generatePoster();
 			$save_buttons = $this->generateSaveButtons();
 
+			$components = 'views\UIComponents';
+
 			echo <<<EOF
 			<div id="backdrop" {$backdrop}>
 				<div class="blur">
 					<form id="overview" class="flex wrapper" method="post" action="">
 						{$poster}
 						<div id="description" class="flex fields column">
-							<label>
-								<span class="label">Title</span>
-								<input class="filled" name="title" type="text" value="{$this->movie->title}" />
-							</label>
+							{$components::getFilledTextInput('Title', 'title', $this->movie->title)}
 							<div class="flex fields" style="width: 30%">
-								<label>
-									<span class="label">Year</span>
-									<input class="filled" name="year" type="text" value="{$this->movie->year}" />
-								</label>
-								<label>
-									<span class="label">Duration</span>
-									<input class="filled" name="duration" type="text" value="{$this->movie->duration}" />
-								</label>
+								{$components::getFilledTextInput('Year', 'year', $this->movie->year)}
+								{$components::getFilledTextInput('Duration', 'duration', $this->movie->duration)}
 							</div>
-
-							<label>
-								<span class="label">Summary</span>
-								<textarea class="filled" rows="5" cols="80">{$this->movie->summary}</textarea>
-							</label>
-
+							{$components::getFilledTextArea('Summary', 'summary', $this->movie->summary)}
 							<div class="flex fields column" style="width: 40%">
-								<label>
-									<span class="label">Director</span>
-									<input class="filled" name="director" type="text" value="{$this->movie->director}" />
-								</label>
-								<label>
-									<span class="label">Writer</span>
-									<input class="filled" name="writer" type="text" value="{$this->movie->writer}" />
-								</label>
+								{$components::getFilledTextInput('Director', 'director', $this->movie->director)}
+								{$components::getFilledTextInput('Writer', 'writer', $this->movie->writer)}
 							</div>
 							{$save_buttons}
 						</div>
