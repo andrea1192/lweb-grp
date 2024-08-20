@@ -70,8 +70,8 @@
 			$save_buttons = $this->generateSaveButtons();
 
 			echo <<<EOF
-			<div class="post">
-				<div class="flex column" style="gap: 10px">
+			<form class="post" method="post" action="">
+				<div class="flex fields column">
 					<label>
 						<span class="label">Title</span>
 						<input class="" name="title" type="text" value="{$this->post->title}" />
@@ -89,7 +89,7 @@
 						</div>
 					</div>
 				</div>
-			</div>
+			</form>
 			EOF;
 		}
 

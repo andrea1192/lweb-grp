@@ -18,8 +18,8 @@
 
 			return <<<EOF
 			<div class="answers">
-				<div class="answer">
-					<div class="flex column" style="gap: 10px">
+				<form class="answer" method="post" action="">
+					<div class="flex fields column">
 						{$text}
 						<div class="flex footer">
 							<div class="flex left">
@@ -30,7 +30,7 @@
 							</div>
 						</div>
 					</div>
-				</div>
+				</form>
 			</div>
 			EOF;
 		}
@@ -66,8 +66,8 @@
 
 			return <<<EOF
 			<div class="answers">
-				<div class="answer">
-					<div class="flex column" style="gap: 10px">
+				<form class="answer" method="post" action="">
+					<div class="flex fields column">
 						{$message}
 						{$response}
 						<div class="flex footer">
@@ -77,7 +77,7 @@
 							</div>
 						</div>
 					</div>
-				</div>
+				</form>
 			</div>
 			EOF;
 		}
@@ -93,8 +93,8 @@
 
 			return <<<EOF
 			<div class="answers">
-				<div class="answer">
-					<div class="flex column" style="gap: 10px">
+				<form class="answer" method="post" action="">
+					<div class="flex fields column">
 						{$message}
 						<div class="flex footer">
 							<div class="flex left">
@@ -104,7 +104,7 @@
 							</div>
 						</div>
 					</div>
-				</div>
+				</form>
 			</div>
 			EOF;
 		}
@@ -121,8 +121,8 @@
 
 			return <<<EOF
 			<div class="answers">
-				<div class="answer">
-					<div class="flex column" style="gap: 10px">
+				<form class="answer" method="post" action="">
+					<div class="flex fields column">
 						{$message}
 						{$response}
 						<div class="flex footer">
@@ -133,7 +133,7 @@
 							</div>
 						</div>
 					</div>
-				</div>
+				</form>
 			</div>
 			EOF;
 		}

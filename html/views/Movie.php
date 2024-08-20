@@ -67,9 +67,7 @@
 						<div id="description" class="flex column">
 							<h1>{$this->movie->title}</h1>
 							<div>{$this->movie->year}, {$this->movie->duration}'</div>
-
 							<p>{$this->movie->summary}</p>
-
 							<div id="details">
 								<div class="flex detail">
 									<div>Director</div>
@@ -96,14 +94,14 @@
 			echo <<<EOF
 			<div id="backdrop" {$backdrop}>
 				<div class="blur">
-					<div id="overview" class="flex wrapper">
+					<form id="overview" class="flex wrapper" method="post" action="">
 						{$poster}
-						<div id="description" class="flex column" style="gap: 25px">
+						<div id="description" class="flex fields column">
 							<label>
 								<span class="label">Title</span>
 								<input class="filled" name="title" type="text" value="{$this->movie->title}" />
 							</label>
-							<div class="flex" style="gap: 25px; width: 30%">
+							<div class="flex fields" style="width: 30%">
 								<label>
 									<span class="label">Year</span>
 									<input class="filled" name="year" type="text" value="{$this->movie->year}" />
@@ -119,7 +117,7 @@
 								<textarea class="filled" rows="5" cols="80">{$this->movie->summary}</textarea>
 							</label>
 
-							<div class="flex column" style="gap: 25px; width: 40%">
+							<div class="flex fields column" style="width: 40%">
 								<label>
 									<span class="label">Director</span>
 									<input class="filled" name="director" type="text" value="{$this->movie->director}" />
@@ -131,7 +129,7 @@
 							</div>
 							{$save_buttons}
 						</div>
-					</div>
+					</form>
 				</div>
 			</div>
 			EOF;

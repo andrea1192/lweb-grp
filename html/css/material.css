@@ -50,6 +50,7 @@ button.fab:enabled:hover,
 	width: 50%;
 	min-width: 960px;
 	margin-top: 40px;
+	margin-bottom: 40px;
 	border-radius: 12px;
 	padding: 15px 30px;
 	background-color: #FFFF;
@@ -256,6 +257,15 @@ button:hover >.dropdown,
 	border-color: transparent;
 	background-color: transparent;
 }*/
+
+form .fields {
+	gap: 10px;
+}
+
+form .fields:has(>label >input.filled),
+form .fields:has(>label >textarea.filled) {
+	gap: 25px;
+}
 
 label {
 	position: relative;
