@@ -261,32 +261,32 @@ body {
 
 /* ==== Parti vista MoviesView ============================================ */
 
-.flex.list {
+.flex.grid {
 	flex-wrap: wrap;
 	gap: 25px;
 	margin: 20px 0;
 }
 
-.flex.list >.movie {
+.flex.grid >.movie {
 	width: 200px;
 	height: 450px;
 	margin: 0;
 	overflow: hidden;
 }
 
-.flex.list >.movie >h1 {
+.flex.grid >.movie >h1 {
 	margin-bottom: 5px;
 	font-size: 1.2rem;
 	font-weight: normal;
 }
 
-.flex.list >.movie >.poster {
+.flex.grid >.movie >.poster {
 	width: 200px;
 	height: 300px;
 	margin: -15px -15px 0 -15px;
 }
 
-.flex.list >.movie >a {
+.flex.grid >.movie >a {
 	position: absolute;
 	display: block;
 	width: 100%;
@@ -296,6 +296,6 @@ body {
 	z-index: 50;
 }
 
-.flex.list >.movie >a:hover {
+.flex.grid >.movie >a:hover {
 	background-color: #CCC3;
 }

@@ -1,7 +1,7 @@
 <?php namespace controllers;
 
 	require_once('AbstractController.php');
-	require_once('views/MoviesView.php');
+	require_once('views/CollectionViews.php');
 
 	class MoviesController extends AbstractController {
 
@@ -12,10 +12,10 @@
 
 				default:
 				case 'list_movies':
-					$view = new \views\MoviesView($this->session);
+					$view = new \views\MoviesView($this->session, 'movies');
 					break;
 				case 'list_requests':
-					$view = new \views\RequestsView($this->session);
+					$view = new \views\MoviesView($this->session, 'requests');
 					break;
 			}
 

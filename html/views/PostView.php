@@ -21,7 +21,7 @@
 		}
 
 		public function editPost() {
-			$view = \views\Movie::factoryMethod($this->session, $this->post);
+			$view = \views\Post::factoryMethod($this->session, $this->post);
 			$view->edit();
 		}
 	}
