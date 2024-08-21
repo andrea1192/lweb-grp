@@ -25,11 +25,7 @@
 		}
 
 		public static function getPostById($id) {
-
-			if (!(self::$document))
-				self::loadDocument();
-
-			$post = self::$document->getElementById($id);
+			$post = self::getElementById($id);
 
 			return \models\Post::generatePost($post);
 		}
@@ -57,11 +53,7 @@
 		}
 
 		public static function getCommentById($id) {
-
-			if (!(self::$document))
-				self::loadDocument();
-
-			$comment = self::$document->getElementById($id);
+			$comment = self::getElementById($id);
 
 			return \models\Post::generatePost($comment);
 		}

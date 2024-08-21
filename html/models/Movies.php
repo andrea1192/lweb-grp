@@ -17,11 +17,7 @@
 		}
 
 		public static function getMovieById($id) {
-
-			if (!(self::$document))
-				self::loadDocument();
-
-			$movie = self::$document->getElementById($id);
+			$movie = self::getElementById($id);
 
 			return new \models\Movie($movie);
 		}
@@ -61,11 +57,7 @@
 		}
 
 		public static function getRequestById($id) {
-
-			if (!(self::$document))
-				self::loadDocument();
-
-			$request = self::$document->getElementById($id);
+			$request = self::getElementById($id);
 
 			return new \models\Request($request);
 		}
