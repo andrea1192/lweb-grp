@@ -1,24 +1,32 @@
 <?php namespace models;
 
-	class XMLDocument {
+	abstract class XMLDocument {
+		protected const SCHEMAS_ROOT = 'schemas/';
+		protected const DOCUMENT_ROOT = 'static/';
 		protected const DOCUMENT_NAME = '';
+		protected const ROOT_ELEMENT = '';
+
 		protected static $document;
 		protected static $xpath;
+
+		private static function getSchemaPath() {
+		return static::SCHEMAS_ROOT.static::DOCUMENT_NAME.'.xsd';
+		}
+
+		private static function getDocumentPath() {
+		return static::DOCUMENT_ROOT.static::DOCUMENT_NAME.'.xml';
+		}
 
 		protected static function loadDocument() {
 			static::$document = new \DOMDocument('1.0', 'UTF-8');
 
-			$name = static::DOCUMENT_NAME;
-
-			static::$document->load("static/{$name}.xml");
-			static::$document->schemaValidate("schemas/{$name}.xsd");
+			static::$document->load(static::getDocumentPath());
+			static::$document->schemaValidate(static::getSchemaPath());
 		}
 
 		protected static function saveDocument() {
-			$name = static::DOCUMENT_NAME;
-
-			static::$document->schemaValidate("schemas/{$name}.xsd");
-			static::$document->save("static/{$name}.xml");
+			static::$document->schemaValidate(static::getSchemaPath());
+			static::$document->save(static::getDocumentPath());
 		}
 
 		protected static function queryDocument($query) {

@@ -8,6 +8,36 @@
 		protected static $document;
 		protected static $xpath;
 
+		public static function classify($element) {
+
+			switch ($element->nodeName) {
+				default:
+					return 'Reactions';
+				case 'like':
+					return 'Likes';
+				case 'usefulness':
+					return 'Usefulnesses';
+				case 'agreement':
+					return 'Agreements';
+				case 'spoilage':
+					return 'Spoilages';
+				case 'answer':
+					return 'Answers';
+				case 'report':
+					return 'Reports';
+			}
+		}
+
+		public static function createObjectFromElement($element, $object = null) {
+			if (!$object)
+				return;
+
+			$object->post = $element->getAttribute('post');
+			$object->author = $element->getAttribute('author');
+
+			return $object;
+		}
+
 		public static function getReactionsByPost($post_id, $type = '*') {
 			$query = "/reactions/{$type}[@post='{$post_id}']";
 			$matches = self::queryDocument($query);
@@ -36,7 +66,8 @@
 			$sum = 0;
 
 			foreach ($matches as $match) {
-				$reaction = \models\Reaction::generateReaction($match);
+				$class = '\\models\\'.Reactions::classify($match);
+				$reaction = $class::createObjectFromElement($match);
 				$sum += $reaction->rating;
 			}
 
@@ -44,10 +75,80 @@
 		}
 	}
 
-	class Answers extends \models\XMLDocument {
+	class Likes extends Reactions {
+
+		public static function createObjectFromElement($element, $object = null) {
+			if (!$object)
+				$object = new Like();
+
+			$object = parent::createObjectFromElement($element, $object);
+			$object->type = $element->getAttribute('type');
+
+			return $object;
+		}
+	}
+
+	class Usefulnesses extends Reactions {
+
+		public static function createObjectFromElement($element, $object = null) {
+			if (!$object)
+				$object = new Usefulness();
+
+			$object = parent::createObjectFromElement($element, $object);
+			$object->rating = $element->getAttribute('rating');
+
+			return $object;
+		}
+	}
+
+	class Agreements extends Reactions {
+
+		public static function createObjectFromElement($element, $object = null) {
+			if (!$object)
+				$object = new Agreement();
+
+			$object = parent::createObjectFromElement($element, $object);
+			$object->rating = $element->getAttribute('rating');
+
+			return $object;
+		}
+	}
+
+	class Spoilages extends Reactions {
+
+		public static function createObjectFromElement($element, $object = null) {
+			if (!$object)
+				$object = new Spoilage();
+
+			$object = parent::createObjectFromElement($element, $object);
+			$object->rating = $element->getAttribute('rating');
+
+			return $object;
+		}
+	}
+
+	class Answers extends Reactions {
 		protected const DOCUMENT_NAME = 'answers';
 		protected static $document;
 		protected static $xpath;
+
+		public static function createObjectFromElement($element, $object = null) {
+			if (!$object)
+				$object = new Answer();
+
+			$object = parent::createObjectFromElement($element, $object);
+
+			$object->id = $element->getAttribute('id');
+			$object->date = $element->getAttribute('date');
+
+			$object->text = $element->getElementsByTagName('text')->item(0)->textContent;
+			$object->reactions = [
+					'usefulness' => new \models\NumericReactionType($object->id, 'usefulness'),
+					'agreement' => new \models\NumericReactionType($object->id, 'agreement')
+				];
+
+			return $object;
+		}
 
 		public static function getAnswersByPost($post_id) {
 			$query = "/answers/answer[@post='{$post_id}']";
@@ -64,10 +165,28 @@
 		}
 	}
 
-	class Reports extends \models\XMLDocument {
+	class Reports extends Reactions {
 		protected const DOCUMENT_NAME = 'reports';
 		protected static $document;
 		protected static $xpath;
+
+		public static function createObjectFromElement($element, $object = null) {
+			if (!$object)
+				$object = new Answer();
+
+			$object = parent::createObjectFromElement($element, $object);
+			$unavail = new class {public $textContent = 'N/A';};
+
+			$object->status = $element->getAttribute('status');
+			$object->message =
+				($element->getElementsByTagName('message')->item(0) ?? $unavail)
+				->textContent;
+			$object->response =
+				($element->getElementsByTagName('response')->item(0) ?? $unavail)
+				->textContent;
+
+			return $object;
+		}
 
 		public static function getReports() {
 			$query = "/reports/*";
@@ -87,15 +206,16 @@
 			$query = "/reports/report[@post='{$post_id}' and @author='{$author}']";
 			$match = self::queryDocument($query)->item(0);
 
-			return \models\Reaction::generateReaction($match);
+			return static::createObjectFromElement($match);
 		}
 	}
 
 	class ReactionList extends \IteratorIterator {
 
 		public function current(): \models\Reaction {
-
-			return \models\Reaction::generateReaction(parent::current());
+			$element = parent::current();
+			$class = '\\models\\'.Reactions::classify($element);
+			return $class::createObjectFromElement($element);
 		}
 	}
 ?>

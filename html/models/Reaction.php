@@ -3,46 +3,10 @@
 	abstract class Reaction {
 		public $post;
 		public $author;
-
-		public function __construct($element = null) {
-
-			if ($element)
-				static::loadXML($element);
-		}
-
-		protected function loadXML($element) {
-
-			$this->post = $element->getAttribute('post');
-			$this->author = $element->getAttribute('author');
-		}
-
-		public static function generateReaction($element) {
-
-			switch ($element->nodeName) {
-				case 'answer':
-					return new Answer($element);
-				case 'like':
-					return new Like($element);
-				case 'usefulness':
-					return new Usefulness($element);
-				case 'agreement':
-					return new Agreement($element);
-				case 'spoilage':
-					return new Spoilage($element);
-				case 'report':
-					return new Report($element);
-			}
-		}
 	}
 
 	abstract class NumericRating extends Reaction {
 		public $rating;
-
-		public function loadXML($element) {
-			parent::loadXML($element);
-
-			$this->rating = $element->getAttribute('rating');
-		}
 	}
 
 	class Answer extends Reaction {
@@ -52,35 +16,10 @@
 		public $text = '';
 
 		public $reactions;
-
-		public function __construct($element = null) {
-			parent::__construct($element);
-
-			if ($element)
-				$this->reactions = [
-					'usefulness' => new \models\NumericReactionType($this->id, 'usefulness'),
-					'agreement' => new \models\NumericReactionType($this->id, 'agreement')
-				];
-		}
-
-		protected function loadXML($element) {
-			parent::loadXML($element);
-
-			$this->id = $element->getAttribute('id');
-			$this->date = $element->getAttribute('date');
-
-			$this->text = $element->getElementsByTagName('text')->item(0)->textContent;
-		}
 	}
 
 	class Like extends Reaction {
 		public $type;
-
-		public function loadXML($element) {
-			parent::loadXML($element);
-
-			$this->type = $element->getAttribute('type');
-		}
 	}
 
 	class Usefulness extends NumericRating {}
@@ -94,22 +33,6 @@
 		public $response = '';
 
 		public $status;
-
-		protected function loadXML($element) {
-			parent::loadXML($element);
-
-			$unavail = new class {public $textContent = 'N/A';};
-
-			$this->status = $element->getAttribute('status');
-
-			$this->message =
-				($element->getElementsByTagName('message')->item(0) ?? $unavail)
-				->textContent;
-
-			$this->response =
-				($element->getElementsByTagName('response')->item(0) ?? $unavail)
-				->textContent;
-		}
 	}
 
 
