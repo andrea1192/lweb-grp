@@ -101,5 +101,9 @@
 			<div id="footer" class="bottom"><div class="wrapper">Lorem ipsum dolor</div></div>
 			EOF;
 		}
+
+		protected function getMapper($mapper) {
+			return \controllers\ServiceLocator::resolve($mapper);
+		}
 	}
 ?>

@@ -65,11 +65,11 @@
 			switch ($item_type) {
 				case 'movies':
 					$this->title = 'Movies';
-					$this->items = \models\Movies::getMovies();
+					$this->items = $this->getMapper('movies')->getMovies();
 					break;
 				case 'requests':
 					$this->title = 'Requests';
-					$this->items = \models\Requests::getRequests();
+					$this->items = $this->getMapper('requests')->getRequests();
 					break;
 			}
 		}
@@ -86,12 +86,15 @@
 		public function __construct($session) {
 			parent::__construct($session);
 
+			$reports = $this->getMapper('reports');
+			$current_user = $this->session->getUsername();
+
 			if ($this->session->isMod()) {
 				$this->title = 'User Reports';
-				$this->items = \models\Reports::getReports();
+				$this->items = $reports->getReports();
 			} else {
 				$this->title = 'Your Reports';
-				$this->items = \models\Reports::getReportsByAuthor($this->session->getUsername());
+				$this->items = $reports->getReportsByAuthor($current_user);
 			}
 		}
 
@@ -101,7 +104,8 @@
 			print('<div>');
 
 			foreach ($this->items as $item) {
-				$post = \models\Posts::getPostById($item->post);
+				$post = $this->getMapper('posts')->getPostById($item->post);
+
 				$postView = \views\AbstractView::factoryMethod($this->session, $post);
 				$reactionView = \views\AbstractView::factoryMethod($this->session, $item);
 

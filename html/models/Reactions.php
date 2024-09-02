@@ -5,8 +5,6 @@
 
 	class Reactions extends \models\XMLDocument {
 		protected const DOCUMENT_NAME = 'reactions';
-		protected static $document;
-		protected static $xpath;
 
 		public static function classify($element) {
 
@@ -38,30 +36,30 @@
 			return $object;
 		}
 
-		public static function getReactionsByPost($post_id, $type = '*') {
+		public function getReactionsByPost($post_id, $type = '*') {
 			$query = "/reactions/{$type}[@post='{$post_id}']";
-			$matches = self::queryDocument($query);
+			$matches = $this->queryDocument($query);
 
 			return new \models\ReactionList($matches);
 		}
 
-		public static function getReactionsByAuthor($author, $type = '*') {
+		public function getReactionsByAuthor($author, $type = '*') {
 			$query = "/reactions/{$type}[@author='{$author}']";
-			$matches = self::queryDocument($query);
+			$matches = $this->queryDocument($query);
 
 			return new \models\ReactionList($matches);
 		}
 
-		public static function getReactionCountByPost($post_id, $type, $type_bin) {
+		public function getReactionCountByPost($post_id, $type, $type_bin) {
 			$query = "/reactions/{$type}[@post='{$post_id}' and @type='{$type_bin}']";
-			$matches = self::queryDocument($query);
+			$matches = $this->queryDocument($query);
 
 			return count($matches);
 		}
 
-		public static function getReactionAverageByPost($post_id, $type) {
+		public function getReactionAverageByPost($post_id, $type) {
 			$query = "/reactions/{$type}[@post='{$post_id}']";
-			$matches = self::queryDocument($query);
+			$matches = $this->queryDocument($query);
 
 			$sum = 0;
 
@@ -129,8 +127,6 @@
 
 	class Answers extends Reactions {
 		protected const DOCUMENT_NAME = 'answers';
-		protected static $document;
-		protected static $xpath;
 
 		public static function createObjectFromElement($element, $object = null) {
 			if (!$object)
@@ -150,16 +146,16 @@
 			return $object;
 		}
 
-		public static function getAnswersByPost($post_id) {
+		public function getAnswersByPost($post_id) {
 			$query = "/answers/answer[@post='{$post_id}']";
-			$matches = self::queryDocument($query);
+			$matches = $this->queryDocument($query);
 
 			return new \models\ReactionList($matches);
 		}
 
-		public static function getAnswersByAuthor($author) {
+		public function getAnswersByAuthor($author) {
 			$query = "/answers/answer[@author='{$author}']";
-			$matches = self::queryDocument($query);
+			$matches = $this->queryDocument($query);
 
 			return new \models\ReactionList($matches);
 		}
@@ -167,8 +163,6 @@
 
 	class Reports extends Reactions {
 		protected const DOCUMENT_NAME = 'reports';
-		protected static $document;
-		protected static $xpath;
 
 		public static function createObjectFromElement($element, $object = null) {
 			if (!$object)
@@ -188,25 +182,25 @@
 			return $object;
 		}
 
-		public static function getReports() {
+		public function getReports() {
 			$query = "/reports/*";
-			$matches = self::queryDocument($query);
+			$matches = $this->queryDocument($query);
 
 			return new \models\ReactionList($matches);
 		}
 
-		public static function getReportsByAuthor($author) {
+		public function getReportsByAuthor($author) {
 			$query = "/reports/report[@author='{$author}']";
-			$matches = self::queryDocument($query);
+			$matches = $this->queryDocument($query);
 
 			return new \models\ReactionList($matches);
 		}
 
-		public static function getReportByPostIdAuthor($post_id, $author) {
+		public function getReportByPostIdAuthor($post_id, $author) {
 			$query = "/reports/report[@post='{$post_id}' and @author='{$author}']";
-			$match = self::queryDocument($query)->item(0);
+			$match = $this->queryDocument($query)->item(0);
 
-			return static::createObjectFromElement($match);
+			return $this->createObjectFromElement($match);
 		}
 	}
 

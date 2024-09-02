@@ -48,9 +48,13 @@
 		public function __construct($post_id, $reaction_type, $type_up, $type_down) {
 			$this->type = $reaction_type;
 
-			$this->list = \models\Reactions::getReactionsByPost($post_id);
-			$this->count_up = \models\Reactions::getReactionCountByPost($post_id, $reaction_type, $type_up);
-			$this->count_down = \models\Reactions::getReactionCountByPost($post_id, $reaction_type, $type_down);
+			$reactions = \controllers\ServiceLocator::resolve('reactions');
+			$this->list =
+					$reactions->getReactionsByPost($post_id);
+			$this->count_up =
+					$reactions->getReactionCountByPost($post_id, $reaction_type, $type_up);
+			$this->count_down =
+					$reactions->getReactionCountByPost($post_id, $reaction_type, $type_down);
 		}
 	}
 
@@ -60,8 +64,9 @@
 		public function __construct($post_id, $reaction_type) {
 			$this->type = $reaction_type;
 
-			$this->list = \models\Reactions::getReactionsByPost($post_id);
-			$this->average = \models\Reactions::getReactionAverageByPost($post_id, $reaction_type);
+			$reactions = \controllers\ServiceLocator::resolve('reactions');
+			$this->list = $reactions->getReactionsByPost($post_id);
+			$this->average = $reactions->getReactionAverageByPost($post_id, $reaction_type);
 		}
 	}
 ?>

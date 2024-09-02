@@ -5,8 +5,6 @@
 
 	class Posts extends \models\XMLDocument {
 		protected const DOCUMENT_NAME = 'posts';
-		protected static $document;
-		protected static $xpath;
 
 		public static function classify($element) {
 
@@ -41,24 +39,24 @@
 			return $object;
 		}
 
-		public static function getPostsByMovie($movie_id, $type = '*') {
+		public function getPostsByMovie($movie_id, $type = '*') {
 			$query = "/posts/{$type}[@movie='{$movie_id}']";
 
-			$matches = self::queryDocument($query);
+			$matches = $this->queryDocument($query);
 
 			return new \models\PostList($matches);
 		}
 
-		public static function getPostsByAuthor($author, $type = '*') {
+		public function getPostsByAuthor($author, $type = '*') {
 			$query = "/posts/{$type}[@author='{$author}']";
 
-			$matches = self::queryDocument($query);
+			$matches = $this->queryDocument($query);
 
 			return new \models\PostList($matches);
 		}
 
-		public static function getPostById($id) {
-			$post = self::getElementById($id);
+		public function getPostById($id) {
+			$post = $this->getElementById($id);
 
 			$class = '\\models\\'.Posts::classify($post);
 			return $class::createObjectFromElement($post);
@@ -67,8 +65,6 @@
 
 	class Comments extends Posts {
 		protected const DOCUMENT_NAME = 'comments';
-		protected static $document;
-		protected static $xpath;
 
 		public static function createObjectFromElement($element, $object = null) {
 			if (!$object)
@@ -81,24 +77,24 @@
 			return $object;
 		}
 
-		public static function getCommentsByRequest($movie_id) {
+		public function getCommentsByRequest($movie_id) {
 			$query = "/comments/comment[@request='{$movie_id}']";
 
-			$matches = self::queryDocument($query);
+			$matches = $this->queryDocument($query);
 
 			return new \models\PostList($matches);
 		}
 
-		public static function getCommentsByAuthor($author) {
+		public function getCommentsByAuthor($author) {
 			$query = "/comments/comment[@author='{$author}']";
 
-			$matches = self::queryDocument($query);
+			$matches = $this->queryDocument($query);
 
 			return new \models\PostList($matches);
 		}
 
-		public static function getCommentById($id) {
-			$comment = self::getElementById($id);
+		public function getCommentById($id) {
+			$comment = $this->getElementById($id);
 
 			$class = '\\models\\'.Posts::classify($post);
 			return $class::createObjectFromElement($post);
@@ -132,7 +128,7 @@
 			$object->featured = (boolean) $element->getAttribute('featured');
 			$object->featuredAnswer = (string) $element->getAttribute('featuredAnswer');
 
-			$object->answers = \models\Answers::getAnswersByPost($object->id);
+			$object->answers = self::getMapper('answers')->getAnswersByPost($object->id);
 			$object->reactions = [
 				'usefulness' => new \models\NumericReactionType($object->id, 'usefulness'),
 				'agreement' => new \models\NumericReactionType($object->id, 'agreement')

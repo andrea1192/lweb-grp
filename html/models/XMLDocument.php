@@ -6,8 +6,8 @@
 		protected const DOCUMENT_NAME = '';
 		protected const ROOT_ELEMENT = '';
 
-		protected static $document;
-		protected static $xpath;
+		protected $document;
+		protected $xpath;
 
 		private static function getSchemaPath() {
 		return static::SCHEMAS_ROOT.static::DOCUMENT_NAME.'.xsd';
@@ -17,48 +17,44 @@
 		return static::DOCUMENT_ROOT.static::DOCUMENT_NAME.'.xml';
 		}
 
-		protected static function loadDocument() {
-			static::$document = new \DOMDocument('1.0', 'UTF-8');
-
-			static::$document->load(static::getDocumentPath());
-			static::$document->schemaValidate(static::getSchemaPath());
+		protected static function getMapper($mapper) {
+			return \controllers\ServiceLocator::resolve($mapper);
 		}
 
-		protected static function saveDocument() {
-			static::$document->schemaValidate(static::getSchemaPath());
-			static::$document->save(static::getDocumentPath());
+		public function __construct() {
+			$this->loadDocument();
 		}
 
-		protected static function queryDocument($query) {
-			if (!static::$xpath) {
-				static::loadDocument();
-				static::$xpath = new \DOMXPath(static::$document);
-			}
+		protected function loadDocument() {
+			$this->document = new \DOMDocument('1.0', 'UTF-8');
 
-			return static::$xpath->query($query, static::$document);
+			$this->document->load(static::getDocumentPath());
+			$this->document->schemaValidate(static::getSchemaPath());
+
+			$this->xpath = new \DOMXPath($this->document);
 		}
 
-		protected static function getElementById($id) {
-			if (!static::$document)
-				static::loadDocument();
-
-			return static::$document->getElementById($id);
+		protected function saveDocument() {
+			$this->document->schemaValidate(static::getSchemaPath());
+			$this->document->save(static::getDocumentPath());
 		}
 
-		protected static function replaceElementById($id, $node) {
-			if (!static::$document)
-				static::loadDocument();
-
-			static::$document->getElementById($id)->replaceWith($node);
-			static::saveDocument();
+		protected function queryDocument($query) {
+			return $this->xpath->query($query, $this->document);
 		}
 
-		protected static function appendElement($node) {
-			if (!static::$document)
-				static::loadDocument();
+		protected function getElementById($id) {
+			return $this->document->getElementById($id);
+		}
 
-			static::$document->documentElement->append($node);
-			static::saveDocument();
+		protected function replaceElementById($id, $node) {
+			$this->document->getElementById($id)->replaceWith($node);
+			$this->saveDocument();
+		}
+
+		protected function appendElement($node) {
+			$this->document->documentElement->append($node);
+			$this->saveDocument();
 		}
 	}
 ?>

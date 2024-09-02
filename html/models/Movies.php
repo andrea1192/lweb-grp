@@ -4,9 +4,6 @@
 	require_once('models/Movie.php');
 
 	abstract class AbstractMovies extends \models\XMLDocument {
-		protected const DOCUMENT_NAME = '';
-		protected static $document;
-		protected static $xpath;
 
 		public static function createObjectFromElement($element, $object = null) {
 			if (!$object)
@@ -22,8 +19,6 @@
 
 	class Movies extends AbstractMovies {
 		protected const DOCUMENT_NAME = 'movies';
-		protected static $document;
-		protected static $xpath;
 
 		public static function createObjectFromElement($element, $object = null) {
 			if (!$object)
@@ -35,30 +30,28 @@
 			$object->director = $element->getElementsByTagName('director')->item(0)->textContent;
 			$object->writer = $element->getElementsByTagName('writer')->item(0)->textContent;
 
-			$object->posts = \models\Posts::getPostsByMovie($object->id);
+			$object->posts = self::getMapper('posts')->getPostsByMovie($object->id);
 
 			return $object;
 		}
 
-		public static function getMovies() {
+		public function getMovies() {
 			$query = "/movies/*";
 
-			$movies = self::queryDocument($query);
+			$movies = $this->queryDocument($query);
 
 			return new \models\MovieList($movies);
 		}
 
-		public static function getMovieById($id) {
-			$movie = self::getElementById($id);
+		public function getMovieById($id) {
+			$movie = $this->getElementById($id);
 
-			return static::createObjectFromElement($movie);
+			return $this->createObjectFromElement($movie);
 		}
 	}
 
 	class Requests extends AbstractMovies {
 		protected const DOCUMENT_NAME = 'requests';
-		protected static $document;
-		protected static $xpath;
 
 		public static function createObjectFromElement($element, $object = null) {
 			if (!$object)
@@ -80,43 +73,43 @@
 				->textContent;
 
 			$object->status = $element->getAttribute('status');
-			$object->posts = \models\Comments::getCommentsByRequest($object->id);
+			$object->posts = self::getMapper('comments')->getCommentsByRequest($object->id);
 
 			return $object;
 		}
 
-		public static function getRequests() {
+		public function getRequests() {
 			$query = "/requests/*";
 
-			$requests = self::queryDocument($query);
+			$requests = $this->queryDocument($query);
 
 			return new \models\RequestList($requests);
 		}
 
-		private static function getRequestsByStatus($status) {
+		private function getRequestsByStatus($status) {
 			$query = "/requests/*[status='{$status}']";
 
-			$requests = self::queryDocument($query);
+			$requests = $this->queryDocument($query);
 
 			return new \models\RequestList($requests);
 		}
 
-		public static function getSubmittedRequests() {
-			return self::getRequestsByStatus('submitted');
+		public function getSubmittedRequests() {
+			return $this->getRequestsByStatus('submitted');
 		}
 
-		public static function getAcceptedRequests() {
-			return self::getRequestsByStatus('accepted');
+		public function getAcceptedRequests() {
+			return $this->getRequestsByStatus('accepted');
 		}
 
-		public static function getRejectedRequests() {
-			return self::getRequestsByStatus('rejected');
+		public function getRejectedRequests() {
+			return $this->getRequestsByStatus('rejected');
 		}
 
-		public static function getRequestById($id) {
-			$request = self::getElementById($id);
+		public function getRequestById($id) {
+			$request = $this->getElementById($id);
 
-			return static::createObjectFromElement($request);
+			return $this->createObjectFromElement($request);
 		}
 	}
 

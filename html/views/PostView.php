@@ -32,11 +32,11 @@
 			parent::__construct($session);
 
 			if (!preg_match('/c[0-9]*/', $post_id)) {
-				$this->post = \models\Posts::getPostById($post_id);
-				$this->movie = \models\Movies::getMovieById($this->post->movie);
+				$this->post = $this->getMapper('posts')->getPostById($post_id);
+				$this->movie = $this->getMapper('movies')->getMovieById($this->post->movie);
 			} else {
-				$this->post = \models\Comments::getCommentById($post_id);
-				$this->movie = \models\Requests::getRequestById($this->post->request);
+				$this->post = $this->getMapper('comments')->getCommentById($post_id);
+				$this->movie = $this->getMapper('requests')->getRequestById($this->post->request);
 			}
 		}
 
@@ -86,9 +86,9 @@
 			}
 
 			if (preg_match('/m[0-9]*/', $movie_id))
-				$this->movie = \models\Movies::getMovieById($movie_id);
+				$this->movie = $this->getMapper('movies')->getMovieById($movie_id);
 			else
-				$this->movie = \models\Requests::getRequestById($movie_id);
+				$this->movie = $this->getMapper('requests')->getRequestById($movie_id);
 		}
 
 		public function printTitle() {

@@ -29,14 +29,14 @@
 			if (preg_match('/m[0-9]*/', $movie_id)) {
 				$this->tabs = $tabs['movie'];
 				$this->tab = $tab;
-				$this->movie = \models\Movies::getMovieById($movie_id);
-				$this->posts = \models\Posts::getPostsByMovie($movie_id, $tab);
+				$this->movie = $this->getMapper('movies')->getMovieById($movie_id);
+				$this->posts = $this->getMapper('posts')->getPostsByMovie($movie_id, $tab);
 
 			} else {
 				$this->tabs = $tabs['request'];
 				$this->tab = 'comment';
-				$this->movie = \models\Requests::getRequestById($movie_id);
-				$this->posts = \models\Comments::getCommentsByRequest($movie_id);
+				$this->movie = $this->getMapper('requests')->getRequestById($movie_id);
+				$this->posts = $this->getMapper('comments')->getCommentsByRequest($movie_id);
 			}
 		}
 
@@ -117,9 +117,9 @@
 			parent::__construct($session);
 
 			if (preg_match('/m[0-9]*/', $movie_id))
-				$this->movie = \models\Movies::getMovieById($movie_id);
+				$this->movie = $this->getMapper('movies')->getMovieById($movie_id);
 			else
-				$this->movie = \models\Requests::getRequestById($movie_id);
+				$this->movie = $this->getMapper('requests')->getRequestById($movie_id);
 		}
 
 		public function printTitle() {
