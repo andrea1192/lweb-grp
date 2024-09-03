@@ -12,12 +12,13 @@
 			$this->movie = $movie;
 		}
 
-		protected function generateURL($action = 'display') {
+		public function generateURL($action = 'display') {
 
 			switch ($action) {
 				default:
 				case 'display': return "movie.php?id={$this->movie->id}";
 				case 'edit': return "movie.php?id={$this->movie->id}&action=edit";
+				case 'save': return "movie.php?id={$this->movie->id}&action=save";
 			}
 		}
 
@@ -87,6 +88,7 @@
 		}
 
 		public function edit() {
+			$action = $this->generateURL('save');
 			$backdrop = $this->generateBackdrop();
 			$poster = $this->generatePoster();
 			$save_buttons = $this->generateSaveButtons();
@@ -96,9 +98,11 @@
 			echo <<<EOF
 			<div id="backdrop" {$backdrop}>
 				<div class="blur">
-					<form id="overview" class="flex wrapper" method="post" action="">
+					<form id="overview" class="flex wrapper" method="post" action="{$action}">
 						{$poster}
 						<div id="description" class="flex fields column">
+							{$components::getHiddenInput('id', $this->movie->id)}
+							{$components::getHiddenInput('status', $this->movie->status)}
 							{$components::getFilledTextInput('Title', 'title', $this->movie->title)}
 							<div class="flex fields" style="width: 30%">
 								{$components::getFilledTextInput('Year', 'year', $this->movie->year)}
@@ -155,8 +159,8 @@
 			$left = '';
 			$right = '';
 
-			$right .= UIComponents::getOutlinedButton('Cancel', '', '#');
-			$right .= UIComponents::getFilledButton('Save changes', 'save', '#');
+			$right .= UIComponents::getOutlinedButton('Cancel', '');
+			$right .= UIComponents::getFilledButton('Save changes', 'save');
 
 			return <<<EOF
 			<div class="flex bottom">

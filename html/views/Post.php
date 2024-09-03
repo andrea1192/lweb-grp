@@ -9,7 +9,7 @@
 			$this->post = $post;
 		}
 
-		protected function generateURL($action = 'display') {
+		public function generateURL($action = 'display') {
 
 			switch ($action) {
 				default:

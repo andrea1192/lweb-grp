@@ -15,6 +15,25 @@
 
 			return $object;
 		}
+
+		public function createElementFromObject($object, $element = null) {
+			if (!$element)
+				return;
+
+			$id = $this->document->createAttribute('id');
+			$title = $this->document->createElement('title');
+			$year = $this->document->createElement('year');
+
+			$id->value = $object->id;
+			$title->textContent = $object->title;
+			$year->textContent = $object->year;
+
+			$element->appendChild($id);
+			$element->appendChild($title);
+			$element->appendChild($year);
+
+			return $element;
+		}
 	}
 
 	class Movies extends AbstractMovies {
@@ -76,6 +95,34 @@
 			$object->posts = self::getMapper('comments')->getCommentsByRequest($object->id);
 
 			return $object;
+		}
+
+		public function createElementFromObject($object, $element = null) {
+			if (!$element)
+				$element = $this->document->createElement('request');
+
+			$element = parent::createElementFromObject($object, $element);
+			$keys = [
+				'duration' => '',
+				'summary' => '',
+				'director' => '',
+				'writer' => ''
+			];
+
+			foreach ($keys as $key => $value) {
+				$keys[$key] = $this->document->createElement($key);
+
+				if ($object->$key != 'N/A') {
+					$keys[$key]->textContent = $object->$key;
+					$element->appendChild($keys[$key]);
+				}
+			}
+
+			$status = $this->document->createAttribute('status');
+			$status->value = $object->status;
+			$element->appendChild($status);
+
+			return $element;
 		}
 
 		public function getRequests() {

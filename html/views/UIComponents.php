@@ -154,6 +154,12 @@
 			return "<div class=\"content\">{$text}</div>";
 		}
 
+		public static function getHiddenInput($name, $value = '') {
+			return <<<EOF
+			<input value="{$value}" name="{$name}" type="hidden" />
+			EOF;
+		}
+
 		public static function getTextInput($label, $name, $value = '', $cls = '') {
 			return <<<EOF
 			<label>

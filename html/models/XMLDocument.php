@@ -10,11 +10,11 @@
 		protected $xpath;
 
 		private static function getSchemaPath() {
-		return static::SCHEMAS_ROOT.static::DOCUMENT_NAME.'.xsd';
+			return static::SCHEMAS_ROOT.static::DOCUMENT_NAME.'.xsd';
 		}
 
 		private static function getDocumentPath() {
-		return static::DOCUMENT_ROOT.static::DOCUMENT_NAME.'.xml';
+			return static::DOCUMENT_ROOT.static::DOCUMENT_NAME.'.xml';
 		}
 
 		protected static function getMapper($mapper) {
@@ -47,7 +47,16 @@
 			return $this->document->getElementById($id);
 		}
 
-		protected function replaceElementById($id, $node) {
+		public function saveObject($object) {
+			$element = $this->createElementFromObject($object);
+
+			if ($this->getElementById($object->id))
+				$this->replaceElement($object->id, $element);
+			else
+				$this->appendElement($element);
+		}
+
+		protected function replaceElement($id, $node) {
 			$this->document->getElementById($id)->replaceWith($node);
 			$this->saveDocument();
 		}
