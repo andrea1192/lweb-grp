@@ -12,6 +12,22 @@
 		public $text = '';
 
 		public $reactions;
+
+		public static function createPost($type) {
+
+			switch ($type) {
+				case 'comment':
+					return new \models\Comment();
+				case 'review':
+					return new \models\Review();
+				case 'question':
+					return new \models\Question();
+				case 'spoiler':
+					return new \models\Spoiler();
+				case 'extra':
+					return new \models\Extra();
+			}
+		}
 	}
 
 	abstract class RatedPost extends Post {

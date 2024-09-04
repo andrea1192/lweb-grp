@@ -24,6 +24,24 @@
 			}
 		}
 
+		public static function classifyObject($object) {
+
+			switch (get_class($object)) {
+				default:
+					return 'Posts';
+				case 'models\Comment':
+					return 'Comments';
+				case 'models\Review':
+					return 'Reviews';
+				case 'models\Question':
+					return 'Questions';
+				case 'models\Spoiler':
+					return 'Spoilers';
+				case 'models\Extra':
+					return 'Extras';
+			}
+		}
+
 		public static function createObjectFromElement($element, $object = null) {
 			if (!$object)
 				return;
@@ -37,6 +55,38 @@
 			$object->text = $element->getElementsByTagName('text')->item(0)->textContent;
 
 			return $object;
+		}
+
+		public static function mapCommonAttributes($object, $document, $element) {
+			$id = $document->createAttribute('id');
+			$movie = $document->createAttribute('movie');
+			$author = $document->createAttribute('author');
+			$date = $document->createAttribute('date');
+
+			$id->value = $object->id;
+			$movie->value = $object->movie;
+			$author->value = $object->author;
+			$date->value = $object->date;
+
+			$element->appendChild($id);
+			$element->appendChild($movie);
+			$element->appendChild($author);
+			$element->appendChild($date);
+
+			return $element;
+		}
+
+		public static function mapCommonElements($object, $document, $element) {
+			$title = $document->createElement('title');
+			$text = $document->createElement('text');
+
+			$title->textContent = $object->title;
+			$text->textContent = $object->text;
+
+			$element->appendChild($title);
+			$element->appendChild($text);
+
+			return $element;
 		}
 
 		public function getPostsByMovie($movie_id, $type = '*') {
@@ -116,6 +166,21 @@
 
 			return $object;
 		}
+
+		public static function createElementFromObject($object, $document, $element = null) {
+			if (!$element)
+				$element = $document->createElement('review');
+
+			$element = parent::mapCommonAttributes($object, $document, $element);
+
+			$rating = $document->createElement('rating');
+			$rating->textContent = $object->rating;
+			$element->appendChild($rating);
+
+			$element = parent::mapCommonElements($object, $document, $element);
+
+			return $element;
+		}
 	}
 
 	class Questions extends Posts {
@@ -136,6 +201,26 @@
 
 			return $object;
 		}
+
+		public static function createElementFromObject($object, $document, $element = null) {
+			if (!$element)
+				$element = $document->createElement('question');
+
+			$element = parent::mapCommonAttributes($object, $document, $element);
+
+			$featured = $document->createAttribute('featured');
+			$featuredAnswer = $document->createAttribute('featuredAnswer');
+
+			$featured->value = $object->featured;
+			$featuredAnswer->value = $object->featuredAnswer;
+
+			$element->appendChild($featured);
+			$element->appendChild($featuredAnswer);
+
+			$element = parent::mapCommonElements($object, $document, $element);
+
+			return $element;
+		}
 	}
 
 	class Spoilers extends Posts {
@@ -153,6 +238,21 @@
 
 			return $object;
 		}
+
+		public static function createElementFromObject($object, $document, $element = null) {
+			if (!$element)
+				$element = $document->createElement('spoiler');
+
+			$element = parent::mapCommonAttributes($object, $document, $element);
+
+			$rating = $document->createElement('rating');
+			$rating->textContent = $object->rating;
+			$element->appendChild($rating);
+
+			$element = parent::mapCommonElements($object, $document, $element);
+
+			return $element;
+		}
 	}
 
 	class Extras extends Posts {
@@ -162,9 +262,24 @@
 				$object = new Extra();
 
 			$object = parent::createObjectFromElement($element, $object);
-			$object->reputation = $element->getAttribute('reputation');
+			$object->reputation = $element->getAttribute('rep');
 
 			return $object;
+		}
+
+		public static function createElementFromObject($object, $document, $element = null) {
+			if (!$element)
+				$element = $document->createElement('extra');
+
+			$element = parent::mapCommonAttributes($object, $document, $element);
+
+			$reputation = $document->createAttribute('rep');
+			$reputation->textContent = $object->reputation;
+			$element->appendChild($reputation);
+
+			$element = parent::mapCommonElements($object, $document, $element);
+
+			return $element;
 		}
 	}
 

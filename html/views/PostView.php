@@ -67,23 +67,7 @@
 		public function __construct($session, $post_type, $movie_id) {
 			parent::__construct($session);
 
-			switch ($post_type) {
-				case 'comment':
-					$this->post = new \models\Comment();
-					break;
-				case 'review':
-					$this->post = new \models\Review();
-					break;
-				case 'question':
-					$this->post = new \models\Question();
-					break;
-				case 'spoiler':
-					$this->post = new \models\Spoiler();
-					break;
-				case 'extra':
-					$this->post = new \models\Extra();
-					break;
-			}
+			$this->post = \models\Post::createPost($post_type);
 
 			if (preg_match('/m[0-9]*/', $movie_id))
 				$this->movie = $this->getMapper('movies')->getMovieById($movie_id);

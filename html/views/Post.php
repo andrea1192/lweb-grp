@@ -1,7 +1,12 @@
 <?php namespace views;
 	
 	class Post extends AbstractView {
+		protected const POST_TYPE = '';
 		protected $post;
+
+		protected static function getPostType() {
+			return static::POST_TYPE;
+		}
 
 		public function __construct($session, $post) {
 			parent::__construct($session);
@@ -15,6 +20,7 @@
 				default:
 				case 'display': return "post.php?id={$this->post->id}";
 				case 'edit': return "post.php?id={$this->post->id}&action=edit";
+				case 'save': return "post.php?id={$this->post->id}&action=save";
 				case 'report': return "post.php?id={$this->post->id}&action=report";
 			}
 		}
@@ -67,19 +73,23 @@
 		}
 
 		public function edit() {
+			$action = $this->generateURL('save');
+			$special_fields = $this->generateSpecialFields();
 			$save_buttons = $this->generateSaveButtons();
 
+			$components = 'views\UIComponents';
+
 			echo <<<EOF
-			<form class="post" method="post" action="">
+			<form class="post" method="post" action="{$action}">
 				<div class="flex fields column">
-					<label>
-						<span class="label">Title</span>
-						<input class="" name="title" type="text" value="{$this->post->title}" />
-					</label>
-					<label>
-						<span class="label">Text</span>
-						<textarea class="" rows="5" cols="80">{$this->post->text}</textarea>
-					</label>
+					{$components::getHiddenInput('type', $this->getPostType())}
+					{$components::getHiddenInput('id', $this->post->id)}
+					{$components::getHiddenInput('movie', $this->post->movie)}
+					{$components::getHiddenInput('author', $this->post->author)}
+					{$components::getHiddenInput('date', $this->post->date)}
+					{$components::getTextInput('Title', 'title', $this->post->title)}
+					{$special_fields}
+					{$components::getTextArea('Text', 'text', $this->post->text)}
 					<div class="flex footer">
 						<div class="flex left">
 							{$save_buttons}
@@ -227,8 +237,12 @@
 			return $buttons;
 		}
 
+		protected function generateSpecialFields() {
+			return '';
+		}
+
 		protected function generateSaveButtons() {
-			return UIComponents::getFilledButton('Save changes', 'save', '#');;
+			return UIComponents::getFilledButton('Save changes', 'save');
 		}
 
 		protected function generateActionButtons() {
@@ -247,9 +261,14 @@
 			</div>
 			EOF;
 		}
+
+		protected function generateSpecialFields() {
+			return UIComponents::getTextInput('Rating', 'rating', $this->post->rating);
+		}
 	}
 
 	class Comment extends Post {
+		protected const POST_TYPE = 'comment';
 
 		protected function generateRating() {
 			$icon = '';
@@ -270,7 +289,12 @@
 		}
 	}
 
+	class Review extends RatedPost {
+		protected const POST_TYPE = 'review';
+	}
+
 	class Question extends Post {
+		protected const POST_TYPE = 'question';
 
 		public function display() {
 
@@ -324,6 +348,27 @@
 				{$html}
 			</div>
 			EOF;
+		}
+
+		protected function generateSpecialFields() {
+			$fields = '';
+
+			$fields .= UIComponents::getHiddenInput('featured', $this->post->featured ? 'true' : 'false');
+			$fields .= UIComponents::getHiddenInput('featuredAnswer', $this->post->featuredAnswer);
+
+			return $fields;
+		}
+	}
+
+	class Spoiler extends RatedPost {
+		protected const POST_TYPE = 'spoiler';
+	}
+
+	class Extra extends Post {
+		protected const POST_TYPE = 'extra';
+
+		protected function generateSpecialFields() {
+			return UIComponents::getTextInput('Reputation', 'reputation', $this->post->reputation);
 		}
 	}
 

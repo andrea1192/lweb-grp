@@ -5,6 +5,10 @@
 
 	abstract class AbstractMovies extends \models\XMLDocument {
 
+		public static function classifyObject($object) {
+			return 'Requests';
+		}
+
 		public static function createObjectFromElement($element, $object = null) {
 			if (!$object)
 				return;
@@ -16,13 +20,13 @@
 			return $object;
 		}
 
-		public function createElementFromObject($object, $element = null) {
+		public static function createElementFromObject($object, $document, $element = null) {
 			if (!$element)
 				return;
 
-			$id = $this->document->createAttribute('id');
-			$title = $this->document->createElement('title');
-			$year = $this->document->createElement('year');
+			$id = $document->createAttribute('id');
+			$title = $document->createElement('title');
+			$year = $document->createElement('year');
 
 			$id->value = $object->id;
 			$title->textContent = $object->title;
@@ -97,11 +101,11 @@
 			return $object;
 		}
 
-		public function createElementFromObject($object, $element = null) {
+		public static function createElementFromObject($object, $document, $element = null) {
 			if (!$element)
-				$element = $this->document->createElement('request');
+				$element = $document->createElement('request');
 
-			$element = parent::createElementFromObject($object, $element);
+			$element = parent::createElementFromObject($object, $document, $element);
 			$keys = [
 				'duration' => '',
 				'summary' => '',
@@ -110,7 +114,7 @@
 			];
 
 			foreach ($keys as $key => $value) {
-				$keys[$key] = $this->document->createElement($key);
+				$keys[$key] = $document->createElement($key);
 
 				if ($object->$key != 'N/A') {
 					$keys[$key]->textContent = $object->$key;
@@ -118,7 +122,7 @@
 				}
 			}
 
-			$status = $this->document->createAttribute('status');
+			$status = $document->createAttribute('status');
 			$status->value = $object->status;
 			$element->appendChild($status);
 

@@ -48,7 +48,8 @@
 		}
 
 		public function saveObject($object) {
-			$element = $this->createElementFromObject($object);
+			$mapper = '\\models\\'.static::classifyObject($object);
+			$element = $mapper::createElementFromObject($object, $this->document);
 
 			if ($this->getElementById($object->id))
 				$this->replaceElement($object->id, $element);
