@@ -38,11 +38,20 @@
 
 						$post = \models\Post::createPost($_POST['type']);
 						$post->id = $_POST['id'];
-						$post->movie = $_POST['movie'];
 						$post->author = $_POST['author'];
 						$post->date = $_POST['date'];
 						$post->title = $_POST['title'];
 						$post->text = $_POST['text'];
+
+						if (isset($_POST['movie'])) {
+							$post->movie = $_POST['movie'];
+							$mapper = ServiceLocator::resolve('posts');
+							$redir = "movie.php?id={$post->movie}&tab={$_POST['type']}";
+						} else {
+							$post->request = $_POST['request'];
+							$mapper = ServiceLocator::resolve('comments');
+							$redir = "movie.php?id={$post->request}&tab={$_POST['type']}";
+						}
 
 						if (isset($_POST['rating']))
 							$post->rating = $_POST['rating'];
@@ -53,11 +62,10 @@
 						if (isset($_POST['reputation']))
 							$post->reputation = $_POST['reputation'];
 
-						$mapper = ServiceLocator::resolve('posts');
 						$mapper->saveObject($post);
 					}
 
-					header("Location: movie.php?id={$post->movie}&tab={$_POST['type']}");
+					header("Location: $redir");
 					break;
 
 				case 'answer':

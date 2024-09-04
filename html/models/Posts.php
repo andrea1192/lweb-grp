@@ -6,9 +6,15 @@
 	class Posts extends \models\XMLDocument {
 		protected const DOCUMENT_NAME = 'posts';
 
-		public static function classify($element) {
+		public static function classify($subject) {
+			$class = get_class($subject);
 
-			switch ($element->nodeName) {
+			if ($class == 'DOMElement')
+				$name = $subject->nodeName;
+			else
+				$name = str_replace('models\\', '', strtolower($class));
+
+			switch ($name) {
 				default:
 					return 'Posts';
 				case 'comment':
@@ -20,24 +26,6 @@
 				case 'spoiler':
 					return 'Spoilers';
 				case 'extra':
-					return 'Extras';
-			}
-		}
-
-		public static function classifyObject($object) {
-
-			switch (get_class($object)) {
-				default:
-					return 'Posts';
-				case 'models\Comment':
-					return 'Comments';
-				case 'models\Review':
-					return 'Reviews';
-				case 'models\Question':
-					return 'Questions';
-				case 'models\Spoiler':
-					return 'Spoilers';
-				case 'models\Extra':
 					return 'Extras';
 			}
 		}
@@ -127,6 +115,34 @@
 			return $object;
 		}
 
+		public static function createElementFromObject($object, $document, $element = null) {
+			if (!$element)
+				$element = $document->createElement('comment');
+
+			$id = $document->createAttribute('id');
+			$request = $document->createAttribute('request');
+			$author = $document->createAttribute('author');
+			$date = $document->createAttribute('date');
+
+			$id->value = $object->id;
+			$request->value = $object->request;
+			$author->value = $object->author;
+			$date->value = $object->date;
+
+			$element->appendChild($id);
+			$element->appendChild($request);
+			$element->appendChild($author);
+			$element->appendChild($date);
+
+			$rating = $document->createElement('rating');
+			$rating->textContent = $object->rating;
+			$element->appendChild($rating);
+
+			$element = parent::mapCommonElements($object, $document, $element);
+
+			return $element;
+		}
+
 		public function getCommentsByRequest($movie_id) {
 			$query = "/comments/comment[@request='{$movie_id}']";
 
@@ -146,8 +162,8 @@
 		public function getCommentById($id) {
 			$comment = $this->getElementById($id);
 
-			$class = '\\models\\'.Posts::classify($post);
-			return $class::createObjectFromElement($post);
+			$class = '\\models\\'.Posts::classify($comment);
+			return $class::createObjectFromElement($comment);
 		}
 	}
 

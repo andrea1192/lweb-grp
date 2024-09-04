@@ -74,6 +74,7 @@
 
 		public function edit() {
 			$action = $this->generateURL('save');
+			$reference_field = $this->generateReferenceField();
 			$special_fields = $this->generateSpecialFields();
 			$save_buttons = $this->generateSaveButtons();
 
@@ -84,7 +85,7 @@
 				<div class="flex fields column">
 					{$components::getHiddenInput('type', $this->getPostType())}
 					{$components::getHiddenInput('id', $this->post->id)}
-					{$components::getHiddenInput('movie', $this->post->movie)}
+					{$reference_field}
 					{$components::getHiddenInput('author', $this->post->author)}
 					{$components::getHiddenInput('date', $this->post->date)}
 					{$components::getTextInput('Title', 'title', $this->post->title)}
@@ -237,6 +238,10 @@
 			return $buttons;
 		}
 
+		protected function generateReferenceField() {
+			return UIComponents::getHiddenInput('movie', $this->post->movie);
+		}
+
 		protected function generateSpecialFields() {
 			return '';
 		}
@@ -267,7 +272,7 @@
 		}
 	}
 
-	class Comment extends Post {
+	class Comment extends RatedPost {
 		protected const POST_TYPE = 'comment';
 
 		protected function generateRating() {
@@ -286,6 +291,14 @@
 				<span class="centered rating">{$rating}</span>
 			</div>
 			EOF;
+		}
+
+		protected function generateReferenceField() {
+			return UIComponents::getHiddenInput('request', $this->post->request);
+		}
+
+		protected function generateSpecialFields() {
+			return UIComponents::getTextInput('Rating', 'rating', $this->post->rating);
 		}
 	}
 

@@ -5,7 +5,7 @@
 
 	abstract class AbstractMovies extends \models\XMLDocument {
 
-		public static function classifyObject($object) {
+		public static function classify($object) {
 			return 'Requests';
 		}
 
