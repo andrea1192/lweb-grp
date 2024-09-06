@@ -182,6 +182,7 @@ body {
 	color: white;
 }
 
+#overview button,
 #overview .button {
 	border-color: inherit;
 }
@@ -196,6 +197,10 @@ body {
 	flex-shrink: 0;
 	width: 60px;
 	height: 90px;
+}
+
+#description {
+	flex: 1;
 }
 
 #description h1 {

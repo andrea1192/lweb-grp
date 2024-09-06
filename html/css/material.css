@@ -139,7 +139,7 @@ button,
 /* Bottone con testo colorato (qualsiasi tipo) */
 button.colored,
 .button.colored {
-	color: dodgerblue;
+	color: dodgerblue !important;
 }
 
 /* Bottone testuale (text) */
@@ -161,7 +161,7 @@ button.tonal,
 button.filled,
 .button.filled {
 	border-width: 0px;
-	background-color: dodgerblue;
+	background-color: dodgerblue !important;
 	color: white;
 }
 
