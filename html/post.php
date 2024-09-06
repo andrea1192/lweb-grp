@@ -62,7 +62,27 @@
 						if (isset($_POST['reputation']))
 							$post->reputation = $_POST['reputation'];
 
-						$mapper->saveObject($post);
+						$mapper->save($post);
+					}
+
+					header("Location: $redir");
+					break;
+
+				case 'delete':
+					// TODO: Aggiungi controlli privilegi con ev. redirect
+					if (isset($_GET['type'])) {
+
+						if ($_GET['type'] != 'comment') {
+							$mapper = ServiceLocator::resolve('posts');
+							$post = $mapper->getPostById($_GET['id']);
+							$redir = "movie.php?id={$post->movie}&tab={$_GET['type']}";
+						} else {
+							$mapper = ServiceLocator::resolve('comments');
+							$post = $mapper->getCommentById($_GET['id']);
+							$redir = "movie.php?id={$post->request}&tab={$_GET['type']}";
+						}
+
+						$mapper->delete($post->id);
 					}
 
 					header("Location: $redir");

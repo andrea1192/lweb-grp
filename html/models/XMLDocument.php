@@ -47,7 +47,7 @@
 			return $this->document->getElementById($id);
 		}
 
-		public function saveObject($object) {
+		public function save($object) {
 			$mapper = '\\models\\'.static::classify($object);
 			$element = $mapper::createElementFromObject($object, $this->document);
 
@@ -64,6 +64,13 @@
 
 		protected function appendElement($node) {
 			$this->document->documentElement->append($node);
+			$this->saveDocument();
+		}
+
+		public function delete($id) {
+			$element = $this->document->getElementById($id);
+			$element->parentNode->removeChild($element);
+
 			$this->saveDocument();
 		}
 	}

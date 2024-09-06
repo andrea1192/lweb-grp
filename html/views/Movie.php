@@ -19,6 +19,7 @@
 				case 'display': return "movie.php?id={$this->movie->id}";
 				case 'edit': return "movie.php?id={$this->movie->id}&action=edit";
 				case 'save': return "movie.php?id={$this->movie->id}&action=save";
+				case 'delete': return "movie.php?id={$this->movie->id}&action=delete";
 			}
 		}
 
@@ -213,7 +214,7 @@
 
 			if ($this->session->isAdmin()) {
 				$right .= UIComponents::getOutlinedButton('', 'edit', $this->generateURL('edit'));
-				$right .= UIComponents::getOutlinedButton('', 'delete', '#');
+				$right .= UIComponents::getOutlinedButton('', 'delete', $this->generateURL('delete'));
 			}
 
 			return <<<EOF

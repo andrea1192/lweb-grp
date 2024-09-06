@@ -21,6 +21,7 @@
 				case 'display': return "post.php?id={$this->post->id}";
 				case 'edit': return "post.php?id={$this->post->id}&action=edit";
 				case 'save': return "post.php?id={$this->post->id}&action=save";
+				case 'delete': return "post.php?id={$this->post->id}&type={$this->getPostType()}&action=delete";
 				case 'report': return "post.php?id={$this->post->id}&action=report";
 			}
 		}
@@ -119,7 +120,7 @@
 			}
 
 			if ($this->session->isAuthor($this->post) || $this->session->isMod()) {
-				$items .= UIComponents::getDropdownItem('Delete', 'delete');
+				$items .= UIComponents::getDropdownItem('Delete', 'delete', $this->generateURL('delete'));
 			}
 
 			if (!$this->session->isAuthor($this->post)) {

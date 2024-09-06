@@ -44,11 +44,23 @@
 						$movie->writer = $_POST['writer'];
 
 						$mapper = ServiceLocator::resolve('requests');
-						$mapper->saveObject($movie);
+						$mapper->save($movie);
 					}
 
 					$nextView = \views\Movie::factoryMethod($this->session, $movie);
 					header("Location: {$nextView->generateURL()}");
+					break;
+
+				case 'delete':
+					// TODO: Aggiungi controlli privilegi con ev. redirect
+					if (isset($_GET['id'])) {
+						$movie = $_GET['id'];
+
+						$mapper = ServiceLocator::resolve('requests');
+						$mapper->delete($movie);
+					}
+
+					header('Location: movies.php?action=list_requests');
 					break;
 			}
 		}
