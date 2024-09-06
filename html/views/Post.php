@@ -318,7 +318,7 @@
 		protected function generateActionButtons() {
 
 			if ($this->session->isAllowed())
-				return UIComponents::getOutlinedButton('Answer', 'comment', "post.php?action=answer&post={$this->post->id}", cls: 'colored');
+				return UIComponents::getOutlinedButton('Answer', 'comment', "post.php?id={$this->post->id}&action=answer", cls: 'colored');
 		}
 
 		protected function generateAnswers() {
