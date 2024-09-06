@@ -48,7 +48,7 @@
 		}
 
 		public function save($object) {
-			$mapper = '\\models\\'.static::classify($object);
+			$mapper = static::getMapperForItem($object);
 			$element = $mapper::createElementFromObject($object, $this->document);
 
 			if ($this->getElementById($object->id))

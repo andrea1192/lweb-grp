@@ -5,8 +5,8 @@
 
 	abstract class AbstractMovies extends \models\XMLDocument {
 
-		public static function classify($object) {
-			return 'Requests';
+		public static function getMapperForItem($object) {
+			return '\models\Requests';
 		}
 
 		public static function createObjectFromElement($element, $object = null) {

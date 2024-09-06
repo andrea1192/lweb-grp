@@ -6,7 +6,7 @@
 	class Posts extends \models\XMLDocument {
 		protected const DOCUMENT_NAME = 'posts';
 
-		public static function classify($subject) {
+		public static function getMapperForItem($subject) {
 			$class = get_class($subject);
 
 			if ($class == 'DOMElement')
@@ -15,18 +15,16 @@
 				$name = str_replace('models\\', '', strtolower($class));
 
 			switch ($name) {
-				default:
-					return 'Posts';
 				case 'comment':
-					return 'Comments';
+					return '\models\Comments';
 				case 'review':
-					return 'Reviews';
+					return '\models\Reviews';
 				case 'question':
-					return 'Questions';
+					return '\models\Questions';
 				case 'spoiler':
-					return 'Spoilers';
+					return '\models\Spoilers';
 				case 'extra':
-					return 'Extras';
+					return '\models\Extras';
 			}
 		}
 
@@ -96,8 +94,8 @@
 		public function getPostById($id) {
 			$post = $this->getElementById($id);
 
-			$class = '\\models\\'.Posts::classify($post);
-			return $class::createObjectFromElement($post);
+			$mapper = Posts::getMapperForItem($post);
+			return $mapper::createObjectFromElement($post);
 		}
 	}
 
@@ -162,8 +160,8 @@
 		public function getCommentById($id) {
 			$comment = $this->getElementById($id);
 
-			$class = '\\models\\'.Posts::classify($comment);
-			return $class::createObjectFromElement($comment);
+			$mapper = Posts::getMapperForItem($comment);
+			return $mapper::createObjectFromElement($comment);
 		}
 	}
 
@@ -316,8 +314,8 @@
 
 		public function current(): \models\Post {
 			$element = parent::current();
-			$class = '\\models\\'.Posts::classify($element);
-			return $class::createObjectFromElement($element);
+			$mapper = \models\Posts::getMapperForItem($element);
+			return $mapper::createObjectFromElement($element);
 		}
 	}
 ?>

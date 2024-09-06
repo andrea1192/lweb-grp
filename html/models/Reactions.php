@@ -6,23 +6,27 @@
 	class Reactions extends \models\XMLDocument {
 		protected const DOCUMENT_NAME = 'reactions';
 
-		public static function classify($element) {
+		public static function getMapperForItem($subject) {
+			$class = get_class($subject);
 
-			switch ($element->nodeName) {
-				default:
-					return 'Reactions';
+			if ($class == 'DOMElement')
+				$name = $subject->nodeName;
+			else
+				$name = str_replace('models\\', '', strtolower($class));
+
+			switch ($name) {
 				case 'like':
-					return 'Likes';
+					return '\models\Likes';
 				case 'usefulness':
-					return 'Usefulnesses';
+					return '\models\Usefulnesses';
 				case 'agreement':
-					return 'Agreements';
+					return '\models\Agreements';
 				case 'spoilage':
-					return 'Spoilages';
+					return '\models\Spoilages';
 				case 'answer':
-					return 'Answers';
+					return '\models\Answers';
 				case 'report':
-					return 'Reports';
+					return '\models\Reports';
 			}
 		}
 
@@ -64,8 +68,8 @@
 			$sum = 0;
 
 			foreach ($matches as $match) {
-				$class = '\\models\\'.Reactions::classify($match);
-				$reaction = $class::createObjectFromElement($match);
+				$mapper = Reactions::getMapperForItem($match);
+				$reaction = $mapper::createObjectFromElement($match);
 				$sum += $reaction->rating;
 			}
 
@@ -208,8 +212,8 @@
 
 		public function current(): \models\Reaction {
 			$element = parent::current();
-			$class = '\\models\\'.Reactions::classify($element);
-			return $class::createObjectFromElement($element);
+			$mapper = \models\Reactions::getMapperForItem($element);
+			return $mapper::createObjectFromElement($element);
 		}
 	}
 ?>
