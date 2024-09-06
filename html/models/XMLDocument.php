@@ -39,19 +39,11 @@
 			$this->document->save(static::getDocumentPath());
 		}
 
-		protected function queryDocument($query) {
-			return $this->xpath->query($query, $this->document);
-		}
-
-		protected function getElementById($id) {
-			return $this->document->getElementById($id);
-		}
-
 		public function save($object) {
 			$mapper = static::getMapperForItem($object);
 			$element = $mapper::createElementFromObject($object, $this->document);
 
-			if ($this->getElementById($object->id))
+			if ($this->document->getElementById($object->id))
 				$this->replaceElement($object->id, $element);
 			else
 				$this->appendElement($element);

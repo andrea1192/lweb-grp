@@ -60,14 +60,13 @@
 
 		public function getMovies() {
 			$query = "/movies/*";
+			$matches = $this->xpath->query($query);
 
-			$movies = $this->queryDocument($query);
-
-			return new \models\MovieList($movies);
+			return new \models\MovieList($matches);
 		}
 
 		public function getMovieById($id) {
-			$movie = $this->getElementById($id);
+			$movie = $this->document->getElementById($id);
 
 			return $this->createObjectFromElement($movie);
 		}
@@ -131,18 +130,16 @@
 
 		public function getRequests() {
 			$query = "/requests/*";
+			$matches = $this->xpath->query($query);
 
-			$requests = $this->queryDocument($query);
-
-			return new \models\RequestList($requests);
+			return new \models\RequestList($matches);
 		}
 
 		private function getRequestsByStatus($status) {
 			$query = "/requests/*[status='{$status}']";
+			$matches = $this->xpath->query($query);
 
-			$requests = $this->queryDocument($query);
-
-			return new \models\RequestList($requests);
+			return new \models\RequestList($matches);
 		}
 
 		public function getSubmittedRequests() {
@@ -158,7 +155,7 @@
 		}
 
 		public function getRequestById($id) {
-			$request = $this->getElementById($id);
+			$request = $this->document->getElementById($id);
 
 			return $this->createObjectFromElement($request);
 		}

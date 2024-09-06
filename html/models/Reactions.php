@@ -42,28 +42,28 @@
 
 		public function getReactionsByPost($post_id, $type = '*') {
 			$query = "/reactions/{$type}[@post='{$post_id}']";
-			$matches = $this->queryDocument($query);
+			$matches = $this->xpath->query($query);
 
 			return new \models\ReactionList($matches);
 		}
 
 		public function getReactionsByAuthor($author, $type = '*') {
 			$query = "/reactions/{$type}[@author='{$author}']";
-			$matches = $this->queryDocument($query);
+			$matches = $this->xpath->query($query);
 
 			return new \models\ReactionList($matches);
 		}
 
 		public function getReactionCountByPost($post_id, $type, $type_bin) {
 			$query = "/reactions/{$type}[@post='{$post_id}' and @type='{$type_bin}']";
-			$matches = $this->queryDocument($query);
+			$matches = $this->xpath->query($query);
 
 			return count($matches);
 		}
 
 		public function getReactionAverageByPost($post_id, $type) {
 			$query = "/reactions/{$type}[@post='{$post_id}']";
-			$matches = $this->queryDocument($query);
+			$matches = $this->xpath->query($query);
 
 			$sum = 0;
 
@@ -152,14 +152,14 @@
 
 		public function getAnswersByPost($post_id) {
 			$query = "/answers/answer[@post='{$post_id}']";
-			$matches = $this->queryDocument($query);
+			$matches = $this->xpath->query($query);
 
 			return new \models\ReactionList($matches);
 		}
 
 		public function getAnswersByAuthor($author) {
 			$query = "/answers/answer[@author='{$author}']";
-			$matches = $this->queryDocument($query);
+			$matches = $this->xpath->query($query);
 
 			return new \models\ReactionList($matches);
 		}
@@ -188,21 +188,21 @@
 
 		public function getReports() {
 			$query = "/reports/*";
-			$matches = $this->queryDocument($query);
+			$matches = $this->xpath->query($query);
 
 			return new \models\ReactionList($matches);
 		}
 
 		public function getReportsByAuthor($author) {
 			$query = "/reports/report[@author='{$author}']";
-			$matches = $this->queryDocument($query);
+			$matches = $this->xpath->query($query);
 
 			return new \models\ReactionList($matches);
 		}
 
 		public function getReportByPostIdAuthor($post_id, $author) {
 			$query = "/reports/report[@post='{$post_id}' and @author='{$author}']";
-			$match = $this->queryDocument($query)->item(0);
+			$match = $this->xpath->query($query)->item(0);
 
 			return $this->createObjectFromElement($match);
 		}

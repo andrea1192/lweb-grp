@@ -77,22 +77,20 @@
 
 		public function getPostsByMovie($movie_id, $type = '*') {
 			$query = "/posts/{$type}[@movie='{$movie_id}']";
-
-			$matches = $this->queryDocument($query);
+			$matches = $this->xpath->query($query);
 
 			return new \models\PostList($matches);
 		}
 
 		public function getPostsByAuthor($author, $type = '*') {
 			$query = "/posts/{$type}[@author='{$author}']";
-
-			$matches = $this->queryDocument($query);
+			$matches = $this->xpath->query($query);
 
 			return new \models\PostList($matches);
 		}
 
 		public function getPostById($id) {
-			$post = $this->getElementById($id);
+			$post = $this->document->getElementById($id);
 
 			$mapper = Posts::getMapperForItem($post);
 			return $mapper::createObjectFromElement($post);
@@ -143,22 +141,20 @@
 
 		public function getCommentsByRequest($movie_id) {
 			$query = "/comments/comment[@request='{$movie_id}']";
-
-			$matches = $this->queryDocument($query);
+			$matches = $this->xpath->query($query);
 
 			return new \models\PostList($matches);
 		}
 
 		public function getCommentsByAuthor($author) {
 			$query = "/comments/comment[@author='{$author}']";
-
-			$matches = $this->queryDocument($query);
+			$matches = $this->xpath->query($query);
 
 			return new \models\PostList($matches);
 		}
 
 		public function getCommentById($id) {
-			$comment = $this->getElementById($id);
+			$comment = $this->document->getElementById($id);
 
 			$mapper = Posts::getMapperForItem($comment);
 			return $mapper::createObjectFromElement($comment);
