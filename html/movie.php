@@ -54,6 +54,42 @@
 					header("Location: {$nextView->generateURL()}");
 					break;
 
+				case 'accept':
+					// TODO: Aggiungi controlli privilegi con ev. redirect
+					if (isset($_GET['id'])) {
+						$request_id = $_GET['id'];
+
+						$requests = ServiceLocator::resolve('requests');
+						$movies = ServiceLocator::resolve('movies');
+
+						$request = $requests->getRequestById($request_id);
+						$movie = \models\Movie::createMovieFromRequest($request);
+
+						$request->status = 'accepted';
+						$requests->save($request);
+						$movies->save($movie);
+					}
+
+					$nextView = \views\Movie::factoryMethod($this->session, $movie);
+					header("Location: {$nextView->generateURL()}");
+					break;
+
+				case 'reject':
+					// TODO: Aggiungi controlli privilegi con ev. redirect
+					if (isset($_GET['id'])) {
+						$request_id = $_GET['id'];
+
+						$requests = ServiceLocator::resolve('requests');
+						$request = $requests->getRequestById($request_id);
+
+						$request->status = 'rejected';
+						$requests->save($request);
+					}
+
+					$nextView = \views\Movie::factoryMethod($this->session, $request);
+					header("Location: {$nextView->generateURL()}");
+					break;
+
 				case 'delete':
 					// TODO: Aggiungi controlli privilegi con ev. redirect
 					if (isset($_GET['id'])) {

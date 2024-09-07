@@ -19,6 +19,8 @@
 				case 'display': return "movie.php?id={$this->movie->id}";
 				case 'edit': return "movie.php?id={$this->movie->id}&action=edit";
 				case 'save': return "movie.php?id={$this->movie->id}&action=save";
+				case 'accept': return "movie.php?id={$this->movie->id}&action=accept";
+				case 'reject': return "movie.php?id={$this->movie->id}&action=reject";
 				case 'delete': return "movie.php?id={$this->movie->id}&action=delete";
 			}
 		}
@@ -205,16 +207,17 @@
 			$left = '';
 			$right = '';
 
-			$components = '\views\UIComponents';
+			if ($this->movie->status == 'submitted') {
 
-			if ($this->session->isMod()) {
-				$left .= UIComponents::getTonalButton('Approve request', 'check', '#');
-				$left .= UIComponents::getOutlinedButton('Decline request', 'close', '#');
-			}
+				if ($this->session->isMod()) {
+					$left .= UIComponents::getTonalButton('Accept request', 'check', $this->generateURL('accept'));
+					$left .= UIComponents::getOutlinedButton('Reject request', 'close', $this->generateURL('reject'));
+				}
 
-			if ($this->session->isAdmin()) {
-				$right .= UIComponents::getOutlinedButton('', 'edit', $this->generateURL('edit'));
-				$right .= UIComponents::getOutlinedButton('', 'delete', $this->generateURL('delete'));
+				if ($this->session->isAdmin()) {
+					$right .= UIComponents::getOutlinedButton('', 'edit', $this->generateURL('edit'));
+					$right .= UIComponents::getOutlinedButton('', 'delete', $this->generateURL('delete'));
+				}
 			}
 
 			return <<<EOF

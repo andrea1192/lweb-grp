@@ -5,8 +5,20 @@
 
 	abstract class AbstractMovies extends \models\XMLDocument {
 
-		public static function getMapperForItem($object) {
-			return '\models\Requests';
+		public static function getMapperForItem($subject) {
+			$class = get_class($subject);
+
+			if ($class == 'DOMElement')
+				$name = $subject->nodeName;
+			else
+				$name = str_replace('models\\', '', strtolower($class));
+
+			switch ($name) {
+				case 'movie':
+					return '\models\Movies';
+				case 'request':
+					return '\models\Requests';
+			}
 		}
 
 		public static function createObjectFromElement($element, $object = null) {
@@ -58,6 +70,27 @@
 			$object->posts = self::getMapper('posts')->getPostsByMovie($object->id);
 
 			return $object;
+		}
+
+		public static function createElementFromObject($object, $document, $element = null) {
+			if (!$element)
+				$element = $document->createElement('movie');
+
+			$element = parent::createElementFromObject($object, $document, $element);
+			$keys = [
+				'duration' => '',
+				'summary' => '',
+				'director' => '',
+				'writer' => ''
+			];
+
+			foreach ($keys as $key => $value) {
+				$keys[$key] = $document->createElement($key);
+				$keys[$key]->textContent = $object->$key;
+				$element->appendChild($keys[$key]);
+			}
+
+			return $element;
 		}
 
 		public function getMovies() {
