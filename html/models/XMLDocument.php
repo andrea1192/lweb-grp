@@ -4,7 +4,6 @@
 		protected const SCHEMAS_ROOT = 'schemas/';
 		protected const DOCUMENT_ROOT = 'static/';
 		protected const DOCUMENT_NAME = '';
-		protected const ROOT_ELEMENT = '';
 
 		protected $document;
 		protected $xpath;
@@ -41,12 +40,23 @@
 
 		public function save($object) {
 			$mapper = static::getMapperForItem($object);
+
+			if (empty($object->id)) {
+				$root = $mapper::DOCUMENT_NAME;
+				$elem = $mapper::ELEMENT_NAME;
+				$prefix = $mapper::ID_PREFIX;
+
+				$object->id = $this->generateID($root, $elem, $prefix);
+			}
+
 			$element = $mapper::createElementFromObject($object, $this->document);
 
 			if ($this->document->getElementById($object->id))
 				$this->replaceElement($object->id, $element);
 			else
 				$this->appendElement($element);
+
+			return $object;
 		}
 
 		protected function replaceElement($id, $node) {
@@ -64,6 +74,23 @@
 			$element->parentNode->removeChild($element);
 
 			$this->saveDocument();
+		}
+
+		protected function generateID($root, $element, $prefix) {
+			$query = "/{$root}/{$element}/@id";
+			$nodes = $this->xpath->evaluate($query);
+
+			$largest = 0;
+
+			foreach ($nodes as $node) {
+				$id = $node->nodeValue;
+				$id = preg_replace("/{$prefix}/", '', $id);
+
+				if ($id > $largest)
+					$largest = $id;
+			}
+
+			return $prefix.++$largest;
 		}
 	}
 ?>

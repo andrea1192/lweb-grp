@@ -73,6 +73,8 @@
 				$this->movie = $this->getMapper('movies')->getMovieById($movie_id);
 			else
 				$this->movie = $this->getMapper('requests')->getRequestById($movie_id);
+
+			$this->post->movie = $this->movie->id;
 		}
 
 		public function printTitle() {

@@ -53,6 +53,12 @@
 							$redir = "movie.php?id={$post->request}&tab={$_POST['type']}";
 						}
 
+						if (empty($post->author))
+							$post->author = ServiceLocator::resolve('session')->getUsername();
+
+						if (empty($post->date))
+							$post->date = date('c');
+
 						if (isset($_POST['rating']))
 							$post->rating = $_POST['rating'];
 						if (isset($_POST['featured']))

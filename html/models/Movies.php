@@ -42,6 +42,8 @@
 
 	class Movies extends AbstractMovies {
 		protected const DOCUMENT_NAME = 'movies';
+		protected const ELEMENT_NAME = 'movie';
+		protected const ID_PREFIX = 'm';
 
 		public static function createObjectFromElement($element, $object = null) {
 			if (!$object)
@@ -74,6 +76,8 @@
 
 	class Requests extends AbstractMovies {
 		protected const DOCUMENT_NAME = 'requests';
+		protected const ELEMENT_NAME = 'request';
+		protected const ID_PREFIX = 'req';
 
 		public static function createObjectFromElement($element, $object = null) {
 			if (!$object)
@@ -115,7 +119,7 @@
 			foreach ($keys as $key => $value) {
 				$keys[$key] = $document->createElement($key);
 
-				if ($object->$key != 'N/A') {
+				if (!empty($object->key) && $object->$key != 'N/A') {
 					$keys[$key]->textContent = $object->$key;
 					$element->appendChild($keys[$key]);
 				}

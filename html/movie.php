@@ -43,8 +43,11 @@
 						$movie->director = $_POST['director'];
 						$movie->writer = $_POST['writer'];
 
+						if (empty($movie->status))
+							$movie->status = 'submitted';
+
 						$mapper = ServiceLocator::resolve('requests');
-						$mapper->save($movie);
+						$movie = $mapper->save($movie);
 					}
 
 					$nextView = \views\Movie::factoryMethod($this->session, $movie);
