@@ -15,7 +15,7 @@
 		<text>It needs work, but the movie is good</text>
 	</comment>
 
-	<comment id="c3" request="req2" author="foo" date="2020-01-01T00:00:00">
+	<comment id="c3" request="req3" author="foo" date="2020-01-01T00:00:00">
 		<rating>ok</rating>
 		<title>Comment 3</title>
 		<text>Perfect</text>
