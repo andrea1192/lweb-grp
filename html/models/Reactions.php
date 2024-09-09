@@ -170,7 +170,7 @@
 
 		public static function createObjectFromElement($element, $object = null) {
 			if (!$object)
-				$object = new Answer();
+				$object = new Report();
 
 			$object = parent::createObjectFromElement($element, $object);
 			$unavail = new class {public $textContent = 'N/A';};

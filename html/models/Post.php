@@ -53,4 +53,7 @@
 	class Extra extends Post {
 		public $reputation;
 	}
+
+
+	class DeletedPost extends Post {}
 ?>

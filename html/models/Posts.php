@@ -7,6 +7,9 @@
 		protected const DOCUMENT_NAME = 'posts';
 
 		public static function getMapperForItem($subject) {
+			if (!$subject)
+				return '\models\DeletedPosts';
+
 			$class = get_class($subject);
 
 			if ($class == 'DOMElement')
@@ -300,6 +303,13 @@
 			$element = parent::mapCommonElements($object, $document, $element);
 
 			return $element;
+		}
+	}
+
+	class DeletedPosts extends Posts {
+
+		public static function createObjectFromElement($element, $object = null) {
+			return new DeletedPost();
 		}
 	}
 
