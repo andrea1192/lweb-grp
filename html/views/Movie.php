@@ -68,7 +68,7 @@
 				<div class="blur">
 					<div id="overview" class="flex wrapper">
 						{$poster}
-						<div id="description" class="flex column">
+						<div id="description" class="flex">
 							<h1>{$this->movie->title}</h1>
 							<div>{$this->movie->year}, {$this->movie->duration}'</div>
 							<p>{$this->movie->summary}</p>
@@ -103,7 +103,7 @@
 				<div class="blur">
 					<form id="overview" class="flex wrapper" method="post" action="{$action}">
 						{$poster}
-						<div id="description" class="flex fields column">
+						<div id="description" class="flex fields">
 							{$components::getHiddenInput('id', $this->movie->id)}
 							{$components::getHiddenInput('status', $this->movie->status)}
 							{$components::getFilledTextInput('Title', 'title', $this->movie->title)}

@@ -83,7 +83,7 @@
 
 			echo <<<EOF
 			<form class="post" method="post" action="{$action}">
-				<div class="flex fields column">
+				<div class="flex column">
 					{$components::getHiddenInput('type', $this->getPostType())}
 					{$components::getHiddenInput('id', $this->post->id)}
 					{$reference_field}

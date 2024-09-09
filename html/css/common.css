@@ -32,6 +32,7 @@
 
 .flex.column {
 	flex-direction: column;
+	gap: 10px;
 }
 
 .right {
@@ -201,6 +202,7 @@ body {
 
 #description {
 	flex: 1;
+	flex-direction: column;
 }
 
 #description h1 {

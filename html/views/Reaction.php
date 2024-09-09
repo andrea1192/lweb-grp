@@ -19,7 +19,7 @@
 			return <<<EOF
 			<div class="answers">
 				<form class="answer" method="post" action="">
-					<div class="flex fields column">
+					<div class="flex column">
 						{$text}
 						<div class="flex footer">
 							<div class="flex left">
@@ -67,7 +67,7 @@
 			return <<<EOF
 			<div class="answers">
 				<form class="answer" method="post" action="">
-					<div class="flex fields column">
+					<div class="flex column">
 						{$message}
 						{$response}
 						<div class="flex footer">
@@ -94,7 +94,7 @@
 			return <<<EOF
 			<div class="answers">
 				<form class="answer" method="post" action="">
-					<div class="flex fields column">
+					<div class="flex column">
 						{$message}
 						<div class="flex footer">
 							<div class="flex left">
@@ -122,7 +122,7 @@
 			return <<<EOF
 			<div class="answers">
 				<form class="answer" method="post" action="">
-					<div class="flex fields column">
+					<div class="flex column">
 						{$message}
 						{$response}
 						<div class="flex footer">

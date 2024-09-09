@@ -75,7 +75,7 @@ button.fab:enabled:hover,
 	border-radius: 12px;
 	padding: 30px;
 	background-color: #FFFF;
-	gap: 26px;
+	gap: 26px !important;
 }
 
 .dialog >h1 {
@@ -140,6 +140,11 @@ button,
 button.colored,
 .button.colored {
 	color: dodgerblue !important;
+}
+
+button.danger,
+.button.danger {
+	color: red !important;
 }
 
 /* Bottone testuale (text) */
@@ -258,13 +263,9 @@ button:hover >.dropdown,
 	background-color: transparent;
 }*/
 
+form #fields,
 form .fields {
-	gap: 10px;
-}
-
-form .fields:has(>label >input.filled),
-form .fields:has(>label >textarea.filled) {
-	gap: 25px;
+	gap: 26px;
 }
 
 label {
