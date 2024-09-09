@@ -160,6 +160,15 @@
 			EOF;
 		}
 
+		public static function getPasswordInput($label, $name, $value = '', $cls = '') {
+			return <<<EOF
+			<label>
+				<span class="label">{$label}</span>
+				<input class="{$cls}" value="{$value}" name="{$name}" type="password" />
+			</label>
+			EOF;
+		}
+
 		public static function getTextInput($label, $name, $value = '', $cls = '') {
 			return <<<EOF
 			<label>

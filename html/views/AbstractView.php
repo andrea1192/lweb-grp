@@ -53,7 +53,7 @@
 				</div>
 				EOF;
 
-				$dropdown_items = UIComponents::getDropdownItem('Profile', 'person');
+				$dropdown_items = UIComponents::getDropdownItem('Profile', 'person', 'profile.php');
 
 				if ($this->session->isAdmin()) {
 					$dropdown_items .= UIComponents::getDropdownItem('Users', 'group');
@@ -73,7 +73,7 @@
 				EOF;
 			} else {
 
-				return UIComponents::getOutlinedButton('Sign in', 'login', '#', cls: 'colored');
+				return UIComponents::getOutlinedButton('Sign in', 'login', 'login.php', cls: 'colored');
 			}
 		}
 
