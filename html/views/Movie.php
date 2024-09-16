@@ -13,16 +13,22 @@
 		}
 
 		public function generateURL($action = 'display') {
+			$URL = "movie.php?id={$this->movie->id}";
 
 			switch ($action) {
 				default:
-				case 'display': return "movie.php?id={$this->movie->id}";
-				case 'edit': return "movie.php?id={$this->movie->id}&action=edit";
-				case 'save': return "movie.php?id={$this->movie->id}&action=save";
-				case 'accept': return "movie.php?id={$this->movie->id}&action=accept";
-				case 'reject': return "movie.php?id={$this->movie->id}&action=reject";
-				case 'delete': return "movie.php?id={$this->movie->id}&action=delete";
+				case 'display':
+					break;
+				case 'edit':
+				case 'save':
+				case 'accept':
+				case 'reject':
+				case 'delete':
+					$URL .= "&action={$action}";
+					break;
 			}
+
+			return htmlspecialchars($URL, ENT_QUOTES | ENT_SUBSTITUTE | ENT_XHTML);
 		}
 
 		public function displayReference() {
@@ -143,7 +149,7 @@
 			}
 
 			return <<<EOF
-			<div id="poster" class="poster" {$poster}>
+			<div class="poster" {$poster}>
 				{$status}
 				{$placeholder}
 			</div>

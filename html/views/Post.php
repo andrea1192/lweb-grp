@@ -15,15 +15,24 @@
 		}
 
 		public function generateURL($action = 'display') {
+			$URL = "post.php?id={$this->post->id}";
 
 			switch ($action) {
 				default:
-				case 'display': return "post.php?id={$this->post->id}";
-				case 'edit': return "post.php?id={$this->post->id}&action=edit";
-				case 'save': return "post.php?id={$this->post->id}&action=save";
-				case 'delete': return "post.php?id={$this->post->id}&type={$this->getPostType()}&action=delete";
-				case 'report': return "post.php?id={$this->post->id}&action=report";
+				case 'display':
+					break;
+				case 'edit':
+				case 'save':
+				case 'answer':
+				case 'report':
+					$URL .= "&action={$action}";
+					break;
+				case 'delete':
+					$URL .= "&type={$this->getPostType()}&action=delete";
+					break;
 			}
+
+			return htmlspecialchars($URL, ENT_QUOTES | ENT_SUBSTITUTE | ENT_XHTML);
 		}
 
 		public function displayReference($active = true, $reactions = '') {
@@ -318,7 +327,7 @@
 		protected function generateActionButtons() {
 
 			if ($this->session->isAllowed())
-				return UIComponents::getOutlinedButton('Answer', 'comment', "post.php?id={$this->post->id}&action=answer", cls: 'colored');
+				return UIComponents::getOutlinedButton('Answer', 'comment', $this->generateURL('answer'), cls: 'colored');
 		}
 
 		protected function generateAnswers() {

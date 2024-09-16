@@ -60,10 +60,11 @@
 				];
 
 				$URL = $base_URL.'?'.http_build_query($query);
+				$URL = htmlspecialchars($URL, ENT_QUOTES | ENT_SUBSTITUTE | ENT_XHTML);
 
 				$active = ($this->tab == $tab) ? 'class="active"' : '';
 
-				print("<li><a href=\"{$URL}\" {$active}>{$label}</a></li>");
+				print("<li><a href=\"{$URL}\" {$active}>{$label}</a></li>\n");
 			}
 		}
 
@@ -88,9 +89,11 @@
 		}
 
 		public function printActionButton() {
+			$URL = "post.php?action=create&tab={$this->tab}&movie={$this->movie->id}";
+			$URL = htmlspecialchars($URL, ENT_QUOTES | ENT_SUBSTITUTE | ENT_XHTML);
 
 			if ($this->session->isAllowed())
-				print(UIComponents::getFAB('New post', 'add', "post.php?action=create&tab={$this->tab}&movie={$this->movie->id}"));
+				print(UIComponents::getFAB('New post', 'add', $URL));
 		}
 
 		public function render() {

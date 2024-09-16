@@ -22,7 +22,7 @@
 
 			echo <<<EOF
 			<form id="login" class="dialog flex column" action="" method="get">
-				{$components::getIcon('login')}
+				<div>{$components::getIcon('login')}</div>
 				<h1>Sign in</h1>
 				<div id="fields" class="flex column">
 					{$components::getTextInput('Username', 'user')}
@@ -52,7 +52,7 @@
 
 			echo <<<EOF
 			<form id="login" class="dialog flex column" action="" method="get">
-				{$components::getIcon('account_circle')}
+				<div>{$components::getIcon('account_circle')}</div>
 				<h1>Create Account</h1>
 				<div id="fields" class="flex column">
 					{$components::getTextInput('Username*', 'user')}
@@ -93,7 +93,7 @@
 
 			echo <<<EOF
 			<form id="login" class="dialog flex column" action="" method="get">
-				{$components::getIcon('account_circle')}
+				<div>{$components::getIcon('account_circle')}</div>
 				<h1>{$this->user}</h1>
 				<div id="fields" class="flex column">
 					{$components::getPasswordInput('Password', 'pass')}
