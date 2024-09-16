@@ -22,7 +22,7 @@
 		public $movie;
 		public $posts;
 
-		public function __construct($session, $movie_id, $tab = 'question') {
+		public function __construct($session, $movie_id, $tab) {
 			parent::__construct($session);
 			$tabs = static::TABS;
 

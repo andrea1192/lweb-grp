@@ -6,6 +6,10 @@
 	abstract class AbstractController {
 		protected $session;
 
+		protected static function sanitize($input) {
+			return htmlspecialchars($input, ENT_QUOTES | ENT_SUBSTITUTE | ENT_XHTML);
+		}
+
 		public function __construct() {
 
 			ServiceLocator::register('session', function() {

@@ -6,21 +6,20 @@
 	class MovieController extends AbstractController {
 
 		public function route() {
-			$action = $_GET['action'] ?? '';
-			$movie = $_GET['id'] ?? 'm1';
-			$tab = $_GET['tab'] ?? 'question';
+			$movie_id = static::sanitize($_GET['id'] ?? '');
+			$tab = static::sanitize($_GET['tab'] ?? 'question');
 
-			switch ($action) {
+			switch ($_GET['action'] ?? '') {
 
 				default:
 				case 'display':
-					$view = new \views\MovieView($this->session, $movie, $tab);
+					$view = new \views\MovieView($this->session, $movie_id, $tab);
 					$view->render();
 					break;
 
 				case 'edit':
 					// TODO: Aggiungi controlli privilegi con ev. redirect
-					$view = new \views\MovieEditView($this->session, $movie);
+					$view = new \views\MovieEditView($this->session, $movie_id);
 					$view->render();
 					break;
 
@@ -34,14 +33,14 @@
 					// TODO: Aggiungi controlli privilegi con ev. redirect
 					if (isset($_POST)) {
 						$movie = new \models\Request();
-						$movie->id = $_POST['id'];
-						$movie->status = $_POST['status'];
-						$movie->title = $_POST['title'];
-						$movie->year = $_POST['year'];
-						$movie->duration = $_POST['duration'];
-						$movie->summary = $_POST['summary'];
-						$movie->director = $_POST['director'];
-						$movie->writer = $_POST['writer'];
+						$movie->id = static::sanitize($_POST['id']);
+						$movie->status = static::sanitize($_POST['status']);
+						$movie->title = static::sanitize($_POST['title']);
+						$movie->year = static::sanitize($_POST['year']);
+						$movie->duration = static::sanitize($_POST['duration']);
+						$movie->summary = static::sanitize($_POST['summary']);
+						$movie->director = static::sanitize($_POST['director']);
+						$movie->writer = static::sanitize($_POST['writer']);
 
 						if (empty($movie->status))
 							$movie->status = 'submitted';
@@ -57,7 +56,7 @@
 				case 'accept':
 					// TODO: Aggiungi controlli privilegi con ev. redirect
 					if (isset($_GET['id'])) {
-						$request_id = $_GET['id'];
+						$request_id = static::sanitize($_GET['id']);
 
 						$requests = ServiceLocator::resolve('requests');
 						$movies = ServiceLocator::resolve('movies');
@@ -77,7 +76,7 @@
 				case 'reject':
 					// TODO: Aggiungi controlli privilegi con ev. redirect
 					if (isset($_GET['id'])) {
-						$request_id = $_GET['id'];
+						$request_id = static::sanitize($_GET['id']);
 
 						$requests = ServiceLocator::resolve('requests');
 						$request = $requests->getRequestById($request_id);
@@ -93,7 +92,7 @@
 				case 'delete':
 					// TODO: Aggiungi controlli privilegi con ev. redirect
 					if (isset($_GET['id'])) {
-						$movie = $_GET['id'];
+						$movie = static::sanitize($_GET['id']);
 
 						$mapper = ServiceLocator::resolve('requests');
 						$mapper->delete($movie);

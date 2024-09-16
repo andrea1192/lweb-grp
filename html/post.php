@@ -6,51 +6,53 @@
 	class PostController extends AbstractController {
 
 		public function route() {
-			$action = $_GET['action'] ?? '';
-			$post = $_GET['id'] ?? '';
-			$tab = $_GET['tab'] ?? 'question';
-			$movie_ref = $_GET['movie'] ?? 'm1';
-			$post_ref = $_GET['post'] ?? 'q1';
+			$post_id = static::sanitize($_GET['id'] ?? '');
 
-			switch ($action) {
+			switch ($_GET['action'] ?? '') {
 
 				default:
 				case 'display':
-					$view = new \views\PostView($this->session, $post);
+					$view = new \views\PostView($this->session, $post_id);
 					$view->render();
 					break;
 
 				case 'edit':
 					// TODO: Aggiungi controlli privilegi con ev. redirect
-					$view = new \views\PostEditView($this->session, $post);
+					$view = new \views\PostEditView($this->session, $post_id);
 					$view->render();
 					break;
 
 				case 'create':
 					// TODO: Aggiungi controlli privilegi con ev. redirect
-					$view = new \views\PostCreateView($this->session, $tab, $movie_ref);
-					$view->render();
+					if (isset($_GET['movie']) && isset($_GET['tab'])) {
+						$movie_ref = static::sanitize($_GET['movie']);
+						$type = static::sanitize($_GET['tab']);
+
+						$view = new \views\PostCreateView($this->session, $type, $movie_ref);
+						$view->render();
+					}
 					break;
 
 				case 'save':
 					// TODO: Aggiungi controlli privilegi con ev. redirect
 					if (isset($_POST)) {
+						$type = static::sanitize($_POST['type']);
 
-						$post = \models\Post::createPost($_POST['type']);
-						$post->id = $_POST['id'];
-						$post->author = $_POST['author'];
-						$post->date = $_POST['date'];
-						$post->title = $_POST['title'];
-						$post->text = $_POST['text'];
+						$post = \models\Post::createPost($type);
+						$post->id = static::sanitize($_POST['id']);
+						$post->author = static::sanitize($_POST['author']);
+						$post->date = static::sanitize($_POST['date']);
+						$post->title = static::sanitize($_POST['title']);
+						$post->text = static::sanitize($_POST['text']);
 
 						if (isset($_POST['movie'])) {
-							$post->movie = $_POST['movie'];
+							$post->movie = static::sanitize($_POST['movie']);
 							$mapper = ServiceLocator::resolve('posts');
-							$redir = "movie.php?id={$post->movie}&tab={$_POST['type']}";
+							$redir = "movie.php?id={$post->movie}&tab={$type}";
 						} else {
-							$post->request = $_POST['request'];
+							$post->request = static::sanitize($_POST['request']);
 							$mapper = ServiceLocator::resolve('comments');
-							$redir = "movie.php?id={$post->request}&tab={$_POST['type']}";
+							$redir = "movie.php?id={$post->request}&tab={$type}";
 						}
 
 						if (empty($post->author))
@@ -60,13 +62,13 @@
 							$post->date = date('c');
 
 						if (isset($_POST['rating']))
-							$post->rating = $_POST['rating'];
+							$post->rating = static::sanitize($_POST['rating']);
 						if (isset($_POST['featured']))
-							$post->featured = $_POST['featured'];
+							$post->featured = static::sanitize($_POST['featured']);
 						if (isset($_POST['featuredAnswer']))
-							$post->featuredAnswer = $_POST['featuredAnswer'];
+							$post->featuredAnswer = static::sanitize($_POST['featuredAnswer']);
 						if (isset($_POST['reputation']))
-							$post->reputation = $_POST['reputation'];
+							$post->reputation = static::sanitize($_POST['reputation']);
 
 						$mapper->save($post);
 					}
@@ -76,16 +78,18 @@
 
 				case 'delete':
 					// TODO: Aggiungi controlli privilegi con ev. redirect
-					if (isset($_GET['type'])) {
+					if (isset($_GET['type']) && isset($_GET['id'])) {
+						$type = static::sanitize($_GET['type']);
+						$id = static::sanitize($_GET['id']);
 
-						if ($_GET['type'] != 'comment') {
+						if ($type != 'comment') {
 							$mapper = ServiceLocator::resolve('posts');
-							$post = $mapper->getPostById($_GET['id']);
-							$redir = "movie.php?id={$post->movie}&tab={$_GET['type']}";
+							$post = $mapper->getPostById($id);
+							$redir = "movie.php?id={$post->movie}&tab={$type}";
 						} else {
 							$mapper = ServiceLocator::resolve('comments');
-							$post = $mapper->getCommentById($_GET['id']);
-							$redir = "movie.php?id={$post->request}&tab={$_GET['type']}";
+							$post = $mapper->getCommentById($id);
+							$redir = "movie.php?id={$post->request}&tab={$type}";
 						}
 
 						$mapper->delete($post->id);
@@ -96,13 +100,13 @@
 
 				case 'answer':
 					// TODO: Aggiungi controlli privilegi con ev. redirect
-					$view = new \views\ReactionCreateView($this->session, 'answer', $post);
+					$view = new \views\ReactionCreateView($this->session, 'answer', $post_id);
 					$view->render();
 					break;
 
 				case 'report':
 					// TODO: Aggiungi controlli privilegi con ev. redirect
-					$view = new \views\ReactionCreateView($this->session, 'report', $post);
+					$view = new \views\ReactionCreateView($this->session, 'report', $post_id);
 					$view->render();
 					break;
 			}
