@@ -152,7 +152,8 @@
 			foreach ($keys as $key => $value) {
 				$keys[$key] = $document->createElement($key);
 
-				if (!empty($object->key) && $object->$key != 'N/A') {
+				if (!empty($object->$key) && $object->$key != 'N/A') {
+
 					$keys[$key]->textContent = $object->$key;
 					$element->appendChild($keys[$key]);
 				}
