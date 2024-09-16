@@ -6,7 +6,10 @@
 	class MovieController extends AbstractController {
 
 		public function route() {
-			$movie_id = static::sanitize($_GET['id'] ?? '');
+			if (!isset($_GET['id']))
+				die('Movie ID missing from query string');
+
+			$movie_id = static::sanitize($_GET['id']);
 			$tab = static::sanitize($_GET['tab'] ?? 'question');
 
 			switch ($_GET['action'] ?? '') {
@@ -55,19 +58,17 @@
 
 				case 'accept':
 					// TODO: Aggiungi controlli privilegi con ev. redirect
-					if (isset($_GET['id'])) {
-						$request_id = static::sanitize($_GET['id']);
+					$request_id = $movie_id;
 
-						$requests = ServiceLocator::resolve('requests');
-						$movies = ServiceLocator::resolve('movies');
+					$requests = ServiceLocator::resolve('requests');
+					$movies = ServiceLocator::resolve('movies');
 
-						$request = $requests->getRequestById($request_id);
-						$movie = \models\Movie::createMovieFromRequest($request);
+					$request = $requests->getRequestById($request_id);
+					$movie = \models\Movie::createMovieFromRequest($request);
 
-						$request->status = 'accepted';
-						$requests->save($request);
-						$movies->save($movie);
-					}
+					$request->status = 'accepted';
+					$requests->save($request);
+					$movies->save($movie);
 
 					$nextView = \views\Movie::factoryMethod($this->session, $movie);
 					header("Location: {$nextView->generateURL()}");
@@ -75,15 +76,13 @@
 
 				case 'reject':
 					// TODO: Aggiungi controlli privilegi con ev. redirect
-					if (isset($_GET['id'])) {
-						$request_id = static::sanitize($_GET['id']);
+					$request_id = $movie_id;
 
-						$requests = ServiceLocator::resolve('requests');
-						$request = $requests->getRequestById($request_id);
+					$requests = ServiceLocator::resolve('requests');
+					$request = $requests->getRequestById($request_id);
 
-						$request->status = 'rejected';
-						$requests->save($request);
-					}
+					$request->status = 'rejected';
+					$requests->save($request);
 
 					$nextView = \views\Movie::factoryMethod($this->session, $request);
 					header("Location: {$nextView->generateURL()}");
@@ -91,12 +90,8 @@
 
 				case 'delete':
 					// TODO: Aggiungi controlli privilegi con ev. redirect
-					if (isset($_GET['id'])) {
-						$movie = static::sanitize($_GET['id']);
-
-						$mapper = ServiceLocator::resolve('requests');
-						$mapper->delete($movie);
-					}
+					$mapper = ServiceLocator::resolve('requests');
+					$mapper->delete($movie_id);
 
 					header('Location: movies.php?action=list_requests');
 					break;

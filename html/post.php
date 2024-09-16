@@ -6,7 +6,10 @@
 	class PostController extends AbstractController {
 
 		public function route() {
-			$post_id = static::sanitize($_GET['id'] ?? '');
+			if (!isset($_GET['id']))
+				die('Post ID missing from query string');
+
+			$post_id = static::sanitize($_GET['id']);
 
 			switch ($_GET['action'] ?? '') {
 
@@ -78,17 +81,16 @@
 
 				case 'delete':
 					// TODO: Aggiungi controlli privilegi con ev. redirect
-					if (isset($_GET['type']) && isset($_GET['id'])) {
+					if (isset($_GET['type'])) {
 						$type = static::sanitize($_GET['type']);
-						$id = static::sanitize($_GET['id']);
 
 						if ($type != 'comment') {
 							$mapper = ServiceLocator::resolve('posts');
-							$post = $mapper->getPostById($id);
+							$post = $mapper->getPostById($post_id);
 							$redir = "movie.php?id={$post->movie}&tab={$type}";
 						} else {
 							$mapper = ServiceLocator::resolve('comments');
-							$post = $mapper->getCommentById($id);
+							$post = $mapper->getCommentById($post_id);
 							$redir = "movie.php?id={$post->request}&tab={$type}";
 						}
 
