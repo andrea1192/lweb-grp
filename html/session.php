@@ -2,7 +2,7 @@
 
 	class MockSession {
 		private $username = 'bar';
-		private $privilege = 2;
+		private $privilege = 3;
 		private $reputation = 42;
 
 		public function getUsername() {
