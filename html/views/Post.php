@@ -17,7 +17,7 @@
 		}
 
 		public function generateURL($action = 'display') {
-			$URL = "post.php?id={$this->post->id}";
+			$URL = "post.php?id={$this->post->id}&type={$this->getPostType()}";
 
 			switch ($action) {
 				default:
@@ -27,10 +27,9 @@
 				case 'save':
 				case 'answer':
 				case 'report':
-					$URL .= "&action={$action}";
-					break;
 				case 'delete':
-					$URL .= "&type={$this->getPostType()}&action=delete";
+				case 'elevate':
+					$URL .= "&action={$action}";
 					break;
 			}
 
@@ -229,7 +228,7 @@
 			$html = '';
 
 			if ($this->session->isMod() && !$this->post->featured)
-				$html .= UIComponents::getTextButton('Elevate question', 'verified', '#');
+				$html .= UIComponents::getTextButton('Elevate question', 'verified', $this->generateURL('elevate'));
 
 			if ($this->session->isAllowed())
 				$html .= UIComponents::getOutlinedButton('Answer', 'comment', $this->generateURL('answer'), cls: 'colored');

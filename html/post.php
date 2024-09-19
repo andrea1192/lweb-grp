@@ -7,7 +7,7 @@
 
 		public function route() {
 			$post_id = static::sanitize($_GET['id'] ?? '');
-			$post_type = static::sanitize($_GET['type'] ?? $_POST['type']);
+			$post_type = static::sanitize($_GET['type'] ?? $_POST['type'] ?? '');
 
 			switch ($_GET['action'] ?? '') {
 
@@ -101,6 +101,28 @@
 					// TODO: Aggiungi controlli privilegi con ev. redirect
 					$view = new \views\ReactionCreateView($this->session, 'report', $post_id);
 					$view->render();
+					break;
+
+				case 'elevate':
+					$mapper = ServiceLocator::resolve('posts');
+					$post = $mapper->getPostById($post_id);
+
+					$post->featured = true;
+					$mapper->save($post);
+
+					header("Location: {$_SERVER['HTTP_REFERER']}");
+					break;
+
+				case 'select_answer':
+					$answer_id = static::sanitize($_GET['answer']);
+
+					$mapper = ServiceLocator::resolve('posts');
+					$post = $mapper->getPostById($post_id);
+
+					$post->featuredAnswer = $answer_id;
+					$mapper->save($post);
+
+					header("Location: {$_SERVER['HTTP_REFERER']}");
 					break;
 			}
 		}

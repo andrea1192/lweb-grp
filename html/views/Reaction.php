@@ -8,6 +8,20 @@
 
 			$this->reaction = $reaction;
 		}
+
+		public function generateURL($action = 'display') {
+			$URL = "post.php?id={$this->reaction->post}";
+
+			switch ($action) {
+				default:
+					break;
+				case 'select_answer':
+					$URL .= "&action=select_answer&answer={$this->reaction->id}";
+					break;
+			}
+
+			return htmlspecialchars($URL, ENT_QUOTES | ENT_SUBSTITUTE | ENT_XHTML);
+		}
 	}
 
 	class Answer extends Reaction {
@@ -24,7 +38,7 @@
 				$reaction_buttons = '';
 
 			if ($active && !$selected && $this->session->isMod())
-				$select_button = UIComponents::getTextButton('Select answer', 'check_circle', '#');
+				$select_button = UIComponents::getTextButton('Select answer', 'check_circle', $this->generateURL('select_answer'));
 			else
 				$select_button = '';
 

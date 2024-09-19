@@ -216,7 +216,7 @@
 				$object = new Question();
 
 			$object = parent::createObjectFromElement($element, $object);
-			$object->featured = (boolean) $element->getAttribute('featured');
+			$object->featured = (bool) ($element->getAttribute('featured') == 'true');
 			$object->featuredAnswer = (string) $element->getAttribute('featuredAnswer');
 
 			$object->answers = self::getMapper('answers')->getAnswersByPost($object->id);
@@ -237,7 +237,7 @@
 			$featured = $document->createAttribute('featured');
 			$featuredAnswer = $document->createAttribute('featuredAnswer');
 
-			$featured->value = $object->featured;
+			$featured->value = $object->featured ? 'true' : 'false';
 			$featuredAnswer->value = $object->featuredAnswer;
 
 			$element->appendChild($featured);
