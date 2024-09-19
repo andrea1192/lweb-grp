@@ -6,10 +6,8 @@
 	class PostController extends AbstractController {
 
 		public function route() {
-			if (!isset($_GET['id']))
-				die('Post ID missing from query string');
-
-			$post_id = static::sanitize($_GET['id']);
+			$post_id = static::sanitize($_GET['id'] ?? '');
+			$post_type = static::sanitize($_GET['type'] ?? $_POST['type']);
 
 			switch ($_GET['action'] ?? '') {
 
@@ -27,11 +25,10 @@
 
 				case 'create':
 					// TODO: Aggiungi controlli privilegi con ev. redirect
-					if (isset($_GET['movie']) && isset($_GET['tab'])) {
+					if (isset($_GET['movie'])) {
 						$movie_ref = static::sanitize($_GET['movie']);
-						$type = static::sanitize($_GET['tab']);
 
-						$view = new \views\PostCreateView($this->session, $type, $movie_ref);
+						$view = new \views\PostCreateView($this->session, $post_type, $movie_ref);
 						$view->render();
 					}
 					break;
@@ -39,9 +36,7 @@
 				case 'save':
 					// TODO: Aggiungi controlli privilegi con ev. redirect
 					if (isset($_POST)) {
-						$type = static::sanitize($_POST['type']);
-
-						$post = \models\Post::createPost($type);
+						$post = \models\Post::createPost($post_type);
 						$post->id = static::sanitize($_POST['id']);
 						$post->author = static::sanitize($_POST['author']);
 						$post->date = static::sanitize($_POST['date']);
@@ -51,11 +46,11 @@
 						if (isset($_POST['movie'])) {
 							$post->movie = static::sanitize($_POST['movie']);
 							$mapper = ServiceLocator::resolve('posts');
-							$redir = "movie.php?id={$post->movie}&tab={$type}";
+							$redir = "movie.php?id={$post->movie}&type={$post_type}";
 						} else {
 							$post->request = static::sanitize($_POST['request']);
 							$mapper = ServiceLocator::resolve('comments');
-							$redir = "movie.php?id={$post->request}&tab={$type}";
+							$redir = "movie.php?id={$post->request}&type={$post_type}";
 						}
 
 						if (empty($post->author))
@@ -81,21 +76,17 @@
 
 				case 'delete':
 					// TODO: Aggiungi controlli privilegi con ev. redirect
-					if (isset($_GET['type'])) {
-						$type = static::sanitize($_GET['type']);
-
-						if ($type != 'comment') {
-							$mapper = ServiceLocator::resolve('posts');
-							$post = $mapper->getPostById($post_id);
-							$redir = "movie.php?id={$post->movie}&tab={$type}";
-						} else {
-							$mapper = ServiceLocator::resolve('comments');
-							$post = $mapper->getCommentById($post_id);
-							$redir = "movie.php?id={$post->request}&tab={$type}";
-						}
-
-						$mapper->delete($post->id);
+					if ($post_type != 'comment') {
+						$mapper = ServiceLocator::resolve('posts');
+						$post = $mapper->getPostById($post_id);
+						$redir = "movie.php?id={$post->movie}&type={$post_type}";
+					} else {
+						$mapper = ServiceLocator::resolve('comments');
+						$post = $mapper->getCommentById($post_id);
+						$redir = "movie.php?id={$post->request}&type={$post_type}";
 					}
+
+					$mapper->delete($post->id);
 
 					header("Location: $redir");
 					break;

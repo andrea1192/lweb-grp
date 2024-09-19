@@ -60,7 +60,7 @@
 			foreach ($this->tabs as $tab => $label) {
 				$query = [
 					'id' => $this->movie->id,
-					'tab' => $tab
+					'type' => $tab
 				];
 
 				$URL = $base_URL.'?'.http_build_query($query);
@@ -104,7 +104,7 @@
 		}
 
 		public function printActionButton() {
-			$URL = "post.php?action=create&tab={$this->tab}&movie={$this->movie->id}";
+			$URL = "post.php?action=create&type={$this->tab}&movie={$this->movie->id}";
 			$URL = htmlspecialchars($URL, ENT_QUOTES | ENT_SUBSTITUTE | ENT_XHTML);
 
 			if ($this->session->isAllowed())

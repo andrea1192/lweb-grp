@@ -6,11 +6,8 @@
 	class MovieController extends AbstractController {
 
 		public function route() {
-			if (!isset($_GET['id']))
-				die('Movie ID missing from query string');
-
-			$movie_id = static::sanitize($_GET['id']);
-			$tab = static::sanitize($_GET['tab'] ?? 'question');
+			$movie_id = static::sanitize($_GET['id'] ?? '');
+			$tab = static::sanitize($_GET['type'] ?? 'question');
 
 			switch ($_GET['action'] ?? '') {
 
