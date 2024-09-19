@@ -21,6 +21,7 @@
 		public $tab;
 		public $movie;
 		public $posts;
+		public $featuredPosts;
 
 		public function __construct($session, $movie_id, $tab) {
 			parent::__construct($session);
@@ -38,6 +39,9 @@
 				$this->movie = $this->getMapper('requests')->getRequestById($movie_id);
 				$this->posts = $this->getMapper('comments')->getCommentsByRequest($movie_id);
 			}
+
+			if ($this->tab == 'question')
+				$this->featuredPosts = $this->getMapper('posts')->getFeaturedPosts($movie_id);
 		}
 
 		public function printTitle() {
@@ -80,6 +84,17 @@
 				</div>
 				EOF;
 				return;
+			}
+
+			if ($this->tab == 'question') {
+				print("<h1>Featured posts</h1>");
+
+				foreach ($this->featuredPosts as $featuredPost) {
+					$view = \views\Post::factoryMethod($this->session, $featuredPost);
+					$view->displayFeatured();
+				}
+
+				print("<h1>All posts</h1>");
 			}
 
 			foreach ($this->posts as $post) {

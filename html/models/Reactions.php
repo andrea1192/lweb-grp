@@ -150,6 +150,13 @@
 			return $object;
 		}
 
+		public function getFeaturedAnswer($post_id) {
+			$answer_id = $this->getMapper('posts')->getPostById($post_id)->featuredAnswer;
+
+			if ($answer_id)
+				return $this->getAnswerById($answer_id);
+		}
+
 		public function getAnswersByPost($post_id) {
 			$query = "/answers/answer[@post='{$post_id}']";
 			$matches = $this->xpath->query($query);
@@ -162,6 +169,13 @@
 			$matches = $this->xpath->query($query);
 
 			return new \models\ReactionList($matches);
+		}
+
+		public function getAnswerById($id) {
+			$answer = $this->document->getElementById($id);
+
+			$mapper = Answers::getMapperForItem($answer);
+			return $mapper::createObjectFromElement($answer);
 		}
 	}
 

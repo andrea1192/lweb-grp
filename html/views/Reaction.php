@@ -12,6 +12,47 @@
 
 	class Answer extends Reaction {
 
+		public function generateDisplay($active = true, $selected = false) {
+			$selected_class = $selected ?
+					'selected' : '';
+			$selected_icon =  $selected ?
+					UIComponents::getIcon('check_circle', 'selected_answer') : '';
+
+			if ($active)
+				$reaction_buttons = $this->generateReactionButtons();
+			else
+				$reaction_buttons = '';
+
+			if ($active && !$selected && $this->session->isMod())
+				$select_button = UIComponents::getTextButton('Select answer', 'check_circle', '#');
+			else
+				$select_button = '';
+
+			return <<<EOF
+			<div class="answer {$selected_class}">
+				{$selected_icon}
+				<div class="header">
+					<div class="flex small">
+						<span class="author">{$this->reaction->author}</span>
+						<span class="date">{$this->reaction->date}</span>
+					</div>
+					<div class="right"></div>
+				</div>
+				<div class="content">
+					{$this->reaction->text}
+				</div>
+				<div class="flex footer">
+					<div class="flex left reactions">
+						{$reaction_buttons}
+					</div>
+					<div class="flex right">
+						{$select_button}
+					</div>
+				</div>
+			</div>
+			EOF;
+		}
+
 		public function generateInsertForm() {
 			$text = UIComponents::getTextArea('Text', 'text');
 			$save_buttons = UIComponents::getFilledButton('Save changes', 'save', '#');

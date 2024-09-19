@@ -78,6 +78,13 @@
 			return $element;
 		}
 
+		public function getFeaturedPosts($movie_id, $type = '*') {
+			$query = "/posts/{$type}[@movie='{$movie_id}' and @featured='true']";
+			$matches = $this->xpath->query($query);
+
+			return new \models\PostList($matches);
+		}
+
 		public function getPostsByMovie($movie_id, $type = '*') {
 			$query = "/posts/{$type}[@movie='{$movie_id}']";
 			$matches = $this->xpath->query($query);

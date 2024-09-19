@@ -1,4 +1,6 @@
 <?php namespace views;
+
+	require_once('views/Reaction.php');
 	
 	class Post extends AbstractView {
 		protected const POST_TYPE = '';
@@ -144,110 +146,6 @@
 			return UIComponents::getOverflowMenu($dropdown);
 		}
 
-		protected function generateReactionButtons($post = null) {
-			$buttons = '';
-
-			$reaction_types = ($post) ? $post->reactions : $this->post->reactions;
-
-			if (!$reaction_types) return '';
-
-			foreach ($reaction_types as $type => $stats) {
-
-				if (!$this->session->isLoggedIn())
-					$login_prompt = '<div class="tooltip">Sign in to react</div>';
-				else
-					$login_prompt = '<div class="tooltip">Your account has been disabled</div>';
-
-				$status = $this->session->isAllowed();
-
-				switch ($type) {
-					case 'like':
-						$buttons .= UIComponents::getTextButton(
-								$stats->count_up,
-								'thumb_up',
-								enabled: $status,
-								content: $status ? '' : $login_prompt);
-						$buttons .= UIComponents::getTextButton(
-								$stats->count_down,
-								'thumb_down',
-								enabled: $status,
-								content: $status ? '' : $login_prompt);
-						break;
-
-					case 'usefulness':
-						$tooltip = <<<EOF
-						<div class="tooltip">
-							<span class="material-symbols-outlined"></span>Useful?
-							<span class="rate">
-								<span class="material-symbols-outlined">star</span>
-								<span class="material-symbols-outlined">star</span>
-								<span class="material-symbols-outlined">star</span>
-								<span class="material-symbols-outlined">star</span>
-								<span class="material-symbols-outlined">star</span>
-							</span>
-						</div>
-						EOF;
-						$buttons .= UIComponents::getTextButton(
-								$stats->average,
-								'lightbulb',
-								enabled: $status,
-								content: $status ? $tooltip : $login_prompt);
-						break;
-
-					case 'agreement':
-						$tooltip = <<<EOF
-						<div class="tooltip">
-							<span class="material-symbols-outlined"></span>Agree?
-							<span class="rate">
-								<span class="material-symbols-outlined">star</span>
-								<span class="material-symbols-outlined">star</span>
-								<span class="material-symbols-outlined">star</span>
-								<span class="material-symbols-outlined">star</span>
-								<span class="material-symbols-outlined">star</span>
-							</span>
-						</div>
-						EOF;
-						$buttons .= UIComponents::getTextButton(
-								$stats->average,
-								'thumb_up',
-								enabled: $status,
-								content: $status ? $tooltip : $login_prompt);
-						break;
-
-					case 'spoilage':
-						$tooltip = <<<EOF
-						<div class="tooltip">
-							<span class="material-symbols-outlined"></span>Spoiler level:
-							<span class="rate">
-								<select name="rating">
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="3">3</option>
-									<option value="4">4</option>
-									<option value="5">5</option>
-									<option value="6">6</option>
-									<option value="7">7</option>
-									<option value="8">8</option>
-									<option value="9">9</option>
-									<option value="10">10</option>
-								</select>
-							</span>
-						</div>
-						EOF;
-						$buttons .= UIComponents::getTextButton(
-								$stats->average,
-								'speed',
-								enabled: $status,
-								content: $status ? $tooltip : $login_prompt);
-						break;
-
-					default: break;
-				}
-			}
-
-			return $buttons;
-		}
-
 		protected function generateReferenceField() {
 			return UIComponents::getHiddenInput('movie', $this->post->movie);
 		}
@@ -319,51 +217,44 @@
 	class Question extends Post {
 		protected const POST_TYPE = 'question';
 
-		public function display() {
+		public function displayFeatured() {
+			parent::displayReference(active: false, reactions: $this->generateAnswers(featuredOnly: true));
+		}
 
+		public function display() {
 			parent::displayReference(reactions: $this->generateAnswers());
 		}
 
 		protected function generateActionButtons() {
-
-			if ($this->session->isAllowed())
-				return UIComponents::getOutlinedButton('Answer', 'comment', $this->generateURL('answer'), cls: 'colored');
-		}
-
-		protected function generateAnswers() {
 			$html = '';
 
-			$answers = $this->post->answers;
+			if ($this->session->isMod() && !$this->post->featured)
+				$html .= UIComponents::getTextButton('Elevate question', 'verified', '#');
 
-			foreach ($answers as $answer) {
-				$selected_answer = (bool) $answer->id == $this->post->featuredAnswer;
-				$selected_class = $selected_answer ?
-						'selected' :
-						'';
-				$selected_icon =  $selected_answer ?
-						UIComponents::getIcon('check_circle', 'selected_answer') :
-						'';
+			if ($this->session->isAllowed())
+				$html .= UIComponents::getOutlinedButton('Answer', 'comment', $this->generateURL('answer'), cls: 'colored');
 
-				$reaction_buttons = $this->generateReactionButtons($answer);
+			return $html;
+		}
 
-				$html .= <<<EOF
-				<div class="answer {$selected_class}">
-					{$selected_icon}
-					<div class="header">
-						<div class="flex small">
-							<span class="author">{$answer->author}</span>
-							<span class="date">{$answer->date}</span>
-						</div>
-						<div class="right"></div>
-					</div>
-					<div class="content">
-						{$answer->text}
-					</div>
-					<div class="flex footer reactions">
-						{$reaction_buttons}
-					</div>
-				</div>
-				EOF;
+		protected function generateAnswers($featuredOnly = false) {
+			$html = '';
+
+			if ($featuredOnly) {
+				$answer = $this->getMapper('answers')->getFeaturedAnswer($this->post->id);
+
+				$view = \views\Reaction::factoryMethod($this->session, $answer);
+				$html .= $view->generateDisplay(active: false, selected: true);
+
+			} else {
+				$answers = $this->post->answers;
+
+				foreach ($answers as $answer) {
+					$selected = (bool) $answer->id == $this->post->featuredAnswer;
+
+					$view = \views\Reaction::factoryMethod($this->session, $answer);
+					$html .= $view->generateDisplay(selected: $selected);
+				}
 			}
 
 			return <<<EOF

@@ -77,6 +77,109 @@
 			}
 		}
 
+		protected function generateReactionButtons() {
+			$reaction_types = ($this->post ?? $this->reaction)->reactions;
+			$buttons = '';
+
+			if (!$reaction_types) return '';
+
+			foreach ($reaction_types as $type => $stats) {
+
+				if (!$this->session->isLoggedIn())
+					$login_prompt = '<div class="tooltip">Sign in to react</div>';
+				else
+					$login_prompt = '<div class="tooltip">Your account has been disabled</div>';
+
+				$status = $this->session->isAllowed();
+
+				switch ($type) {
+					case 'like':
+						$buttons .= UIComponents::getTextButton(
+								$stats->count_up,
+								'thumb_up',
+								enabled: $status,
+								content: $status ? '' : $login_prompt);
+						$buttons .= UIComponents::getTextButton(
+								$stats->count_down,
+								'thumb_down',
+								enabled: $status,
+								content: $status ? '' : $login_prompt);
+						break;
+
+					case 'usefulness':
+						$tooltip = <<<EOF
+						<div class="tooltip">
+							<span class="material-symbols-outlined"></span>Useful?
+							<span class="rate">
+								<span class="material-symbols-outlined">star</span>
+								<span class="material-symbols-outlined">star</span>
+								<span class="material-symbols-outlined">star</span>
+								<span class="material-symbols-outlined">star</span>
+								<span class="material-symbols-outlined">star</span>
+							</span>
+						</div>
+						EOF;
+						$buttons .= UIComponents::getTextButton(
+								$stats->average,
+								'lightbulb',
+								enabled: $status,
+								content: $status ? $tooltip : $login_prompt);
+						break;
+
+					case 'agreement':
+						$tooltip = <<<EOF
+						<div class="tooltip">
+							<span class="material-symbols-outlined"></span>Agree?
+							<span class="rate">
+								<span class="material-symbols-outlined">star</span>
+								<span class="material-symbols-outlined">star</span>
+								<span class="material-symbols-outlined">star</span>
+								<span class="material-symbols-outlined">star</span>
+								<span class="material-symbols-outlined">star</span>
+							</span>
+						</div>
+						EOF;
+						$buttons .= UIComponents::getTextButton(
+								$stats->average,
+								'thumb_up',
+								enabled: $status,
+								content: $status ? $tooltip : $login_prompt);
+						break;
+
+					case 'spoilage':
+						$tooltip = <<<EOF
+						<div class="tooltip">
+							<span class="material-symbols-outlined"></span>Spoiler level:
+							<span class="rate">
+								<select name="rating">
+									<option value="1">1</option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+									<option value="4">4</option>
+									<option value="5">5</option>
+									<option value="6">6</option>
+									<option value="7">7</option>
+									<option value="8">8</option>
+									<option value="9">9</option>
+									<option value="10">10</option>
+								</select>
+							</span>
+						</div>
+						EOF;
+						$buttons .= UIComponents::getTextButton(
+								$stats->average,
+								'speed',
+								enabled: $status,
+								content: $status ? $tooltip : $login_prompt);
+						break;
+
+					default: break;
+				}
+			}
+
+			return $buttons;
+		}
+
 		protected function printHeader() {
 			$main_menu = $this->generateMainMenu();
 			$user_menu = $this->generateUserMenu();
