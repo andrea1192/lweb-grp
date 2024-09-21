@@ -242,8 +242,10 @@
 			if ($featuredOnly) {
 				$answer = $this->getMapper('answers')->getFeaturedAnswer($this->post->id);
 
-				$view = \views\Reaction::factoryMethod($this->session, $answer);
-				$html .= $view->generateDisplay(active: false, selected: true);
+				if ($answer) {
+					$view = \views\Reaction::factoryMethod($this->session, $answer);
+					$html .= $view->generateDisplay(active: false, selected: true);
+				}
 
 			} else {
 				$answers = $this->post->answers;

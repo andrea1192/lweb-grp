@@ -62,7 +62,7 @@
 						if (isset($_POST['rating']))
 							$post->rating = static::sanitize($_POST['rating']);
 						if (isset($_POST['featured']))
-							$post->featured = static::sanitize($_POST['featured']);
+							$post->featured = (bool) (static::sanitize($_POST['featured']) == 'true');
 						if (isset($_POST['featuredAnswer']))
 							$post->featuredAnswer = static::sanitize($_POST['featuredAnswer']);
 						if (isset($_POST['reputation']))
