@@ -251,7 +251,7 @@
 				$answers = $this->post->answers;
 
 				foreach ($answers as $answer) {
-					$selected = (bool) $answer->id == $this->post->featuredAnswer;
+					$selected = (bool) ($answer->id == $this->post->featuredAnswer);
 
 					$view = \views\Reaction::factoryMethod($this->session, $answer);
 					$html .= $view->generateDisplay(selected: $selected);

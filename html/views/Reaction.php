@@ -10,13 +10,17 @@
 		}
 
 		public function generateURL($action = 'display') {
-			$URL = "post.php?id={$this->reaction->post}";
+			$URL = "post.php?id={$this->reaction->id}";
 
 			switch ($action) {
 				default:
+				case 'save':
+					$URL .= "&action={$action}";
 					break;
 				case 'select_answer':
-					$URL .= "&action=select_answer&answer={$this->reaction->id}";
+					$URL = "post.php?id={$this->reaction->post}";
+					$URL .= "&action=select_answer";
+					$URL .= "&answer={$this->reaction->id}";
 					break;
 			}
 
@@ -68,13 +72,21 @@
 		}
 
 		public function generateInsertForm() {
+			$action = $this->generateURL('save');
 			$text = UIComponents::getTextArea('Text', 'text');
-			$save_buttons = UIComponents::getFilledButton('Save changes', 'save', '#');
+			$save_buttons = UIComponents::getFilledButton('Save changes', 'save');
+
+			$components = 'views\UIComponents';
 
 			return <<<EOF
 			<div class="answers">
-				<form class="answer" method="post" action="">
+				<form class="answer" method="post" action="{$action}">
 					<div class="flex column">
+						{$components::getHiddenInput('type', 'answer')}
+						{$components::getHiddenInput('id', $this->reaction->id)}
+						{$components::getHiddenInput('post', $this->reaction->post)}
+						{$components::getHiddenInput('author', $this->reaction->author)}
+						{$components::getHiddenInput('date', $this->reaction->date)}
 						{$text}
 						<div class="flex footer">
 							<div class="flex left">

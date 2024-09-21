@@ -36,22 +36,42 @@
 				case 'save':
 					// TODO: Aggiungi controlli privilegi con ev. redirect
 					if (isset($_POST)) {
-						$post = \models\Post::createPost($post_type);
+
+						switch ($post_type) {
+							default:
+							case 'review':
+							case 'question':
+							case 'spoiler':
+							case 'extra':
+								$post = \models\Post::createPost($post_type);
+								$post->movie = static::sanitize($_POST['movie']);
+
+								$mapper = ServiceLocator::resolve('posts');
+								$redir = "movie.php?id={$post->movie}&type={$post_type}";
+								break;
+
+							case 'comment':
+								$post = \models\Post::createPost($post_type);
+								$post->request = static::sanitize($_POST['request']);
+
+								$mapper = ServiceLocator::resolve('comments');
+								$redir = "movie.php?id={$post->request}&type={$post_type}";
+								break;
+
+							case 'answer':
+								$post = new \models\Answer();
+								$post->post = static::sanitize($_POST['post']);
+
+								$mapper = ServiceLocator::resolve('answers');
+								$movie_id = ServiceLocator::resolve('posts')->getPostById($post->post)->movie;
+								$redir = "movie.php?id={$movie_id}&type=question";
+								break;
+						}
+
 						$post->id = static::sanitize($_POST['id']);
 						$post->author = static::sanitize($_POST['author']);
 						$post->date = static::sanitize($_POST['date']);
-						$post->title = static::sanitize($_POST['title']);
 						$post->text = static::sanitize($_POST['text']);
-
-						if (isset($_POST['movie'])) {
-							$post->movie = static::sanitize($_POST['movie']);
-							$mapper = ServiceLocator::resolve('posts');
-							$redir = "movie.php?id={$post->movie}&type={$post_type}";
-						} else {
-							$post->request = static::sanitize($_POST['request']);
-							$mapper = ServiceLocator::resolve('comments');
-							$redir = "movie.php?id={$post->request}&type={$post_type}";
-						}
 
 						if (empty($post->author))
 							$post->author = ServiceLocator::resolve('session')->getUsername();
@@ -59,6 +79,8 @@
 						if (empty($post->date))
 							$post->date = date('c');
 
+						if (isset($_POST['title']))
+							$post->title = static::sanitize($_POST['title']);
 						if (isset($_POST['rating']))
 							$post->rating = static::sanitize($_POST['rating']);
 						if (isset($_POST['featured']))

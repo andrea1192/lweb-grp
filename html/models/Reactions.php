@@ -131,6 +131,8 @@
 
 	class Answers extends Reactions {
 		protected const DOCUMENT_NAME = 'answers';
+		protected const ELEMENT_NAME = 'answer';
+		protected const ID_PREFIX = 'a';
 
 		public static function createObjectFromElement($element, $object = null) {
 			if (!$object)
@@ -148,6 +150,30 @@
 				];
 
 			return $object;
+		}
+
+		public static function createElementFromObject($object, $document, $element = null) {
+			if (!$element)
+				$element = $document->createElement('answer');
+
+			$attributes = [
+				'id' => '',
+				'post' => '',
+				'author' => '',
+				'date' => ''
+			];
+
+			foreach ($attributes as $key => $value) {
+				$attributes[$key] = $document->createAttribute($key);
+				$attributes[$key]->value = $object->$key;
+				$element->appendChild($attributes[$key]);
+			}
+
+			$text = $document->createElement('text');
+			$text->textContent = $object->text;
+			$element->appendChild($text);
+
+			return $element;
 		}
 
 		public function getFeaturedAnswer($post_id) {

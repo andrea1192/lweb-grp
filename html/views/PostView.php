@@ -101,6 +101,8 @@
 					$this->reaction = new \models\Report();
 					break;
 			}
+
+			$this->reaction->post = $this->post->id;
 		}
 
 		public function editPost() {
