@@ -36,6 +36,7 @@
 
 			$object->post = $element->getAttribute('post');
 			$object->author = $element->getAttribute('author');
+			$object->date = $element->getAttribute('date');
 
 			return $object;
 		}
@@ -74,6 +75,40 @@
 			}
 
 			return (count($matches)) ? ($sum / count($matches)) : 0;
+		}
+
+		protected function getReaction($post_id, $author) {
+			$root = static::DOCUMENT_NAME;
+			$elem = static::ELEMENT_NAME;
+
+			$query = "/{$root}/{$elem}[@post='{$post_id}' and @author='{$author}']";
+			$match = $this->xpath->query($query)->item(0);
+
+			return $match;
+		}
+
+		public function save($object) {
+			$mapper = static::getMapperForItem($object);
+			$element = $mapper::createElementFromObject($object, $this->document);
+
+			if ($this->getReaction($object->post, $object->author))
+				$this->replaceReaction($object->post, $object->author, $element);
+			else
+				$this->appendElement($element);
+
+			return $object;
+		}
+
+		protected function replaceReaction($post_id, $author, $node) {
+			$mapper = static::getMapperForItem($node);
+
+			$root = $mapper::DOCUMENT_NAME;
+			$elem = $mapper::ELEMENT_NAME;
+
+			$query = "/{$root}/{$elem}[@post='{$post_id}' and @author='{$author}']";
+			$this->xpath->query($query)->item(0)->replaceWith($node);
+
+			$this->saveDocument();
 		}
 	}
 
@@ -141,7 +176,6 @@
 			$object = parent::createObjectFromElement($element, $object);
 
 			$object->id = $element->getAttribute('id');
-			$object->date = $element->getAttribute('date');
 
 			$object->text = $element->getElementsByTagName('text')->item(0)->textContent;
 			$object->reactions = [
@@ -207,6 +241,7 @@
 
 	class Reports extends Reactions {
 		protected const DOCUMENT_NAME = 'reports';
+		protected const ELEMENT_NAME = 'report';
 
 		public static function createObjectFromElement($element, $object = null) {
 			if (!$object)
@@ -226,6 +261,33 @@
 			return $object;
 		}
 
+		public static function createElementFromObject($object, $document, $element = null) {
+			if (!$element)
+				$element = $document->createElement('report');
+
+			$attributes = [
+				'post' => '',
+				'author' => '',
+				'date' => '',
+				'status' => ''
+			];
+
+			foreach ($attributes as $key => $value) {
+				$attributes[$key] = $document->createAttribute($key);
+				$attributes[$key]->value = $object->$key;
+				$element->appendChild($attributes[$key]);
+			}
+
+			$message = $document->createElement('message');
+			$response = $document->createElement('response');
+			$message->textContent = $object->message;
+			$response->textContent = $object->response;
+			$element->appendChild($message);
+			$element->appendChild($response);
+
+			return $element;
+		}
+
 		public function getReports() {
 			$query = "/reports/*";
 			$matches = $this->xpath->query($query);
@@ -238,13 +300,6 @@
 			$matches = $this->xpath->query($query);
 
 			return new \models\ReactionList($matches);
-		}
-
-		public function getReportByPostIdAuthor($post_id, $author) {
-			$query = "/reports/report[@post='{$post_id}' and @author='{$author}']";
-			$match = $this->xpath->query($query)->item(0);
-
-			return $this->createObjectFromElement($match);
 		}
 	}
 

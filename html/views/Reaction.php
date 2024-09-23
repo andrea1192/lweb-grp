@@ -10,17 +10,22 @@
 		}
 
 		public function generateURL($action = 'display') {
-			$URL = "post.php?id={$this->reaction->id}";
+			$URL = "post.php?id={$this->reaction->post}";
+
+			$reaction_id = (property_exists($this->reaction, 'id')) ? $this->reaction->id : '';
 
 			switch ($action) {
 				default:
 				case 'save':
-					$URL .= "&action={$action}";
+					$URL = "post.php?id={$reaction_id}";
+					$URL .= "&action=save";
+					break;
+				case 'send_report':
+					$URL .= "&action=send_report";
 					break;
 				case 'select_answer':
-					$URL = "post.php?id={$this->reaction->post}";
 					$URL .= "&action=select_answer";
-					$URL .= "&answer={$this->reaction->id}";
+					$URL .= "&answer={$reaction_id}";
 					break;
 			}
 
@@ -133,7 +138,7 @@
 
 			return <<<EOF
 			<div class="answers">
-				<form class="answer" method="post" action="">
+				<div class="answer">
 					<div class="flex column">
 						{$message}
 						{$response}
@@ -144,7 +149,7 @@
 							</div>
 						</div>
 					</div>
-				</form>
+				</div>
 			</div>
 			EOF;
 		}
@@ -155,13 +160,22 @@
 		}
 
 		public function generateUserForm() {
+			$action = $this->generateURL('send_report');
 			$message = UIComponents::getTextArea('Message', 'message');
-			$save_buttons = UIComponents::getFilledButton('Send report', 'send', '#');
+			$save_buttons = UIComponents::getFilledButton('Send report', 'send');
+
+			$components = 'views\UIComponents';
 
 			return <<<EOF
 			<div class="answers">
-				<form class="answer" method="post" action="">
+				<form class="answer" method="post" action="{$action}">
 					<div class="flex column">
+						{$components::getHiddenInput('type', 'report')}
+						{$components::getHiddenInput('post', $this->reaction->post)}
+						{$components::getHiddenInput('author', $this->reaction->author)}
+						{$components::getHiddenInput('date', $this->reaction->date)}
+						{$components::getHiddenInput('status', $this->reaction->status)}
+						{$components::getHiddenInput('response', $this->reaction->response)}
 						{$message}
 						<div class="flex footer">
 							<div class="flex left">
@@ -177,20 +191,30 @@
 		}
 
 		public function generateAdminForm() {
+			$action = $this->generateURL('send_report');
 			$message = <<<EOF
 			<div>
 				<div class="small">Message from {$this->reaction->author}:</div>
 				<div class="content">{$this->reaction->message}</div>
 			</div>
 			EOF;
-			$response = UIComponents::getTextArea('Response', 'response');
-			$save_buttons = UIComponents::getFilledButton('Send response', 'send', '#');
+			$status = UIComponents::getTextInput('Status', 'status', $this->reaction->status);
+			$response = UIComponents::getTextArea('Response', 'response', $this->reaction->response);
+			$save_buttons = UIComponents::getFilledButton('Send response', 'send');
+
+			$components = 'views\UIComponents';
 
 			return <<<EOF
 			<div class="answers">
-				<form class="answer" method="post" action="">
+				<form class="answer" method="post" action="{$action}">
 					<div class="flex column">
+						{$components::getHiddenInput('type', 'report')}
+						{$components::getHiddenInput('post', $this->reaction->post)}
+						{$components::getHiddenInput('author', $this->reaction->author)}
+						{$components::getHiddenInput('date', $this->reaction->date)}
+						{$components::getHiddenInput('message', $this->reaction->message)}
 						{$message}
+						{$status}
 						{$response}
 						<div class="flex footer">
 							<div class="flex left">

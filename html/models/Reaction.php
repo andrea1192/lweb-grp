@@ -3,6 +3,7 @@
 	abstract class Reaction {
 		public $post;
 		public $author;
+		public $date;
 	}
 
 	abstract class NumericRating extends Reaction {
@@ -11,8 +12,6 @@
 
 	class Answer extends Reaction {
 		public $id;
-		public $date;
-
 		public $text = '';
 
 		public $reactions;
@@ -31,8 +30,7 @@
 	class Report extends Reaction {
 		public $message = '';
 		public $response = '';
-
-		public $status;
+		public $status = 'open';
 	}
 
 

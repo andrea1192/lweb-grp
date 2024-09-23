@@ -146,6 +146,31 @@
 
 					header("Location: {$_SERVER['HTTP_REFERER']}");
 					break;
+
+				case 'send_report':
+					$post = new \models\Report();
+					$mapper = ServiceLocator::resolve('reports');
+
+					$post->post = $post_id;
+					$post->author = static::sanitize($_POST['author']);
+					$post->date = static::sanitize($_POST['date']);
+					$post->status = static::sanitize($_POST['status']);
+
+					$post->message = static::sanitize($_POST['message']);
+					$post->response = static::sanitize($_POST['response']);
+
+					if (empty($post->author))
+						$post->author = ServiceLocator::resolve('session')->getUsername();
+
+					if (empty($post->date))
+						$post->date = date('c');
+
+					$mapper->save($post);
+
+					$movie_id = ServiceLocator::resolve('posts')->getPostById($post->post)->movie;
+					$redir = "movie.php?id={$movie_id}";
+					header("Location: $redir");
+					break;
 			}
 		}
 	}
