@@ -264,6 +264,26 @@
 			$mapper = Answers::getMapperForItem($answer);
 			return $mapper::createObjectFromElement($answer);
 		}
+
+		public function save($object) {
+
+			if (empty($object->id)) {
+				$root = self::DOCUMENT_NAME;
+				$elem = self::ELEMENT_NAME;
+				$prefix = self::ID_PREFIX;
+
+				$object->id = $this->generateID($root, $elem, $prefix);
+			}
+
+			$element = self::createElementFromObject($object, $this->document);
+
+			if ($this->document->getElementById($object->id))
+				$this->replaceElement($object->id, $element);
+			else
+				$this->appendElement($element);
+
+			return $object;
+		}
 	}
 
 	class Reports extends Reactions {
