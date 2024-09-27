@@ -3,7 +3,29 @@
 	abstract class Reaction {
 		public $post;
 		public $author;
-		public $date;
+
+		public static function createReaction($type) {
+
+			switch ($type) {
+				case 'answer':
+					return new \models\Answer();
+				case 'like':
+				case 'dislike':
+					return new \models\Like();
+				case 'usefulness':
+					return new \models\Usefulness();
+				case 'agreement':
+					return new \models\Agreement();
+				case 'spoilage':
+					return new \models\Spoilage();
+				case 'report':
+					return new \models\Report();
+			}
+		}
+	}
+
+	abstract class BinaryRating extends Reaction {
+		public $type;
 	}
 
 	abstract class NumericRating extends Reaction {
@@ -12,14 +34,13 @@
 
 	class Answer extends Reaction {
 		public $id;
+		public $date;
 		public $text = '';
 
 		public $reactions;
 	}
 
-	class Like extends Reaction {
-		public $type;
-	}
+	class Like extends BinaryRating {}
 
 	class Usefulness extends NumericRating {}
 
@@ -28,6 +49,7 @@
 	class Spoilage extends NumericRating {}
 
 	class Report extends Reaction {
+		public $date;
 		public $message = '';
 		public $response = '';
 		public $status = 'open';
@@ -35,6 +57,7 @@
 
 
 	abstract class ReactionType {
+		public $post;
 		public $type;
 		public $list;
 	}
@@ -44,6 +67,7 @@
 		public $count_down;
 
 		public function __construct($post_id, $reaction_type, $type_up, $type_down) {
+			$this->post = $post_id;
 			$this->type = $reaction_type;
 
 			$reactions = \controllers\ServiceLocator::resolve('reactions');
@@ -60,6 +84,7 @@
 		public $average;
 
 		public function __construct($post_id, $reaction_type) {
+			$this->post = $post_id;
 			$this->type = $reaction_type;
 
 			$reactions = \controllers\ServiceLocator::resolve('reactions');

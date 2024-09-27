@@ -3,13 +3,123 @@
 	class Reaction extends AbstractView {
 		protected $reaction;
 
+		public static function generateReactionButtons($reactions) {
+			$buttons = '';
+
+			if (!$reactions) return $buttons;
+
+			$session = \controllers\ServiceLocator::resolve('session');
+
+			foreach ($reactions as $type => $stats) {
+				$reaction_view = new ReactionType($session, $stats);
+
+				if (!$session->isLoggedIn())
+					$login_prompt = '<div class="tooltip">Sign in to react</div>';
+				else
+					$login_prompt = '<div class="tooltip">Your account has been disabled</div>';
+
+				$status = $session->isAllowed();
+
+				switch ($type) {
+					case 'like':
+						$buttons .= UIComponents::getTextButton(
+								$stats->count_up,
+								'thumb_up',
+								$reaction_view->generateURL('add_reaction', 'like'),
+								enabled: $status,
+								content: $status ? '' : $login_prompt);
+						$buttons .= UIComponents::getTextButton(
+								$stats->count_down,
+								'thumb_down',
+								$reaction_view->generateURL('add_reaction', 'dislike'),
+								enabled: $status,
+								content: $status ? '' : $login_prompt);
+						break;
+
+					case 'usefulness':
+						$tooltip = <<<EOF
+						<div class="tooltip">
+							<span class="material-symbols-outlined"></span>Useful?
+							<span class="rate">
+								<span class="material-symbols-outlined">star</span>
+								<span class="material-symbols-outlined">star</span>
+								<span class="material-symbols-outlined">star</span>
+								<span class="material-symbols-outlined">star</span>
+								<span class="material-symbols-outlined">star</span>
+							</span>
+						</div>
+						EOF;
+						$buttons .= UIComponents::getTextButton(
+								$stats->average,
+								'lightbulb',
+								$reaction_view->generateURL('add_reaction', 'usefulness'),
+								enabled: $status,
+								content: $status ? $tooltip : $login_prompt);
+						break;
+
+					case 'agreement':
+						$tooltip = <<<EOF
+						<div class="tooltip">
+							<span class="material-symbols-outlined"></span>Agree?
+							<span class="rate">
+								<span class="material-symbols-outlined">star</span>
+								<span class="material-symbols-outlined">star</span>
+								<span class="material-symbols-outlined">star</span>
+								<span class="material-symbols-outlined">star</span>
+								<span class="material-symbols-outlined">star</span>
+							</span>
+						</div>
+						EOF;
+						$buttons .= UIComponents::getTextButton(
+								$stats->average,
+								'thumb_up',
+								$reaction_view->generateURL('add_reaction', 'agreement'),
+								enabled: $status,
+								content: $status ? $tooltip : $login_prompt);
+						break;
+
+					case 'spoilage':
+						$tooltip = <<<EOF
+						<div class="tooltip">
+							<span class="material-symbols-outlined"></span>Spoiler level:
+							<span class="rate">
+								<select name="rating">
+									<option value="1">1</option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+									<option value="4">4</option>
+									<option value="5">5</option>
+									<option value="6">6</option>
+									<option value="7">7</option>
+									<option value="8">8</option>
+									<option value="9">9</option>
+									<option value="10">10</option>
+								</select>
+							</span>
+						</div>
+						EOF;
+						$buttons .= UIComponents::getTextButton(
+								$stats->average,
+								'speed',
+								$reaction_view->generateURL('add_reaction', 'spoilage'),
+								enabled: $status,
+								content: $status ? $tooltip : $login_prompt);
+						break;
+
+					default: break;
+				}
+			}
+
+			return $buttons;
+		}
+
 		public function __construct($session, $reaction) {
 			parent::__construct($session);
 
 			$this->reaction = $reaction;
 		}
 
-		public function generateURL($action = 'display') {
+		public function generateURL($action = 'display', $reaction_type = 'like') {
 			$URL = "post.php?id={$this->reaction->post}";
 
 			$reaction_id = (property_exists($this->reaction, 'id')) ? $this->reaction->id : '';
@@ -19,6 +129,10 @@
 				case 'save':
 					$URL = "post.php?id={$reaction_id}";
 					$URL .= "&action=save";
+					break;
+				case 'add_reaction':
+					$URL .= "&action=add_reaction";
+					$URL .= "&type={$reaction_type}";
 					break;
 				case 'send_report':
 					$URL .= "&action=send_report";
@@ -42,7 +156,7 @@
 					UIComponents::getIcon('check_circle', 'selected_answer') : '';
 
 			if ($active)
-				$reaction_buttons = $this->generateReactionButtons();
+				$reaction_buttons = static::generateReactionButtons($this->reaction->reactions);
 			else
 				$reaction_buttons = '';
 
@@ -229,5 +343,8 @@
 			EOF;
 		}
 	}
+
+
+	class ReactionType extends Reaction {}
 
 ?>

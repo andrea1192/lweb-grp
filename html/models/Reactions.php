@@ -36,7 +36,6 @@
 
 			$object->post = $element->getAttribute('post');
 			$object->author = $element->getAttribute('author');
-			$object->date = $element->getAttribute('date');
 
 			return $object;
 		}
@@ -77,11 +76,10 @@
 			return (count($matches)) ? ($sum / count($matches)) : 0;
 		}
 
-		protected function getReaction($post_id, $author) {
+		protected function getReaction($post_id, $author, $type) {
 			$root = static::DOCUMENT_NAME;
-			$elem = static::ELEMENT_NAME;
 
-			$query = "/{$root}/{$elem}[@post='{$post_id}' and @author='{$author}']";
+			$query = "/{$root}/{$type}[@post='{$post_id}' and @author='{$author}']";
 			$match = $this->xpath->query($query)->item(0);
 
 			return $match;
@@ -91,7 +89,7 @@
 			$mapper = static::getMapperForItem($object);
 			$element = $mapper::createElementFromObject($object, $this->document);
 
-			if ($this->getReaction($object->post, $object->author))
+			if ($this->getReaction($object->post, $object->author, $mapper::ELEMENT_NAME))
 				$this->replaceReaction($object->post, $object->author, $element);
 			else
 				$this->appendElement($element);
@@ -112,56 +110,84 @@
 		}
 	}
 
-	class Likes extends Reactions {
+	class BinaryRatings extends Reactions {
 
 		public static function createObjectFromElement($element, $object = null) {
 			if (!$object)
-				$object = new Like();
+				$object = \models\Reaction::createReaction($element->nodeName);
 
 			$object = parent::createObjectFromElement($element, $object);
 			$object->type = $element->getAttribute('type');
 
 			return $object;
 		}
+
+		public static function createElementFromObject($object, $document, $element = null) {
+			if (!$element)
+				$element = $document->createElement(static::ELEMENT_NAME);
+
+			$attributes = [
+				'post' => '',
+				'author' => '',
+				'type' => ''
+			];
+
+			foreach ($attributes as $key => $value) {
+				$attributes[$key] = $document->createAttribute($key);
+				$attributes[$key]->value = $object->$key;
+				$element->appendChild($attributes[$key]);
+			}
+
+			return $element;
+		}
 	}
 
-	class Usefulnesses extends Reactions {
+	class NumericRatings extends Reactions {
 
 		public static function createObjectFromElement($element, $object = null) {
 			if (!$object)
-				$object = new Usefulness();
+				$object = \models\Reaction::createReaction($element->nodeName);
 
 			$object = parent::createObjectFromElement($element, $object);
 			$object->rating = $element->getAttribute('rating');
 
 			return $object;
 		}
-	}
 
-	class Agreements extends Reactions {
+		public static function createElementFromObject($object, $document, $element = null) {
+			if (!$element)
+				$element = $document->createElement(static::ELEMENT_NAME);
 
-		public static function createObjectFromElement($element, $object = null) {
-			if (!$object)
-				$object = new Agreement();
+			$attributes = [
+				'post' => '',
+				'author' => '',
+				'rating' => ''
+			];
 
-			$object = parent::createObjectFromElement($element, $object);
-			$object->rating = $element->getAttribute('rating');
+			foreach ($attributes as $key => $value) {
+				$attributes[$key] = $document->createAttribute($key);
+				$attributes[$key]->value = $object->$key;
+				$element->appendChild($attributes[$key]);
+			}
 
-			return $object;
+			return $element;
 		}
 	}
 
-	class Spoilages extends Reactions {
+	class Likes extends BinaryRatings {
+		protected const ELEMENT_NAME = 'like';
+	}
 
-		public static function createObjectFromElement($element, $object = null) {
-			if (!$object)
-				$object = new Spoilage();
+	class Usefulnesses extends NumericRatings {
+		protected const ELEMENT_NAME = 'usefulness';
+	}
 
-			$object = parent::createObjectFromElement($element, $object);
-			$object->rating = $element->getAttribute('rating');
+	class Agreements extends NumericRatings {
+		protected const ELEMENT_NAME = 'agreement';
+	}
 
-			return $object;
-		}
+	class Spoilages extends NumericRatings {
+		protected const ELEMENT_NAME = 'spoilage';
 	}
 
 	class Answers extends Reactions {
@@ -176,8 +202,9 @@
 			$object = parent::createObjectFromElement($element, $object);
 
 			$object->id = $element->getAttribute('id');
-
+			$object->date = $element->getAttribute('date');
 			$object->text = $element->getElementsByTagName('text')->item(0)->textContent;
+
 			$object->reactions = [
 					'usefulness' => new \models\NumericReactionType($object->id, 'usefulness'),
 					'agreement' => new \models\NumericReactionType($object->id, 'agreement')
@@ -250,6 +277,7 @@
 			$object = parent::createObjectFromElement($element, $object);
 			$unavail = new class {public $textContent = 'N/A';};
 
+			$object->date = $element->getAttribute('date');
 			$object->status = $element->getAttribute('status');
 			$object->message =
 				($element->getElementsByTagName('message')->item(0) ?? $unavail)

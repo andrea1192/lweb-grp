@@ -41,7 +41,7 @@
 
 			if ($active) {
 				$dropdown_menu = $this->generateDropdownMenu();
-				$reaction_buttons = $this->generateReactionButtons();
+				$reaction_buttons = Reaction::generateReactionButtons($this->post->reactions);
 				$action_buttons = $this->generateActionButtons();
 			} else {
 				$dropdown_menu = '';

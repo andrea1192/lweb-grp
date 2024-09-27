@@ -65,7 +65,7 @@
 				$cls = '',
 				$content = '') {
 
-			if (empty($href))
+			if (empty($href) || !$enabled)
 				return static::generateButton($type, $label, $icon, $enabled, $cls, $content);
 			else
 				return static::generateActionButton($type, $label, $icon, $href, $cls, $content);

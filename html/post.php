@@ -113,6 +113,24 @@
 					header("Location: $redir");
 					break;
 
+				case 'add_reaction':
+					$reaction_type = $post_type;
+					$reaction = \models\Reaction::createReaction($reaction_type);
+
+					$reaction->post = $post_id;
+					$reaction->author = ServiceLocator::resolve('session')->getUsername();
+
+					if (property_exists($reaction, 'type'))
+						$reaction->type = $reaction_type;
+					if (property_exists($reaction, 'rating'))
+						$reaction->rating = static::sanitize($_POST['rating']);
+
+					$mapper = ServiceLocator::resolve('reactions');
+					$mapper->save($reaction);
+
+					header("Location: {$_SERVER['HTTP_REFERER']}");
+					break;
+
 				case 'answer':
 					// TODO: Aggiungi controlli privilegi con ev. redirect
 					$view = new \views\ReactionCreateView($this->session, 'answer', $post_id);
