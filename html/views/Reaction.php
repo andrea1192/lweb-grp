@@ -25,19 +25,19 @@
 
 				switch ($type) {
 					case 'like':
-						$button .= UIComponents::getTextButton(
+						$buttons .= UIComponents::getTextButton(
 								$stats->count_up,
 								'thumb_up',
 								$reaction_view->generateURL('add_reaction', 'like'),
 								enabled: $status,
 								content: $status ? '' : $login_prompt);
-						$button .= UIComponents::getTextButton(
+						$buttons .= UIComponents::getTextButton(
 								$stats->count_down,
 								'thumb_down',
 								$reaction_view->generateURL('add_reaction', 'dislike'),
 								enabled: $status,
 								content: $status ? '' : $login_prompt);
-						break;
+						continue 2;
 
 					case 'usefulness':
 						$tooltip = <<<EOF

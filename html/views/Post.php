@@ -66,7 +66,7 @@
 					{$this->post->text}
 				</div>
 				<div class="flex footer">
-					<div class="flex left reactions">
+					<div class="flex left">
 						{$reaction_buttons}
 					</div>
 					<div class="flex right">

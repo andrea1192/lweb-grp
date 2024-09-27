@@ -254,10 +254,6 @@ body {
 	font-size: 0.9rem;
 }
 
-.reactions >button {
-	font-weight: normal;
-}
-
 .tooltip:has(input) {
 	bottom: revert;
 	border-radius: 30px;
