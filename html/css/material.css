@@ -186,7 +186,7 @@ button.fab,
 
 /* Bottone senza etichetta (=> tondo, solo icona) */
 button:not(:has(>.label)),
-.button:not(:has(>.label)) {
+.button:not(:has(>.label)):not([value]) {
 	width: 40px;
 	border-radius: 50%;
 }
@@ -196,6 +196,7 @@ button:not(:has(>.label)),
 	visibility: hidden;
 	position: absolute;
 	display: flex;
+	align-items: center;
 	bottom: 100%;
 	left: 0;
 	width: max-content;
@@ -248,6 +249,10 @@ button:hover >.tooltip,
 button:hover >.dropdown,
 .button:hover >.tooltip,
 .button:hover >.dropdown {
+	visibility: visible;
+}
+
+.tooltip:has(*:focus) {
 	visibility: visible;
 }
 

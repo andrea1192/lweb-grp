@@ -258,8 +258,16 @@ body {
 	font-weight: normal;
 }
 
+.tooltip:has(input) {
+	bottom: revert;
+	border-radius: 30px;
+	padding: 0;
+	padding-left: 12px;
+}
+
 .tooltip >.rate {
 	margin-left: 8px;
+	margin-right: 16px;
 }
 
 /* ==== Parti vista MoviesView ============================================ */

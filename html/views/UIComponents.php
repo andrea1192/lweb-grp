@@ -20,7 +20,7 @@
 			EOF;
 		}
 
-		private static function generateButton($type, $label, $icon, $enabled, $cls, $content) {
+		private static function generateButton($type, $label, $icon, $submit, $enabled, $cls, $content) {
 
 			if (!empty($icon))
 				$icon = static::getIcon($icon);
@@ -28,10 +28,11 @@
 			if (!empty($label) || $label == '0')
 				$label = "<span class=\"label\">{$label}</span>";
 
+			$behavior = ($submit) ? 'submit' : 'button';
 			$disabled = (!$enabled) ? 'disabled="disabled"' : '';
 
 			return <<<EOF
-			<button class="{$type} {$cls}" {$disabled}>
+			<button type="{$behavior}" class="{$type} {$cls}" {$disabled}>
 				{$icon}
 				{$label}
 				{$content}
@@ -61,12 +62,13 @@
 				$label = '',
 				$icon = '',
 				$href = '',
+				$submit = true,
 				$enabled = true,
 				$cls = '',
 				$content = '') {
 
 			if (empty($href) || !$enabled)
-				return static::generateButton($type, $label, $icon, $enabled, $cls, $content);
+				return static::generateButton($type, $label, $icon, $submit, $enabled, $cls, $content);
 			else
 				return static::generateActionButton($type, $label, $icon, $href, $cls, $content);
 		}
@@ -75,50 +77,61 @@
 				$label = '',
 				$icon = '',
 				$href = '',
+				$submit = true,
 				$enabled = true,
 				$cls = '',
 				$content = '') {
-			return static::getButton('text', $label, $icon, $href, $enabled, $cls, $content);
+			return static::getButton('text', $label, $icon, $href, $submit, $enabled, $cls, $content);
 		}
 
 		public static function getOutlinedButton(
 				$label = '',
 				$icon = '',
 				$href = '',
+				$submit = true,
 				$enabled = true,
 				$cls = '',
 				$content = '') {
-			return static::getButton('', $label, $icon, $href, $enabled, $cls, $content);
+			return static::getButton('', $label, $icon, $href, $submit, $enabled, $cls, $content);
 		}
 
 		public static function getTonalButton(
 				$label = '',
 				$icon = '',
 				$href = '',
+				$submit = true,
 				$enabled = true,
 				$cls = '',
 				$content = '') {
-			return static::getButton('tonal', $label, $icon, $href, $enabled, $cls, $content);
+			return static::getButton('tonal', $label, $icon, $href, $submit, $enabled, $cls, $content);
 		}
 
 		public static function getFilledButton(
 				$label = '',
 				$icon = '',
 				$href = '',
+				$submit = true,
 				$enabled = true,
 				$cls = '',
 				$content = '') {
-			return static::getButton('filled', $label, $icon, $href, $enabled, $cls, $content);
+			return static::getButton('filled', $label, $icon, $href, $submit, $enabled, $cls, $content);
 		}
 
 		public static function getFAB(
 				$label = '',
 				$icon = '',
 				$href = '',
+				$submit = true,
 				$enabled = true,
 				$cls = '',
 				$content = '') {
-			return static::getButton('fab', $label, $icon, $href, $enabled, $cls, $content);
+			return static::getButton('fab', $label, $icon, $href, $submit, $enabled, $cls, $content);
+		}
+
+		public static function getSubmitButton($label = 'Submit', $cls = '', $type = 'filled') {
+			return <<<EOF
+			<input type="submit" class="button {$type} {$cls}" value="{$label}" />
+			EOF;
 		}
 
 		public static function getOverflowMenu($dropdown) {

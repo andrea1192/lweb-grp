@@ -8,9 +8,11 @@
 
 			if (!$reactions) return $buttons;
 
+			$components = 'views\UIComponents';
 			$session = \controllers\ServiceLocator::resolve('session');
 
 			foreach ($reactions as $type => $stats) {
+				$button = '';
 				$reaction_view = new ReactionType($session, $stats);
 
 				if (!$session->isLoggedIn())
@@ -18,17 +20,18 @@
 				else
 					$login_prompt = '<div class="tooltip">Your account has been disabled</div>';
 
+				$action = $reaction_view->generateURL('add_reaction', $type);
 				$status = $session->isAllowed();
 
 				switch ($type) {
 					case 'like':
-						$buttons .= UIComponents::getTextButton(
+						$button .= UIComponents::getTextButton(
 								$stats->count_up,
 								'thumb_up',
 								$reaction_view->generateURL('add_reaction', 'like'),
 								enabled: $status,
 								content: $status ? '' : $login_prompt);
-						$buttons .= UIComponents::getTextButton(
+						$button .= UIComponents::getTextButton(
 								$stats->count_down,
 								'thumb_down',
 								$reaction_view->generateURL('add_reaction', 'dislike'),
@@ -39,20 +42,23 @@
 					case 'usefulness':
 						$tooltip = <<<EOF
 						<div class="tooltip">
-							<span class="material-symbols-outlined"></span>Useful?
-							<span class="rate">
-								<span class="material-symbols-outlined">star</span>
-								<span class="material-symbols-outlined">star</span>
-								<span class="material-symbols-outlined">star</span>
-								<span class="material-symbols-outlined">star</span>
-								<span class="material-symbols-outlined">star</span>
-							</span>
+							<div>Useful?</div>
+							<div class="rate">
+								<select name="rating">
+									<option value="1">1</option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+									<option value="4">4</option>
+									<option value="5">5</option>
+								</select>
+							</div>
+							{$components::getSubmitButton()}
 						</div>
 						EOF;
-						$buttons .= UIComponents::getTextButton(
+						$button .= UIComponents::getTextButton(
 								$stats->average,
 								'lightbulb',
-								$reaction_view->generateURL('add_reaction', 'usefulness'),
+								submit: false,
 								enabled: $status,
 								content: $status ? $tooltip : $login_prompt);
 						break;
@@ -60,20 +66,23 @@
 					case 'agreement':
 						$tooltip = <<<EOF
 						<div class="tooltip">
-							<span class="material-symbols-outlined"></span>Agree?
-							<span class="rate">
-								<span class="material-symbols-outlined">star</span>
-								<span class="material-symbols-outlined">star</span>
-								<span class="material-symbols-outlined">star</span>
-								<span class="material-symbols-outlined">star</span>
-								<span class="material-symbols-outlined">star</span>
-							</span>
+							<div>Agree?</div>
+							<div class="rate">
+								<select name="rating">
+									<option value="1">1</option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+									<option value="4">4</option>
+									<option value="5">5</option>
+								</select>
+							</div>
+							{$components::getSubmitButton()}
 						</div>
 						EOF;
-						$buttons .= UIComponents::getTextButton(
+						$button .= UIComponents::getTextButton(
 								$stats->average,
 								'thumb_up',
-								$reaction_view->generateURL('add_reaction', 'agreement'),
+								submit: false,
 								enabled: $status,
 								content: $status ? $tooltip : $login_prompt);
 						break;
@@ -81,8 +90,8 @@
 					case 'spoilage':
 						$tooltip = <<<EOF
 						<div class="tooltip">
-							<span class="material-symbols-outlined"></span>Spoiler level:
-							<span class="rate">
+							<div>Spoiler level:</div>
+							<div class="rate">
 								<select name="rating">
 									<option value="1">1</option>
 									<option value="2">2</option>
@@ -95,19 +104,28 @@
 									<option value="9">9</option>
 									<option value="10">10</option>
 								</select>
-							</span>
+							</div>
+							{$components::getSubmitButton()}
 						</div>
 						EOF;
-						$buttons .= UIComponents::getTextButton(
+						$button .= UIComponents::getTextButton(
 								$stats->average,
 								'speed',
-								$reaction_view->generateURL('add_reaction', 'spoilage'),
+								submit: false,
 								enabled: $status,
 								content: $status ? $tooltip : $login_prompt);
 						break;
 
 					default: break;
 				}
+
+				$buttons .= <<<EOF
+				<form method="post" action="{$action}">
+					<div>
+						{$button}
+					</div>
+				</form>
+				EOF;
 			}
 
 			return $buttons;
