@@ -9,7 +9,7 @@
 			$movie_id = static::sanitize($_GET['id'] ?? '');
 			$tab = static::sanitize($_GET['type'] ?? 'question');
 
-			switch ($_GET['action'] ?? '') {
+			switch ($_REQUEST['action'] ?? '') {
 
 				default:
 				case 'display':
@@ -32,9 +32,21 @@
 				case 'save':
 					// TODO: Aggiungi controlli privilegi con ev. redirect
 					if (isset($_POST)) {
-						$movie = new \models\Request();
-						$movie->id = static::sanitize($_POST['id']);
-						$movie->status = static::sanitize($_POST['status']);
+
+						if (isset($_POST['status'])) {
+							$movie = new \models\Request();
+							$mapper = ServiceLocator::resolve('requests');
+
+							if (empty($movie->status))
+								$movie->status = 'submitted';
+							else
+								$movie->status = static::sanitize($_POST['status']);
+						} else {
+							$movie = new \models\Movie();
+							$mapper = ServiceLocator::resolve('movies');
+						}
+
+						$movie->id = $movie_id;
 						$movie->title = static::sanitize($_POST['title']);
 						$movie->year = static::sanitize($_POST['year']);
 						$movie->duration = static::sanitize($_POST['duration']);
@@ -42,10 +54,6 @@
 						$movie->director = static::sanitize($_POST['director']);
 						$movie->writer = static::sanitize($_POST['writer']);
 
-						if (empty($movie->status))
-							$movie->status = 'submitted';
-
-						$mapper = ServiceLocator::resolve('requests');
 						$movie = $mapper->save($movie);
 					}
 
@@ -60,7 +68,14 @@
 					$requests = ServiceLocator::resolve('requests');
 					$movies = ServiceLocator::resolve('movies');
 
-					$request = $requests->getRequestById($request_id);
+					$request = new \models\Request();
+					$request->id = $movie_id;
+					$request->title = static::sanitize($_POST['title']);
+					$request->year = static::sanitize($_POST['year']);
+					$request->duration = static::sanitize($_POST['duration']);
+					$request->summary = static::sanitize($_POST['summary']);
+					$request->director = static::sanitize($_POST['director']);
+					$request->writer = static::sanitize($_POST['writer']);
 					$movie = \models\Movie::createMovieFromRequest($request);
 
 					$request->status = 'accepted';

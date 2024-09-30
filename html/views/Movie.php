@@ -67,7 +67,7 @@
 		public function display() {
 			$backdrop = $this->generateBackdrop();
 			$poster = $this->generatePoster();
-			$approve_buttons = $this->generateApproveButtons();
+			$action_buttons = $this->generateActionButtons();
 
 			echo <<<EOF
 			<div id="backdrop" {$backdrop}>
@@ -88,7 +88,7 @@
 									<div>{$this->movie->writer}</div>
 								</div>
 							</div>
-							{$approve_buttons}
+							{$action_buttons}
 						</div>
 					</div>
 				</div>
@@ -97,12 +97,15 @@
 		}
 
 		public function edit() {
-			$action = $this->generateURL('save');
+			$action = $this->generateURL();
 			$backdrop = $this->generateBackdrop();
 			$poster = $this->generatePoster();
 			$save_buttons = $this->generateSaveButtons();
 
 			$components = 'views\UIComponents';
+
+			$status = (property_exists($this->movie, 'status')) ?
+				$components::getHiddenInput('status', $this->movie->status) : '';
 
 			echo <<<EOF
 			<div id="backdrop" {$backdrop}>
@@ -111,7 +114,7 @@
 						{$poster}
 						<div id="description" class="flex fields">
 							{$components::getHiddenInput('id', $this->movie->id)}
-							{$components::getHiddenInput('status', $this->movie->status)}
+							{$status}
 							{$components::getFilledTextInput('Title', 'title', $this->movie->title)}
 							<div class="flex fields" style="width: 30%">
 								{$components::getFilledTextInput('Year', 'year', $this->movie->year)}
@@ -160,16 +163,36 @@
 			return '';
 		}
 
-		protected function generateApproveButtons() {
-			return '';
+		protected function generateActionButtons() {
+			$left = '';
+			$right = '';
+
+			if (!property_exists($this->movie, 'status') || ($this->movie->status == 'submitted')) {
+
+				if ($this->session->isAdmin()) {
+					$right .= UIComponents::getOutlinedButton('', 'edit', $this->generateURL('edit'));
+					$right .= UIComponents::getOutlinedButton('', 'delete', $this->generateURL('delete'));
+				}
+			}
+
+			return <<<EOF
+			<div class="flex bottom">
+				<div class="flex left">
+					{$left}
+				</div>
+
+				<div class="flex right">
+					{$right}
+				</div>
+			</div>
+			EOF;
 		}
 
 		protected function generateSaveButtons() {
 			$left = '';
 			$right = '';
 
-			$right .= UIComponents::getOutlinedButton('Cancel', '');
-			$right .= UIComponents::getFilledButton('Save changes', 'save');
+			$right .= UIComponents::getTonalButton('Save changes', 'save', action: 'save');
 
 			return <<<EOF
 			<div class="flex bottom">
@@ -209,20 +232,44 @@
 			return UIComponents::getOverlay($label, $icon, 'status');
 		}
 
-		protected function generateApproveButtons() {
+		protected function generateActionButtons() {
+			$left = '';
+			$right = '';
+
+			if (!property_exists($this->movie, 'status') || ($this->movie->status == 'submitted')) {
+
+				if ($this->session->isAdmin()) {
+					$left .= UIComponents::getTonalButton('Review this content', 'edit', $this->generateURL('edit'));
+
+					$right .= UIComponents::getOutlinedButton('', 'edit', $this->generateURL('edit'));
+					$right .= UIComponents::getOutlinedButton('', 'delete', $this->generateURL('delete'));
+				}
+			}
+
+			return <<<EOF
+			<div class="flex bottom">
+				<div class="flex left">
+					{$left}
+				</div>
+
+				<div class="flex right">
+					{$right}
+				</div>
+			</div>
+			EOF;
+		}
+
+		protected function generateSaveButtons() {
 			$left = '';
 			$right = '';
 
 			if ($this->movie->status == 'submitted') {
 
 				if ($this->session->isMod()) {
-					$left .= UIComponents::getTonalButton('Accept request', 'check', $this->generateURL('accept'));
-					$left .= UIComponents::getOutlinedButton('Reject request', 'close', $this->generateURL('reject'));
-				}
+					$left .= UIComponents::getTonalButton('Save and accept request', 'check', action: 'accept');
+					$left .= UIComponents::getOutlinedButton('Reject request', 'close', action: 'reject');
 
-				if ($this->session->isAdmin()) {
-					$right .= UIComponents::getOutlinedButton('', 'edit', $this->generateURL('edit'));
-					$right .= UIComponents::getOutlinedButton('', 'delete', $this->generateURL('delete'));
+					$right .= UIComponents::getOutlinedButton('Save changes only', 'save', action: 'save');
 				}
 			}
 

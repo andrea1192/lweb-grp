@@ -58,7 +58,7 @@
 						$button .= UIComponents::getTextButton(
 								$stats->average,
 								'lightbulb',
-								submit: false,
+								action: null,
 								enabled: $status,
 								content: $status ? $tooltip : $login_prompt);
 						break;
@@ -82,7 +82,7 @@
 						$button .= UIComponents::getTextButton(
 								$stats->average,
 								'thumb_up',
-								submit: false,
+								action: null,
 								enabled: $status,
 								content: $status ? $tooltip : $login_prompt);
 						break;
@@ -111,7 +111,7 @@
 						$button .= UIComponents::getTextButton(
 								$stats->average,
 								'speed',
-								submit: false,
+								action: null,
 								enabled: $status,
 								content: $status ? $tooltip : $login_prompt);
 						break;
