@@ -26,6 +26,7 @@
 						<xsd:enumeration value="submitted" />
 						<xsd:enumeration value="accepted" />
 						<xsd:enumeration value="rejected" />
+						<xsd:enumeration value="deleted" />
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:attribute>

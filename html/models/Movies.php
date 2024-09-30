@@ -167,14 +167,14 @@
 		}
 
 		public function getRequests() {
-			$query = "/requests/*";
+			$query = "/requests/*[@status!='deleted']";
 			$matches = $this->xpath->query($query);
 
 			return new \models\RequestList($matches);
 		}
 
 		private function getRequestsByStatus($status) {
-			$query = "/requests/*[status='{$status}']";
+			$query = "/requests/*[@status='{$status}']";
 			$matches = $this->xpath->query($query);
 
 			return new \models\RequestList($matches);

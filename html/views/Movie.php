@@ -171,7 +171,6 @@
 
 				if ($this->session->isAdmin()) {
 					$right .= UIComponents::getOutlinedButton('', 'edit', $this->generateURL('edit'));
-					$right .= UIComponents::getOutlinedButton('', 'delete', $this->generateURL('delete'));
 				}
 			}
 
@@ -226,6 +225,10 @@
 				case 'rejected':
 					$label = 'Rejected';
 					$icon = 'thumb_down';
+					break;
+				case 'deleted':
+					$label = 'Deleted';
+					$icon = 'delete';
 					break;
 			}
 

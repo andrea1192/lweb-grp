@@ -102,8 +102,13 @@
 
 				case 'delete':
 					// TODO: Aggiungi controlli privilegi con ev. redirect
-					$mapper = ServiceLocator::resolve('requests');
-					$mapper->delete($movie_id);
+					$request_id = $movie_id;
+
+					$requests = ServiceLocator::resolve('requests');
+					$request = $requests->getRequestById($request_id);
+
+					$request->status = 'deleted';
+					$requests->save($request);
 
 					header('Location: movies.php?action=list_requests');
 					break;
