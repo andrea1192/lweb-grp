@@ -56,7 +56,7 @@ button.fab:enabled:hover,
 	background-color: #FFFF;
 }
 
-.pane >h1 {
+.pane h1 {
 	font-size: 1.4rem;
 	font-weight: 300;
 }

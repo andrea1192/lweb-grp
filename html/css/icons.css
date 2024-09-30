@@ -1,13 +1,28 @@
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0');
 
 .material-symbols-outlined {
-	color: #999;
+	color: inherit;
 	font-size: 18px;
 }
 
-button >.icon,
-.button >.icon {
-	color: inherit;
+.icon.md-18 {
+	font-size: 18px;
+}
+
+.icon.md-24 {
+	font-size: 24px;
+}
+
+.icon.md-36 {
+	font-size: 36px;
+}
+
+.icon.md-48 {
+	font-size: 48px;
+}
+
+.icon.margin {
+	margin-right: 6px;
 }
 
 /* Pulsante con etichetta: aggiungi margine dopo icona */
@@ -41,12 +56,6 @@ button:not(:has(>.label)) >.icon,
 	top: 50%;
 	left: 50%;
 	translate: -50% -50%;
-	font-size: 48px;
-}
-
-/* Icona vista vuota (es. scheda senza post) */
-.icon.no_results {
-	margin-right: 12px;
 	font-size: 48px;
 }
 

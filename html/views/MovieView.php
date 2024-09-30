@@ -73,28 +73,35 @@
 		}
 
 		public function printPosts() {
+			$components = 'views\UIComponents';
 
 			if (!$this->posts->count()) {
-				$icon = UIComponents::getIcon('search', 'no_results');
 
 				echo <<<EOF
 				<div class="flex align">
-					{$icon}
+					{$components::getIcon('search', 'md-48 margin')}
 					<span>No posts of type "{$this->tab}" found.</span>
 				</div>
 				EOF;
 				return;
 			}
 
-			if ($this->tab == 'question') {
-				print("<h1>Featured posts</h1>");
+			if ($this->tab == 'question' && $this->featuredPosts->count()) {
+
+				echo <<<EOF
+				<div class="featured_posts">
+					<div class="flex">
+						{$components::getIcon('verified', 'md-24 margin')}
+						<h1>Featured posts</h1>
+					</div>
+				EOF;
 
 				foreach ($this->featuredPosts as $featuredPost) {
 					$view = \views\Post::factoryMethod($this->session, $featuredPost);
 					$view->displayFeatured();
 				}
 
-				print("<h1>All posts</h1>");
+				echo '</div>';
 			}
 
 			foreach ($this->posts as $post) {
