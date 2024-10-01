@@ -111,6 +111,10 @@
 		}
 
 		public function printActionButton() {
+
+			if (property_exists($this->movie, 'status') && ($this->movie->status != 'submitted'))
+				return '';
+
 			$URL = "post.php?action=create&type={$this->tab}&movie={$this->movie->id}";
 			$URL = htmlspecialchars($URL, ENT_QUOTES | ENT_SUBSTITUTE | ENT_XHTML);
 

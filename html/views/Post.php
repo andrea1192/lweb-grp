@@ -203,7 +203,7 @@
 		}
 
 		protected function generateReferenceField() {
-			return UIComponents::getHiddenInput('request', $this->post->request);
+			return UIComponents::getHiddenInput('request', $this->post->movie);
 		}
 
 		protected function generateSpecialFields() {
