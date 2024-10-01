@@ -37,10 +37,7 @@
 							$movie = new \models\Request();
 							$mapper = ServiceLocator::resolve('requests');
 
-							if (empty($movie->status))
-								$movie->status = 'submitted';
-							else
-								$movie->status = static::sanitize($_POST['status']);
+							$movie->status = static::sanitize($_POST['status']);
 						} else {
 							$movie = new \models\Movie();
 							$mapper = ServiceLocator::resolve('movies');

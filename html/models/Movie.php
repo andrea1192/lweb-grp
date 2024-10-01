@@ -29,6 +29,6 @@
 	}
 
 	class Request extends Movie {
-		public $status;
+		public $status = 'submitted';
 	}
 ?>

@@ -272,7 +272,9 @@
 					$left .= UIComponents::getTonalButton('Save and accept request', 'check', action: 'accept');
 					$left .= UIComponents::getOutlinedButton('Reject request', 'close', action: 'reject');
 
-					$right .= UIComponents::getOutlinedButton('Save changes only', 'save', action: 'save');
+					$right .= UIComponents::getOutlinedButton('Save only', 'save', action: 'save');
+				} else {
+					$right .= UIComponents::getTonalButton('Submit request', 'send', action: 'save');
 				}
 			}
 
