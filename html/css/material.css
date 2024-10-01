@@ -37,6 +37,17 @@
 	background-color: #CCC3;
 }
 
+/* Pannelli a comparsa (attivazione su hover) */
+.button:hover >.tooltip,
+.button:hover >.dropdown {
+	visibility: visible;
+}
+
+/* Magic (attivazione con focus su elementi interni) */
+.tooltip:has(*:focus) {
+	visibility: visible;
+}
+
 /* ==== Elementi comuni ==================================================== */
 
 /* Pane: contenitore flessibile, con margini e padding */
@@ -223,28 +234,6 @@ button:not(:disabled) {
 	padding: 12px;
 }
 
-/* Attivazione dei pannelli a comparsa */
-.button:hover >.tooltip,
-.button:hover >.dropdown {
-	visibility: visible;
-}
-
-.tooltip:has(*:focus) {
-	visibility: visible;
-}
-
-/*.tooltip::after {
-	content: '';
-	position: absolute;
-	display: block;
-	top: 100%;
-	left: 50%;
-	translate: -50%;
-	width: 100%;
-	height: 20%;
-	border-color: transparent;
-	background-color: transparent;
-}*/
 
 form #fields,
 form .fields {

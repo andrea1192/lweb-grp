@@ -289,28 +289,28 @@
 		}
 	}
 
-	class DeletedPost extends Post {
+	// class DeletedPost extends Post {
 
-		public function displayReference($active = false, $reactions = '') {
+	// 	public function displayReference($active = false, $reactions = '') {
 
-			echo <<<EOF
-			<div class="post">
-				<div class="header">
-					<div class="details">
-						<h1>[Deleted Post]</h1>
-					</div>
-				</div>
-				<div class="content">
-				</div>
-				<div class="flex footer">
-					<div class="flex left reactions">
-					</div>
-					<div class="flex right">
-					</div>
-				</div>
-				{$reactions}
-			</div>
-			EOF;
-		}
-	}
+	// 		echo <<<EOF
+	// 		<div class="post">
+	// 			<div class="header">
+	// 				<div class="details">
+	// 					<h1>[Deleted Post]</h1>
+	// 				</div>
+	// 			</div>
+	// 			<div class="content">
+	// 			</div>
+	// 			<div class="flex footer">
+	// 				<div class="flex left reactions">
+	// 				</div>
+	// 				<div class="flex right">
+	// 				</div>
+	// 			</div>
+	// 			{$reactions}
+	// 		</div>
+	// 		EOF;
+	// 	}
+	// }
 ?>
