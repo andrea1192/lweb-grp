@@ -132,16 +132,19 @@
 				$element = $document->createElement('comment');
 
 			$id = $document->createAttribute('id');
+			$status = $document->createAttribute('status');
 			$request = $document->createAttribute('request');
 			$author = $document->createAttribute('author');
 			$date = $document->createAttribute('date');
 
 			$id->value = $object->id;
+			$status->value = $object->status;
 			$request->value = $object->request;
 			$author->value = $object->author;
 			$date->value = $object->date;
 
 			$element->appendChild($id);
+			$element->appendChild($status);
 			$element->appendChild($request);
 			$element->appendChild($author);
 			$element->appendChild($date);
@@ -156,14 +159,14 @@
 		}
 
 		public function getCommentsByRequest($movie_id) {
-			$query = "/comments/comment[@request='{$movie_id}']";
+			$query = "/comments/comment[@status!='deleted' and @request='{$movie_id}']";
 			$matches = $this->xpath->query($query);
 
 			return new \models\PostList($matches);
 		}
 
 		public function getCommentsByAuthor($author) {
-			$query = "/comments/comment[@author='{$author}']";
+			$query = "/comments/comment[@status!='deleted' and @author='{$author}']";
 			$matches = $this->xpath->query($query);
 
 			return new \models\PostList($matches);

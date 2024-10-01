@@ -4,7 +4,7 @@
 
 	abstract class Post {
 		public $id;
-		public $status;
+		public $status = 'active';
 		public $movie;
 		public $author;
 		public $date;
