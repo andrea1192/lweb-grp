@@ -30,7 +30,7 @@
 				</div>
 				<div id="controls" class="flex">
 					<div class="flex left align">
-						{$components::getTextButton('Create account', '', $signup, cls:'colored')}
+						{$components::getTextButton('Create account', '', $signup, cls:'colored-blue')}
 					</div>
 					<div class="flex right align">
 						{$components::getFilledButton('Sign in', '', '#')}
@@ -64,7 +64,7 @@
 				</div>
 				<div id="controls" class="flex">
 					<div class="flex left align">
-						{$components::getTextButton('Reset', 'refresh', '#', cls:'colored')}
+						{$components::getTextButton('Reset', 'refresh', '#', cls:'colored-blue')}
 					</div>
 					<div class="flex right align">
 						{$components::getFilledButton('Create account', 'person_add', '#')}
@@ -104,7 +104,7 @@
 				</div>
 				<div id="controls" class="flex">
 					<div class="flex left align">
-						{$components::getTextButton('Delete account', 'delete', '#', cls:'danger')}
+						{$components::getTextButton('Delete account', 'delete', '#', cls:'colored-red')}
 					</div>
 					<div class="flex right align">
 						{$components::getFilledButton('Save changes', 'save', '#')}

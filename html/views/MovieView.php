@@ -89,8 +89,8 @@
 			if ($this->tab == 'question' && $this->featuredPosts->count()) {
 
 				echo <<<EOF
-				<div class="featured_posts">
-					<div class="flex">
+				<div class="featured">
+					<div class="flex align">
 						{$components::getIcon('verified', 'md-24 margin')}
 						<h1>Featured posts</h1>
 					</div>

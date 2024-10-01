@@ -39,7 +39,7 @@
 			$disabled = (!$enabled) ? 'disabled="disabled"' : '';
 
 			return <<<EOF
-			<button {$behavior} {$action} class="{$type} {$cls}" {$disabled}>
+			<button {$behavior} {$action} class="button {$type} {$cls}" {$disabled}>
 				{$icon}
 				{$label}
 				{$content}
@@ -99,7 +99,7 @@
 				$enabled = true,
 				$cls = '',
 				$content = '') {
-			return static::getButton('', $label, $icon, $href, $action, $enabled, $cls, $content);
+			return static::getButton('outlined', $label, $icon, $href, $action, $enabled, $cls, $content);
 		}
 
 		public static function getTonalButton(

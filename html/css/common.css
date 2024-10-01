@@ -3,6 +3,14 @@
 
 /* ==== Classi di utilità generale ========================================= */
 
+.colored-blue {
+	color: dodgerblue !important;
+}
+
+.colored-red {
+	color: red !important;
+}
+
 .menu {
 	display: flex;
 	list-style-type: none;
@@ -25,7 +33,6 @@
 	align-items: center;
 }
 
-.flex:not(.column) >button:not(:last-child),
 .flex:not(.column) >.button:not(:last-child) {
 	margin-right: 10px;
 }
@@ -116,21 +123,17 @@ body {
 	color: #999;
 }
 
-.featured_posts {
+.pane >.featured {
 	border-radius: 12px;
 	padding: 12px;
 	background-color: #F6F6F6;
 }
 
-.featured_posts >.flex {
-	align-items: center;
-}
-
-.featured_posts >.flex >h1 {
+.pane >.featured >.flex >h1 {
 	margin: 0;
 }
 
-.featured {
+.header >.featured {
 	position: relative;
 	flex-shrink: 0;
 	width: 40px;
@@ -198,7 +201,6 @@ body {
 	color: white;
 }
 
-#overview button,
 #overview .button {
 	border-color: inherit;
 }

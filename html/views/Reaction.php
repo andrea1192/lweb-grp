@@ -29,12 +29,14 @@
 								$stats->count_up,
 								'thumb_up',
 								$reaction_view->generateURL('add_reaction', 'like'),
+								action: null,
 								enabled: $status,
 								content: $status ? '' : $login_prompt);
 						$buttons .= UIComponents::getTextButton(
 								$stats->count_down,
 								'thumb_down',
 								$reaction_view->generateURL('add_reaction', 'dislike'),
+								action: null,
 								enabled: $status,
 								content: $status ? '' : $login_prompt);
 						continue 2;

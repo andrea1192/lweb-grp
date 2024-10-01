@@ -30,13 +30,11 @@
 }
 
 /* Pulsante con etichetta: aggiungi margine dopo icona */
-button:has(>.label) >.icon,
 .button:has(>.label) >.icon {
 	margin-right: 8px;
 }
 
 /* Pulsante senza etichetta: centra icona */
-button:not(:has(>.label)) >.icon,
 .button:not(:has(>.label)) >.icon {
 	position: absolute;
 	top: 50%;

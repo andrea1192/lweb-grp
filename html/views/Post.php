@@ -233,7 +233,7 @@
 				$html .= UIComponents::getTextButton('Elevate question', 'verified', $this->generateURL('elevate'));
 
 			if ($this->session->isAllowed())
-				$html .= UIComponents::getOutlinedButton('Answer', 'comment', $this->generateURL('answer'), cls: 'colored');
+				$html .= UIComponents::getOutlinedButton('Answer', 'comment', $this->generateURL('answer'), cls: 'colored-blue');
 
 			return $html;
 		}

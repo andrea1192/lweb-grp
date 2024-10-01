@@ -66,14 +66,14 @@
 				$dropdown_menu = UIComponents::getDropdownMenu($dropdown_items, $dropdown_header);
 
 				return <<<EOF
-				<button class="account">
+				<button class="button outlined account">
 					<span class="centered initials">{$initials}</span>
 					{$dropdown_menu}
 				</button>
 				EOF;
 			} else {
 
-				return UIComponents::getOutlinedButton('Sign in', 'login', 'login.php', cls: 'colored');
+				return UIComponents::getOutlinedButton('Sign in', 'login', 'login.php', cls: 'colored-blue');
 			}
 		}
 

@@ -11,7 +11,6 @@
 
 /* Elementi "elevati" (con box shadow) */
 .elevated,
-button.fab,
 .button.fab,
 .tooltip,
 .dropdown {
@@ -19,22 +18,18 @@ button.fab,
 }
 
 /* Elementi interattivi (cambio colore o elevazione su hover) */
-button:enabled:hover,
-.button:hover {
+.button.text:not(:disabled):hover,
+.button.outlined:not(:disabled):hover {
 	background-color: #CCC3;
 }
 
-button.tonal:enabled:hover,
-button.filled:enabled:hover,
-.button.tonal:hover,
-.button.filled:hover {
+.button.tonal:not(:disabled):hover,
+.button.filled:not(:disabled):hover {
 	box-shadow: 0 1px 3px 0px #0006;
 }
 
-button.elevated:enabled:hover,
-button.fab:enabled:hover,
-.button.elevated:hover,
-.button.fab:hover {
+.button.elevated:not(:disabled):hover,
+.button.fab:not(:disabled):hover {
 	box-shadow: 0 1px 3px 1px #0006;
 }
 
@@ -115,13 +110,13 @@ a.button {
 }
 
 /* Bottone senza anchor: da definire */
-button:not([disabled]) {
+button:not(:disabled) {
 	cursor: pointer;
 }
 
 /* Bottone di base (outlined) */
-button,
-.button {
+.button,
+.button.outlined {
 	position: relative;
 	display: flex;
 	align-items: center;
@@ -137,26 +132,13 @@ button,
 	background-color: transparent;
 }
 
-/* Bottone con testo colorato (qualsiasi tipo) */
-button.colored,
-.button.colored {
-	color: dodgerblue !important;
-}
-
-button.danger,
-.button.danger {
-	color: red !important;
-}
-
 /* Bottone testuale (text) */
-button.text,
 .button.text {
 	border-width: 0;
 	padding: 6px 12px;
 }
 
 /* Bottone con fondo opaco (tonal) */
-button.tonal,
 .button.tonal {
 	border-width: 0;
 	background-color: #F0F0F0;
@@ -164,7 +146,6 @@ button.tonal,
 }
 
 /* Bottone con fondo colorato (filled) */
-button.filled,
 .button.filled {
 	border-width: 0px;
 	background-color: dodgerblue !important;
@@ -172,7 +153,6 @@ button.filled,
 }
 
 /* Bottone azione primaria (FAB) */
-button.fab,
 .button.fab {
 	position: fixed;
 	bottom: 16px;
@@ -185,7 +165,6 @@ button.fab,
 }
 
 /* Bottone senza etichetta (=> tondo, solo icona) */
-button:not(:has(>.label)),
 .button:not(:has(>.label)):not([value]) {
 	width: 40px;
 	border-radius: 50%;
@@ -245,8 +224,6 @@ button:not(:has(>.label)),
 }
 
 /* Attivazione dei pannelli a comparsa */
-button:hover >.tooltip,
-button:hover >.dropdown,
 .button:hover >.tooltip,
 .button:hover >.dropdown {
 	visibility: visible;
