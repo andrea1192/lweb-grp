@@ -69,6 +69,7 @@
 						}
 
 						$post->id = static::sanitize($_POST['id']);
+						$post->status = static::sanitize($_POST['status']);
 						$post->author = static::sanitize($_POST['author']);
 						$post->date = static::sanitize($_POST['date']);
 						$post->text = static::sanitize($_POST['text']);
@@ -108,7 +109,8 @@
 						$redir = "movie.php?id={$post->request}&type={$post_type}";
 					}
 
-					$mapper->delete($post->id);
+					$post->status = 'deleted';
+					$mapper->save($post);
 
 					header("Location: $redir");
 					break;

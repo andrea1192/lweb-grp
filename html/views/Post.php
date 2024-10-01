@@ -38,6 +38,7 @@
 
 		public function displayReference($active = true, $reactions = '') {
 			$rating = $this->generateRating();
+			$status = ($this->post->status == 'active') ? '' : UIComponents::getIcon('delete', cls: 'translate');
 
 			if ($active) {
 				$dropdown_menu = $this->generateDropdownMenu();
@@ -54,7 +55,7 @@
 				<div class="header">
 					{$rating}
 					<div class="details">
-						<h1>{$this->post->title}</h1>
+						<h1>{$this->post->title}{$status}</h1>
 						<div class="flex small">
 							<span class="author">{$this->post->author}</span>
 							<span class="date">{$this->post->date}</span>
@@ -96,6 +97,7 @@
 				<div class="flex column">
 					{$components::getHiddenInput('type', $this->getPostType())}
 					{$components::getHiddenInput('id', $this->post->id)}
+					{$components::getHiddenInput('status', $this->post->status)}
 					{$reference_field}
 					{$components::getHiddenInput('author', $this->post->author)}
 					{$components::getHiddenInput('date', $this->post->date)}

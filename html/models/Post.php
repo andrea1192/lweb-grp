@@ -4,6 +4,7 @@
 
 	abstract class Post {
 		public $id;
+		public $status;
 		public $movie;
 		public $author;
 		public $date;
@@ -55,5 +56,5 @@
 	}
 
 
-	class DeletedPost extends Post {}
+	/*class DeletedPost extends Post {}*/
 ?>

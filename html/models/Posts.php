@@ -7,8 +7,8 @@
 		protected const DOCUMENT_NAME = 'posts';
 
 		public static function getMapperForItem($subject) {
-			if (!$subject)
-				return '\models\DeletedPosts';
+			// if (!$subject)
+			// 	return '\models\DeletedPosts';
 
 			$class = get_class($subject);
 
@@ -36,6 +36,7 @@
 				return;
 
 			$object->id = $element->getAttribute('id');
+			$object->status = $element->getAttribute('status');
 			$object->movie = $element->getAttribute('movie');
 			$object->author = $element->getAttribute('author');
 			$object->date = $element->getAttribute('date');
@@ -48,16 +49,19 @@
 
 		public static function mapCommonAttributes($object, $document, $element) {
 			$id = $document->createAttribute('id');
+			$status = $document->createAttribute('status');
 			$movie = $document->createAttribute('movie');
 			$author = $document->createAttribute('author');
 			$date = $document->createAttribute('date');
 
 			$id->value = $object->id;
+			$status->value = $object->status;
 			$movie->value = $object->movie;
 			$author->value = $object->author;
 			$date->value = $object->date;
 
 			$element->appendChild($id);
+			$element->appendChild($status);
 			$element->appendChild($movie);
 			$element->appendChild($author);
 			$element->appendChild($date);
@@ -79,21 +83,21 @@
 		}
 
 		public function getFeaturedPosts($movie_id, $type = '*') {
-			$query = "/posts/{$type}[@movie='{$movie_id}' and @featured='true']";
+			$query = "/posts/{$type}[@status!='deleted' and @movie='{$movie_id}' and @featured='true']";
 			$matches = $this->xpath->query($query);
 
 			return new \models\PostList($matches);
 		}
 
 		public function getPostsByMovie($movie_id, $type = '*') {
-			$query = "/posts/{$type}[@movie='{$movie_id}']";
+			$query = "/posts/{$type}[@status!='deleted' and @movie='{$movie_id}']";
 			$matches = $this->xpath->query($query);
 
 			return new \models\PostList($matches);
 		}
 
 		public function getPostsByAuthor($author, $type = '*') {
-			$query = "/posts/{$type}[@author='{$author}']";
+			$query = "/posts/{$type}[@status!='deleted' and @author='{$author}']";
 			$matches = $this->xpath->query($query);
 
 			return new \models\PostList($matches);
@@ -313,12 +317,12 @@
 		}
 	}
 
-	class DeletedPosts extends Posts {
+	// class DeletedPosts extends Posts {
 
-		public static function createObjectFromElement($element, $object = null) {
-			return new DeletedPost();
-		}
-	}
+	// 	public static function createObjectFromElement($element, $object = null) {
+	// 		return new DeletedPost();
+	// 	}
+	// }
 
 
 	class PostList extends \IteratorIterator implements \Countable {
