@@ -78,7 +78,7 @@
 			if (!$this->posts->count()) {
 
 				echo <<<EOF
-				<div class="flex align">
+				<div class="flex cross-center">
 					{$components::getIcon('search', 'md-48 margin')}
 					<span>No posts of type "{$this->tab}" found.</span>
 				</div>
@@ -90,7 +90,7 @@
 
 				echo <<<EOF
 				<div class="featured">
-					<div class="flex align">
+					<div class="flex cross-center">
 						{$components::getIcon('verified', 'md-24 margin')}
 						<h1>Featured posts</h1>
 					</div>

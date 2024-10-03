@@ -29,10 +29,10 @@
 					{$components::getPasswordInput('Password', 'pass')}
 				</div>
 				<div id="controls" class="flex">
-					<div class="flex left align">
+					<div class="flex left">
 						{$components::getTextButton('Create account', '', $signup, cls:'colored-blue')}
 					</div>
-					<div class="flex right align">
+					<div class="flex right">
 						{$components::getFilledButton('Sign in', '', '#')}
 					</div>
 				</div>
@@ -63,10 +63,10 @@
 					{$components::getTextInput('Secondary e-mail', 'mail_sec')}
 				</div>
 				<div id="controls" class="flex">
-					<div class="flex left align">
+					<div class="flex left">
 						{$components::getTextButton('Reset', 'refresh', '#', cls:'colored-blue')}
 					</div>
-					<div class="flex right align">
+					<div class="flex right">
 						{$components::getFilledButton('Create account', 'person_add', '#')}
 					</div>
 				</div>
@@ -103,10 +103,10 @@
 					{$components::getTextInput('Secondary e-mail', 'mail_sec')}
 				</div>
 				<div id="controls" class="flex">
-					<div class="flex left align">
+					<div class="flex left">
 						{$components::getTextButton('Delete account', 'delete', '#', cls:'colored-red')}
 					</div>
-					<div class="flex right align">
+					<div class="flex right">
 						{$components::getFilledButton('Save changes', 'save', '#')}
 					</div>
 				</div>

@@ -29,7 +29,11 @@
 	display: flex !important;
 }
 
-.flex.align {
+.flex.main-center {
+	justify-content: center;
+}
+
+.flex.cross-center {
 	align-items: center;
 }
 
