@@ -36,7 +36,7 @@
 			return htmlspecialchars($URL, ENT_QUOTES | ENT_SUBSTITUTE | ENT_XHTML);
 		}
 
-		public function displayReference($active = true, $reactions = '') {
+		public function displayReference($active = true, $content = '', $reactions = '') {
 			$rating = $this->generateRating();
 			$status = ($this->post->status == 'active') ? '' : UIComponents::getIcon('delete', cls: 'translate');
 
@@ -49,6 +49,9 @@
 				$reaction_buttons = '';
 				$action_buttons = '';
 			}
+
+			if (empty($content))
+				$content = $this->post->text;
 
 			echo <<<EOF
 			<div class="post">
@@ -63,8 +66,8 @@
 					</div>
 					{$dropdown_menu}
 				</div>
-				<div class="content">
-					{$this->post->text}
+				<div class="flex content">
+					{$content}
 				</div>
 				<div class="flex footer">
 					<div class="flex left">
@@ -279,10 +282,26 @@
 
 	class Spoiler extends RatedPost {
 		protected const POST_TYPE = 'spoiler';
+
+		public function display() {
+
+			if ($_SERVER['SCRIPT_NAME'] == '/post.php')
+				parent::displayReference(content: $this->post->text);
+			else
+				parent::displayReference(active: false, content: UIComponents::getFilledButton('Read spoiler', 'visibility', $this->generateURL()));
+		}
 	}
 
 	class Extra extends Post {
 		protected const POST_TYPE = 'extra';
+
+		public function display() {
+
+			if ($this->session->getReputation() >= $this->post->reputation)
+				parent::displayReference();
+			else
+				parent::displayReference(active: false, content: 'You don\'t have enough reputation to read this post.');
+		}
 
 		protected function generateSpecialFields() {
 			return UIComponents::getTextInput('Reputation', 'reputation', $this->post->reputation);
