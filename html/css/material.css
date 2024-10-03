@@ -12,7 +12,8 @@
 /* Elementi "elevati" (con box shadow) */
 .elevated,
 .button.fab,
-.tooltip,
+.tooltip.rich,
+.popup,
 .dropdown {
 	box-shadow: 0 1px 3px 0px #0006;
 }
@@ -39,12 +40,13 @@
 
 /* Pannelli a comparsa (attivazione su hover) */
 .button:hover >.tooltip,
+.button:hover >.popup,
 .button:hover >.dropdown {
 	visibility: visible;
 }
 
 /* Magic (attivazione con focus su elementi interni) */
-.tooltip:has(*:focus) {
+.popup:has(*:focus) {
 	visibility: visible;
 }
 
@@ -181,24 +183,59 @@ button:not(:disabled) {
 	border-radius: 50%;
 }
 
-/* Pannello a comparsa, sopra al contenitore */
-.tooltip {
+/* Pannelli a comparsa */
+.tooltip,
+.popup {
 	visibility: hidden;
 	position: absolute;
 	display: flex;
 	align-items: center;
-	bottom: 100%;
-	left: 0;
 	width: max-content;
+	font-weight: initial;
+	z-index: 100;
+	cursor: default;
+}
+
+/* Pannello a comparsa, sopra al contenitore */
+.tooltip {
+	bottom: 120%;
+	left: 0;
+	border-radius: 4px;
+	padding: 8px;
+	font-size: 0.8rem;
+	color: #FFF;
+	background-color: #322F35;
+}
+
+.tooltip.rich {
 	border: 1px solid #AAA;
 	border-radius: 12px;
 	padding: 12px 16px;
 	font-size: 0.9rem;
-	font-weight: 500;
 	color: #666;
 	background-color: #FFFF;
-	z-index: 100;
-	cursor: default;
+}
+
+.right .tooltip {
+	left: revert;
+	right: 0;
+}
+
+/* Pannello a comparsa, davanti al contenitore */
+.popup {
+	top: 0;
+	left: 0;
+	border: 1px solid #AAA;
+	border-radius: 30px;
+	padding-left: 12px;
+	font-size: 0.9rem;
+	color: #666;
+	background-color: #FFFF;
+}
+
+.popup >.rate {
+	margin-left: 8px;
+	margin-right: 16px;
 }
 
 /* Pannello a comparsa, sotto al contenitore */

@@ -141,6 +141,10 @@
 			EOF;
 		}
 
+		public static function getTooltip($text) {
+			return "<div class=\"tooltip\">{$text}</div>";
+		}
+
 		public static function getOverflowMenu($dropdown) {
 			return static::getButton('text', '', 'more_vert', cls: 'right', content: $dropdown);
 		}
@@ -168,10 +172,6 @@
 				</a>
 			</li>
 			EOF;
-		}
-
-		public static function getTextContent($text) {
-			return "<div class=\"content\">{$text}</div>";
 		}
 
 		public static function getHiddenInput($name, $value = '') {

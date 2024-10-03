@@ -16,9 +16,9 @@
 				$reaction_view = new ReactionType($session, $stats);
 
 				if (!$session->isLoggedIn())
-					$login_prompt = '<div class="tooltip">Sign in to react</div>';
+					$tooltip = '<div class="tooltip">Sign in to react</div>';
 				else
-					$login_prompt = '<div class="tooltip">Your account has been disabled</div>';
+					$tooltip = '<div class="tooltip">Your account has been disabled</div>';
 
 				$action = $reaction_view->generateURL('add_reaction', $type);
 				$status = $session->isAllowed();
@@ -31,19 +31,19 @@
 								$reaction_view->generateURL('add_reaction', 'like'),
 								action: null,
 								enabled: $status,
-								content: $status ? '' : $login_prompt);
+								content: $status ? '' : $tooltip);
 						$buttons .= UIComponents::getTextButton(
 								$stats->count_down,
 								'thumb_down',
 								$reaction_view->generateURL('add_reaction', 'dislike'),
 								action: null,
 								enabled: $status,
-								content: $status ? '' : $login_prompt);
+								content: $status ? '' : $tooltip);
 						continue 2;
 
 					case 'usefulness':
-						$tooltip = <<<EOF
-						<div class="tooltip">
+						$popup = <<<EOF
+						<div class="popup">
 							<div>Useful?</div>
 							<div class="rate">
 								<select name="rating">
@@ -62,12 +62,12 @@
 								'lightbulb',
 								action: null,
 								enabled: $status,
-								content: $status ? $tooltip : $login_prompt);
+								content: $status ? $popup : $tooltip);
 						break;
 
 					case 'agreement':
-						$tooltip = <<<EOF
-						<div class="tooltip">
+						$popup = <<<EOF
+						<div class="popup">
 							<div>Agree?</div>
 							<div class="rate">
 								<select name="rating">
@@ -86,12 +86,12 @@
 								'thumb_up',
 								action: null,
 								enabled: $status,
-								content: $status ? $tooltip : $login_prompt);
+								content: $status ? $popup : $tooltip);
 						break;
 
 					case 'spoilage':
-						$tooltip = <<<EOF
-						<div class="tooltip">
+						$popup = <<<EOF
+						<div class="popup">
 							<div>Spoiler level:</div>
 							<div class="rate">
 								<select name="rating">
@@ -115,7 +115,7 @@
 								'speed',
 								action: null,
 								enabled: $status,
-								content: $status ? $tooltip : $login_prompt);
+								content: $status ? $popup : $tooltip);
 						break;
 
 					default: break;

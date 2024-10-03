@@ -170,7 +170,12 @@
 			if (!property_exists($this->movie, 'status') || ($this->movie->status == 'submitted')) {
 
 				if ($this->session->isAdmin()) {
-					$right .= UIComponents::getOutlinedButton('', 'edit', $this->generateURL('edit'));
+					$right .= UIComponents::getOutlinedButton(
+							'',
+							'edit',
+							$this->generateURL('edit'),
+							content: UIComponents::getTooltip('Edit this data')
+					);
 				}
 			}
 
@@ -242,10 +247,25 @@
 			if (!property_exists($this->movie, 'status') || ($this->movie->status == 'submitted')) {
 
 				if ($this->session->isAdmin()) {
-					$left .= UIComponents::getTonalButton('Review this content', 'edit', $this->generateURL('edit'));
+					$left .= UIComponents::getTonalButton(
+							'Review this content',
+							'edit',
+							$this->generateURL('edit'),
+							content: UIComponents::getTooltip('Edit this request and choose whether to accept or reject it')
+					);
 
-					$right .= UIComponents::getOutlinedButton('', 'edit', $this->generateURL('edit'));
-					$right .= UIComponents::getOutlinedButton('', 'delete', $this->generateURL('delete'));
+					$right .= UIComponents::getOutlinedButton(
+							'',
+							'edit',
+							$this->generateURL('edit'),
+							content: UIComponents::getTooltip('Edit this request')
+					);
+					$right .= UIComponents::getOutlinedButton(
+							'',
+							'delete',
+							$this->generateURL('delete'),
+							content: UIComponents::getTooltip('Delete this request')
+					);
 				}
 			}
 
@@ -269,12 +289,32 @@
 			if ($this->movie->status == 'submitted') {
 
 				if ($this->session->isMod()) {
-					$left .= UIComponents::getTonalButton('Save and accept request', 'check', action: 'accept');
-					$left .= UIComponents::getOutlinedButton('Reject request', 'close', action: 'reject');
+					$left .= UIComponents::getTonalButton(
+							'Save and accept request',
+							'check',
+							action: 'accept',
+							content: UIComponents::getTooltip('Save changes and accept this request for inclusion in Movies')
+					);
+					$left .= UIComponents::getOutlinedButton(
+							'Reject request',
+							'close',
+							action: 'reject',
+							content: UIComponents::getTooltip('Reject this request')
+					);
 
-					$right .= UIComponents::getOutlinedButton('Save only', 'save', action: 'save');
+					$right .= UIComponents::getOutlinedButton(
+							'Save only',
+							'save',
+							action: 'save',
+							content: UIComponents::getTooltip('Save changes without accepting the request')
+					);
 				} else {
-					$right .= UIComponents::getTonalButton('Submit request', 'send', action: 'save');
+					$right .= UIComponents::getTonalButton(
+							'Submit request',
+							'send',
+							action: 'save',
+							content: UIComponents::getTooltip('Submit this request to the staff for approval')
+					);
 				}
 			}
 
