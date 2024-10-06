@@ -52,6 +52,26 @@
 						$movie->writer = static::sanitize($_POST['writer']);
 
 						$movie = $mapper->save($movie);
+
+						// Gestisce il caricamento di poster (locandine) o backdrop (sfondi)
+						if (($_FILES['poster']['size'] !== 0)
+									&& ($_FILES['poster']['type'] === $mapper::MEDIA_TYPE)) {
+
+							$ext = $mapper::MEDIA_EXT;
+							$dir = $mapper::POSTERS_PATH;
+							$name = $dir.$movie->id.$ext;
+
+							move_uploaded_file($_FILES['poster']['tmp_name'], $name);
+						}
+						if (($_FILES['backdrop']['size'] !== 0)
+									&& ($_FILES['backdrop']['type'] === $mapper::MEDIA_TYPE)) {
+
+							$ext = $mapper::MEDIA_EXT;
+							$dir = $mapper::BACKDROPS_PATH;
+							$name = $dir.$movie->id.$ext;
+
+							move_uploaded_file($_FILES['backdrop']['tmp_name'], $name);
+						}
 					}
 
 					$nextView = \views\Movie::factoryMethod($this->session, $movie);
@@ -76,8 +96,40 @@
 					$movie = \models\Movie::createMovieFromRequest($request);
 
 					$request->status = 'accepted';
-					$requests->save($request);
-					$movies->save($movie);
+					$request = $requests->save($request);
+					$movie = $movies->save($movie);
+
+					// Gestisce il caricamento o la copia di poster (locandine)
+					$ext = $movies::MEDIA_EXT;
+					$dir = $movies::POSTERS_PATH;
+					$req_name = $dir.$request->id.$ext;
+					$mov_name = $dir.$movie->id.$ext;
+
+					if (($_FILES['poster']['size'] !== 0)
+								&& ($_FILES['poster']['type'] === $movies::MEDIA_TYPE)) {
+
+						move_uploaded_file($_FILES['poster']['tmp_name'], $mov_name);
+						copy($mov_name, $req_name);
+
+					} elseif (file_exists($req_name)) {
+						copy($req_name, $mov_name);
+					}
+
+					// Gestisce il caricamento o la copia di backdrop (sfondi)
+					$ext = $movies::MEDIA_EXT;
+					$dir = $movies::BACKDROPS_PATH;
+					$req_name = $dir.$request->id.$ext;
+					$mov_name = $dir.$movie->id.$ext;
+
+					if (($_FILES['backdrop']['size'] !== 0)
+								&& ($_FILES['backdrop']['type'] === $movies::MEDIA_TYPE)) {
+
+						move_uploaded_file($_FILES['backdrop']['tmp_name'], $mov_name);
+						copy($mov_name, $req_name);
+
+					} elseif (file_exists($req_name)) {
+						copy($req_name, $mov_name);
+					}
 
 					$nextView = \views\Movie::factoryMethod($this->session, $movie);
 					header("Location: {$nextView->generateURL()}");

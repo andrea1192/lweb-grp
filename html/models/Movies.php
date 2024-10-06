@@ -4,6 +4,10 @@
 	require_once('models/Movie.php');
 
 	abstract class AbstractMovies extends \models\XMLDocument {
+		public const POSTERS_PATH = 'static/posters/';
+		public const BACKDROPS_PATH = 'static/backdrops/';
+		public const MEDIA_TYPE = 'image/jpeg';
+		public const MEDIA_EXT = '.jpg';
 
 		public static function getMapperForItem($subject) {
 			$class = get_class($subject);

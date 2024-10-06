@@ -280,7 +280,6 @@ form .fields {
 label {
 	position: relative;
 	display: block;
-	flex-grow: 1;
 }
 
 label >span.label {

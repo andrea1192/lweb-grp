@@ -1,9 +1,6 @@
 <?php namespace views;
 	
 	class Movie extends AbstractView {
-		protected const BACKDROPS_PATH = 'static/backdrops/';
-		protected const POSTERS_PATH = 'static/posters/';
-		protected const MEDIA_EXT = '.jpg';
 		protected $movie;
 
 		public function __construct($session, $movie) {
@@ -100,6 +97,7 @@
 			$action = $this->generateURL();
 			$backdrop = $this->generateBackdrop();
 			$poster = $this->generatePoster();
+			$files = $this->generateFiles();
 			$save_buttons = $this->generateSaveButtons();
 
 			$components = 'views\UIComponents';
@@ -110,8 +108,11 @@
 			echo <<<EOF
 			<div id="backdrop" {$backdrop}>
 				<div class="blur">
-					<form id="overview" class="flex wrapper" method="post" action="{$action}">
-						{$poster}
+					<form id="overview" class="flex wrapper" method="post" action="{$action}" enctype="multipart/form-data">
+						<div class="flex column">
+							{$poster}
+							{$files}
+						</div>
 						<div id="description" class="flex fields">
 							{$components::getHiddenInput('id', $this->movie->id)}
 							{$status}
@@ -134,13 +135,19 @@
 		}
 
 		protected function generateBackdrop() {
-			$backdrop = static::BACKDROPS_PATH . $this->movie->id . static::MEDIA_EXT;
+			$dir = $this->getMapper('movies')::BACKDROPS_PATH;
+			$ext = $this->getMapper('movies')::MEDIA_EXT;
+
+			$backdrop = $dir.$this->movie->id.$ext;
 
 			return "style=\"background-image: url('{$backdrop}')\"";
 		}
 
 		protected function generatePoster() {
-			$poster = static::POSTERS_PATH . $this->movie->id . static::MEDIA_EXT;
+			$dir = $this->getMapper('movies')::POSTERS_PATH;
+			$ext = $this->getMapper('movies')::MEDIA_EXT;
+
+			$poster = $dir.$this->movie->id.$ext;
 			$status = $this->generateStatus();
 
 			if (file_exists($poster)) {
@@ -188,6 +195,24 @@
 				<div class="flex right">
 					{$right}
 				</div>
+			</div>
+			EOF;
+		}
+
+		protected function generateFiles() {
+			$accept = $this->getMapper('movies')::MEDIA_TYPE;
+
+			return <<<EOF
+			<div class="flex column files">
+				<label>
+					<span class="label">Poster</span>
+					<input class="filled" type="file" accept="{$accept}" name="poster" />
+				</label>
+				<label>
+					<span class="label">Backdrop</span>
+					<input class="filled" type="file" accept="{$accept}" name="backdrop" />
+				</label>
+				<div class="small">Accepted file types: image/jpeg</div>
 			</div>
 			EOF;
 		}
