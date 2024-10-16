@@ -36,6 +36,9 @@
 			ServiceLocator::register('reports', function() {
 				return new \models\Reports();
 			});
+			ServiceLocator::register('users', function() {
+				return new \models\Users();
+			});
 
 			$this->loadSession();
 			$this->route();

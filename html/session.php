@@ -1,47 +1,44 @@
 <?php namespace controllers;
 
+	require_once('models/Users.php');
+
 	class MockSession {
-		private $username = 'bar';
-		private $privilege = 3;
-		private $reputation = 42;
+		private $user;
+
+		public function __construct() {
+			$this->user = ServiceLocator::resolve('users')->getUserByUsername('bar');
+		}
 
 		public function getUsername() {
-			return ($this->isLoggedIn()) ? $this->username : '';
+			return ($this->isLoggedIn()) ? $this->user->username : 'Visitor';
 		}
 
 		public function getReputation() {
-			return ($this->isLoggedIn()) ? $this->reputation : 0;
+			return ($this->isLoggedIn()) ? $this->user->reputation : 0;
 		}
 
 		public function getUserType() {
-
-			switch ($this->privilege) {
-				case 0: return 'Banned';
-				default:
-				case 1: return 'User';
-				case 2: return 'Moderator';
-				case 3: return 'Administrator';
-			}
+			return ($this->isLoggedIn()) ? $this->user->getUserType() : 'Guest';
 		}
 
 		public function isLoggedIn() {
-			return isset($this->username);
+			return isset($this->user);
 		}
 
 		public function isAllowed() {
-			return (bool) (($this->isLoggedIn()) && ($this->privilege >= 1));
+			return (($this->isLoggedIn()) && ($this->user->isAllowed()));
 		}
 
 		public function isMod() {
-			return (bool) (($this->isLoggedIn()) && ($this->privilege >= 2));
+			return (($this->isLoggedIn()) && ($this->user->isMod()));
 		}
 
 		public function isAdmin() {
-			return (bool) (($this->isLoggedIn()) && ($this->privilege == 3));
+			return (($this->isLoggedIn()) && ($this->user->isAdmin()));
 		}
 
 		public function isAuthor($object) {
-			return (bool) (($this->isLoggedIn()) && ($this->getUsername() == $object->author));
+			return (($this->isLoggedIn()) && ($this->user->isAuthor($object)));
 		}
 	}
 ?>
