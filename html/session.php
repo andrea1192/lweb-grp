@@ -2,15 +2,29 @@
 
 	require_once('models/Users.php');
 
-	class MockSession {
+	class Session {
 		private $user;
 
 		public function __construct() {
-			$this->user = ServiceLocator::resolve('users')->getUserByUsername('bar');
+			session_start();
+
+			if (isset($_SESSION['username']))
+				$this->setUser($_SESSION['username']);
 		}
 
 		public function getUser() {
 			return $this->user;
+		}
+
+		public function setUser($username) {
+			if ($username) {
+				$this->user = ServiceLocator::resolve('users')->getUserByUsername($username);
+
+				$_SESSION['username'] = $username;
+			} else {
+
+				unset($_SESSION['username']);
+			}
 		}
 
 		public function getUsername() {
@@ -26,7 +40,7 @@
 		}
 
 		public function isLoggedIn() {
-			return isset($this->user);
+			return isset($_SESSION['username']);
 		}
 
 		public function isAllowed() {

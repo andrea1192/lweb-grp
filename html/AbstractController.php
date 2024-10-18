@@ -13,7 +13,7 @@
 		public function __construct() {
 
 			ServiceLocator::register('session', function() {
-				return new MockSession();
+				return new Session();
 			});
 			ServiceLocator::register('movies', function() {
 				return new \models\Movies();

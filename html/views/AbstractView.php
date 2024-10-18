@@ -61,7 +61,7 @@
 
 				$dropdown_items .= UIComponents::getDropdownItem('Reports', 'report', 'reports.php');
 
-				$dropdown_items .= UIComponents::getDropdownItem('Sign out', 'logout');
+				$dropdown_items .= UIComponents::getDropdownItem('Sign out', 'logout', 'login.php?action=signout');
 
 				$dropdown_menu = UIComponents::getDropdownMenu($dropdown_items, $dropdown_header);
 

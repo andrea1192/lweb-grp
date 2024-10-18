@@ -16,6 +16,12 @@
 					$view->render();
 					break;
 
+				case 'signout':
+					$this->session->setUser(null);
+
+					header("Location: {$_SERVER['HTTP_REFERER']}");
+					break;
+
 				case 'verify':
 					if (isset($_POST)) {
 						$username = static::sanitize($_POST['username']);
@@ -24,7 +30,9 @@
 						$mapper = ServiceLocator::resolve('users');
 						$user = $mapper->getUserByUsername($username);
 
-						if (password_verify($password, $user->password)) {
+						if ($user && password_verify($password, $user->password)) {
+							$this->session->setUser($username);
+
 							$redir = 'index.php';
 						} else {
 							$redir = 'login.php';
@@ -55,6 +63,7 @@
 						$user->mail_sec = static::sanitize($_POST['mail_sec']);
 
 						$mapper->insert($user);
+						$this->session->setUser($user->username);
 					}
 
 					header('Location: index.php');
