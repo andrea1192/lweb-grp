@@ -135,6 +135,18 @@
 			return static::getButton('fab', $label, $icon, $href, $action, $enabled, $cls, $content);
 		}
 
+		public static function getResetButton($label = 'Reset', $cls = 'colored-blue', $type = 'text') {
+			$icon = static::getIcon('refresh');
+			$label = "<span class=\"label\">{$label}</span>";
+
+			return <<<EOF
+			<button type="reset" class="button {$type} {$cls}">
+				{$icon}
+				{$label}
+			</button>
+			EOF;
+		}
+
 		public static function getSubmitButton($label = 'Submit', $cls = '', $type = 'filled') {
 			return <<<EOF
 			<input type="submit" class="button {$type} {$cls}" value="{$label}" />

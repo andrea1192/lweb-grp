@@ -11,10 +11,12 @@
 
 		private $privilege;
 
-		public function __construct($state) {
+		public function __construct($state = null) {
+
+			if (!$state)
+				return;
 
 			foreach ($state as $key => $value) {
-
 				if (property_exists($this, $key)) {
 					$this->$key = $value;
 				}

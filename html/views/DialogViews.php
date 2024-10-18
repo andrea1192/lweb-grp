@@ -16,24 +16,25 @@
 		}
 
 		public function printDialog() {
+			$signin = 'login.php?action=verify';
 			$signup = 'login.php?action=signup';
 
 			$components = '\views\UIComponents';
 
 			echo <<<EOF
-			<form id="login" class="dialog flex column" action="" method="get">
+			<form id="login" class="dialog flex column" action="{$signin}" method="post">
 				<div>{$components::getIcon('login')}</div>
 				<h1>Sign in</h1>
 				<div id="fields" class="flex column">
-					{$components::getTextInput('Username', 'user')}
-					{$components::getPasswordInput('Password', 'pass')}
+					{$components::getTextInput('Username', 'username')}
+					{$components::getPasswordInput('Password', 'password')}
 				</div>
 				<div id="controls" class="flex">
 					<div class="flex left">
 						{$components::getTextButton('Create account', '', $signup, cls:'colored-blue')}
 					</div>
 					<div class="flex right">
-						{$components::getFilledButton('Sign in', '', '#')}
+						{$components::getFilledButton('Sign in', '')}
 					</div>
 				</div>
 			</form>
@@ -48,26 +49,34 @@
 		}
 
 		public function printDialog() {
+			$action = 'login.php?action=save';
+
 			$components = '\views\UIComponents';
 
 			echo <<<EOF
-			<form id="login" class="dialog flex column" action="" method="get">
+			<form id="login" class="dialog flex column" action="{$action}" method="post">
 				<div>{$components::getIcon('account_circle')}</div>
-				<h1>Create Account</h1>
+				<h1>Create account</h1>
 				<div id="fields" class="flex column">
-					{$components::getTextInput('Username*', 'user')}
-					{$components::getPasswordInput('Password*', 'pass')}
-					{$components::getTextInput('Name', 'name')}
-					{$components::getTextInput('Address', 'address')}
-					{$components::getTextInput('Primary e-mail', 'mail_pri')}
-					{$components::getTextInput('Secondary e-mail', 'mail_sec')}
+					{$components::getTextInput(
+							'Username*', 'username', $_POST['username'] ?? '')}
+					{$components::getPasswordInput(
+							'Password*', 'password', $_POST['password'] ?? '')}
+					{$components::getTextInput(
+							'Name', 'name', $_POST['name'] ?? '')}
+					{$components::getTextInput(
+							'Address', 'address', $_POST['address'] ?? '')}
+					{$components::getTextInput(
+							'Primary e-mail', 'mail_pri', $_POST['mail_pri'] ?? '')}
+					{$components::getTextInput(
+							'Secondary e-mail', 'mail_sec', $_POST['mail_sec'] ?? '')}
 				</div>
 				<div id="controls" class="flex">
 					<div class="flex left">
-						{$components::getTextButton('Reset', 'refresh', '#', cls:'colored-blue')}
+						{$components::getResetButton()}
 					</div>
 					<div class="flex right">
-						{$components::getFilledButton('Create account', 'person_add', '#')}
+						{$components::getFilledButton('Create account', 'person_add')}
 					</div>
 				</div>
 			</form>
