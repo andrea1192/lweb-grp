@@ -81,33 +81,40 @@
 		public function __construct($session) {
 			parent::__construct($session);
 
-			$this->user = $this->session->getUsername();
+			$this->user = $this->session->getUser();
 		}
 
 		public function printTitle() {
-			print("Profile: {$this->user} - grp");
+			print("Profile: {$this->user->username} - grp");
 		}
 
 		public function printDialog() {
+			$action = 'profile.php?action=save';
+
 			$components = '\views\UIComponents';
 
 			echo <<<EOF
-			<form id="login" class="dialog flex column" action="" method="get">
+			<form id="login" class="dialog flex column" action="{$action}" method="post">
 				<div>{$components::getIcon('account_circle')}</div>
-				<h1>{$this->user}</h1>
+				<h1>{$this->user->username}</h1>
 				<div id="fields" class="flex column">
-					{$components::getPasswordInput('Password', 'pass')}
-					{$components::getTextInput('Name', 'name')}
-					{$components::getTextInput('Address', 'address')}
-					{$components::getTextInput('Primary e-mail', 'mail_pri')}
-					{$components::getTextInput('Secondary e-mail', 'mail_sec')}
+					{$components::getPasswordInput(
+							'Password', 'password')}
+					{$components::getTextInput(
+							'Name', 'name', $this->user->name)}
+					{$components::getTextInput(
+							'Address', 'address', $this->user->address)}
+					{$components::getTextInput(
+							'Primary e-mail', 'mail_pri', $this->user->mail_pri)}
+					{$components::getTextInput(
+							'Secondary e-mail', 'mail_sec', $this->user->mail_sec)}
 				</div>
 				<div id="controls" class="flex">
 					<div class="flex left">
 						{$components::getTextButton('Delete account', 'delete', '#', cls:'colored-red')}
 					</div>
 					<div class="flex right">
-						{$components::getFilledButton('Save changes', 'save', '#')}
+						{$components::getFilledButton('Save changes', 'save')}
 					</div>
 				</div>
 			</form>

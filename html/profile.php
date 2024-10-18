@@ -6,8 +6,34 @@
 	class ProfileController extends AbstractController {
 
 		public function route() {
-			$view = new \views\ProfileView($this->session);
-			$view->render();
+
+			switch ($_REQUEST['action'] ?? '') {
+
+				default:
+				case 'display':
+					// TODO: Aggiungi controlli privilegi con ev. redirect
+					$view = new \views\ProfileView($this->session);
+					$view->render();
+					break;
+
+				case 'save':
+					// TODO: Aggiungi controlli privilegi con ev. redirect
+					if (isset($_POST)) {
+						$user = $this->session->getUser();
+						$mapper = ServiceLocator::resolve('users');
+
+						$user->password = static::sanitize($_POST['password']);
+						$user->name = static::sanitize($_POST['name']);
+						$user->address = static::sanitize($_POST['address']);
+						$user->mail_pri = static::sanitize($_POST['mail_pri']);
+						$user->mail_sec = static::sanitize($_POST['mail_sec']);
+
+						$mapper->update($this->session->getUsername(), $user);
+					}
+
+					header("Location: {$_SERVER['HTTP_REFERER']}");
+					break;
+			}
 		}
 	}
 

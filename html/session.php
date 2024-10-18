@@ -9,6 +9,10 @@
 			$this->user = ServiceLocator::resolve('users')->getUserByUsername('bar');
 		}
 
+		public function getUser() {
+			return $this->user;
+		}
+
 		public function getUsername() {
 			return ($this->isLoggedIn()) ? $this->user->username : 'Visitor';
 		}

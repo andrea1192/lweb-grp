@@ -58,6 +58,9 @@
 			$current = $this->select($username);
 			$diff = array_diff_assoc($user->getState(), $current->getState());
 
+			if (empty($diff))
+				return;
+
 			$values = array_values($diff);
 			$values[] = $current->username;
 
