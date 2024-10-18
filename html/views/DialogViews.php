@@ -107,8 +107,6 @@
 				<div>{$components::getIcon('account_circle')}</div>
 				<h1>{$this->user->username}</h1>
 				<div id="fields" class="flex column">
-					{$components::getPasswordInput(
-							'Password', 'password')}
 					{$components::getTextInput(
 							'Name', 'name', $this->user->name)}
 					{$components::getTextInput(
@@ -117,6 +115,11 @@
 							'Primary e-mail', 'mail_pri', $this->user->mail_pri)}
 					{$components::getTextInput(
 							'Secondary e-mail', 'mail_sec', $this->user->mail_sec)}
+
+					<div class="flex column">
+						<span>Enter your current password to confirm:</span>
+						{$components::getPasswordInput('Password', 'password')}
+					</div>
 				</div>
 				<div id="controls" class="flex">
 					<div class="flex left">
