@@ -97,7 +97,11 @@
 		}
 
 		protected function printFooter() {
+			$snackbar = ($this->session->holdsNotification()) ?
+					UIComponents::getSnackbar($this->session->popNotification()) : '';
+
 			echo <<<EOF
+			{$snackbar}
 			<div id="footer" class="bottom"><div class="wrapper">Lorem ipsum dolor</div></div>
 			EOF;
 		}

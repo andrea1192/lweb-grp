@@ -186,6 +186,12 @@
 			EOF;
 		}
 
+		public static function getSnackbar($text) {
+			return <<<EOF
+			<div class="snackbar">{$text}</div>
+			EOF;
+		}
+
 		public static function getHiddenInput($name, $value = '') {
 			return <<<EOF
 			<input value="{$value}" name="{$name}" type="hidden" />

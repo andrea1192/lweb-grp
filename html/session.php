@@ -58,5 +58,20 @@
 		public function isAuthor($object) {
 			return (($this->isLoggedIn()) && ($this->user->isAuthor($object)));
 		}
+
+		public function holdsNotification() {
+			return isset($_SESSION['notification']);
+		}
+
+		public function pushNotification($message) {
+			$_SESSION['notification'] = $message;
+		}
+
+		public function popNotification() {
+			$notification = $_SESSION['notification'];
+			unset($_SESSION['notification']);
+
+			return $notification;
+		}
 	}
 ?>
