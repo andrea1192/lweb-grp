@@ -32,12 +32,22 @@
 		public function getUserType() {
 
 			switch ($this->privilege) {
+				case -1: return 'Disabled account';
 				case 0: return 'Banned';
 				default:
 				case 1: return 'User';
 				case 2: return 'Moderator';
 				case 3: return 'Administrator';
 			}
+		}
+
+		public function setPrivilege($level) {
+			if ($level >= -1 && $level <= 3)
+				$this->privilege = $level;
+		}
+
+		public function isEnabled() {
+			return $this->privilege >= 0;
 		}
 
 		public function isAllowed() {

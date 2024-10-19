@@ -80,11 +80,17 @@
 						$mapper = ServiceLocator::resolve('users');
 
 						if ($user && password_verify($password, $user->password)) {
-							// TODO: Implementa cancellazione non distruttiva
+							$user->setPrivilege(-1);
+							$mapper->update($this->session->getUsername(), $user);
+							$this->session->setUser(null);
+
+							$redir = 'index.php';
+						} else {
+							$redir = 'profile.php';
 						}
 					}
 
-					header('Location: profile.php');
+					header("Location: $redir");
 					break;
 			}
 		}

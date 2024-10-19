@@ -30,7 +30,9 @@
 						$mapper = ServiceLocator::resolve('users');
 						$user = $mapper->getUserByUsername($username);
 
-						if ($user && password_verify($password, $user->password)) {
+						if ($user
+								&& password_verify($password, $user->password)
+								&& $user->isEnabled()) {
 							$this->session->setUser($username);
 
 							$redir = 'index.php';
