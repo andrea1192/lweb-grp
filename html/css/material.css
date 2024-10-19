@@ -87,6 +87,12 @@
 	gap: 26px !important;
 }
 
+/* Niente margin collapse con flexbox => revert manuale */
+.dialog+.dialog {
+	margin-top: revert;
+	padding: 15px 30px;
+}
+
 .dialog >h1 {
 	margin: 0;
 	font-size: 1.8em;
@@ -163,6 +169,10 @@ button:not(:disabled) {
 	border-width: 0px;
 	background-color: dodgerblue !important;
 	color: white;
+}
+
+.button.filled.filled-red {
+	background-color: red !important;
 }
 
 /* Bottone azione primaria (FAB) */
@@ -275,6 +285,10 @@ button:not(:disabled) {
 form #fields,
 form .fields {
 	gap: 26px;
+}
+
+.prompt+label {
+	margin-top: 6px;
 }
 
 label {

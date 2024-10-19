@@ -34,7 +34,57 @@
 						}
 					}
 
-					header("Location: {$_SERVER['HTTP_REFERER']}");
+					header('Location: profile.php');
+					break;
+
+				case 'change_password':
+					// TODO: Aggiungi controlli privilegi con ev. redirect
+					$view = new \views\PasswordChangeView($this->session);
+					$view->render();
+					break;
+
+				case 'save_password':
+					// TODO: Aggiungi controlli privilegi con ev. redirect
+					if (isset($_POST)) {
+						$password = static::sanitize($_POST['password']);
+						$password_new = static::sanitize($_POST['password_new']);
+						$password_confirm = static::sanitize($_POST['password_confirm']);
+
+						$user = $this->session->getUser();
+						$mapper = ServiceLocator::resolve('users');
+
+						if ($user
+								&& password_verify($password, $user->password)
+								&& $password_new === $password_confirm) {
+							$user->password = password_hash($password_new, PASSWORD_DEFAULT);
+
+							$mapper->update($this->session->getUsername(), $user);
+						}
+					}
+
+					header('Location: profile.php');
+					break;
+
+				case 'confirm_delete':
+					// TODO: Aggiungi controlli privilegi con ev. redirect
+					$view = new \views\AccountDeleteView($this->session);
+					$view->render();
+					break;
+
+				case 'delete_account':
+					// TODO: Aggiungi controlli privilegi con ev. redirect
+					if (isset($_POST)) {
+						$password = static::sanitize($_POST['password']);
+
+						$user = $this->session->getUser();
+						$mapper = ServiceLocator::resolve('users');
+
+						if ($user && password_verify($password, $user->password)) {
+							// TODO: Implementa cancellazione non distruttiva
+						}
+					}
+
+					header('Location: profile.php');
 					break;
 			}
 		}
