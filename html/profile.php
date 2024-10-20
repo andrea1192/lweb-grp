@@ -31,10 +31,15 @@
 							$user->mail_sec = static::sanitize($_POST['mail_sec']);
 
 							$mapper->update($this->session->getUsername(), $user);
+							$this->session->pushNotification(
+									'Changes saved.');
+						} else {
+							$this->session->pushNotification(
+									'Invalid password. Please try again.');
 						}
 					}
 
-					header('Location: profile.php');
+					header("Location: {$_SERVER['HTTP_REFERER']}");
 					break;
 
 				case 'change_password':
@@ -59,10 +64,23 @@
 							$user->password = password_hash($password_new, PASSWORD_DEFAULT);
 
 							$mapper->update($this->session->getUsername(), $user);
+							$this->session->pushNotification(
+									'Password saved.');
+							$redir = 'profile.php';
+
+						} elseif (!password_verify($password, $user->password)) {
+							$this->session->pushNotification(
+									'Invalid password. Please try again.');
+							$redir = $_SERVER['HTTP_REFERER'];
+
+						} elseif ($password_new !== $password_confirm) {
+							$this->session->pushNotification(
+									'Passwords not matching. Please try again.');
+							$redir = $_SERVER['HTTP_REFERER'];
 						}
 					}
 
-					header('Location: profile.php');
+					header("Location: $redir");
 					break;
 
 				case 'confirm_delete':
@@ -83,10 +101,13 @@
 							$user->setPrivilege(-1);
 							$mapper->update($this->session->getUsername(), $user);
 							$this->session->setUser(null);
-
+							$this->session->pushNotification(
+									'Account deleted :-(');
 							$redir = 'index.php';
 						} else {
-							$redir = 'profile.php';
+							$this->session->pushNotification(
+									'Invalid password. Please try again.');
+							$redir = $_SERVER['HTTP_REFERER'];
 						}
 					}
 

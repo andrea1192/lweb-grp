@@ -6,9 +6,8 @@
 	class LoginController extends AbstractController {
 
 		public function route() {
-			$action = $_GET['action'] ?? '';
 
-			switch ($action) {
+			switch ($_REQUEST['action'] ?? '') {
 
 				default:
 				case 'signin':
@@ -18,6 +17,7 @@
 
 				case 'signout':
 					$this->session->setUser(null);
+					$this->session->pushNotification('Signed out. See you soon!');
 
 					header("Location: {$_SERVER['HTTP_REFERER']}");
 					break;
@@ -34,9 +34,12 @@
 								&& password_verify($password, $user->password)
 								&& $user->isEnabled()) {
 							$this->session->setUser($username);
-
+							$this->session->pushNotification(
+									"Signed in. Welcome back, {$user->username}!");
 							$redir = 'index.php';
 						} else {
+							$this->session->pushNotification(
+									'Wrong username or password. Please try again.');
 							$redir = 'login.php';
 						}
 					}
@@ -66,6 +69,8 @@
 
 						$mapper->insert($user);
 						$this->session->setUser($user->username);
+						$this->session->pushNotification(
+								"Account created. Welcome, {$user->username}!");
 					}
 
 					header('Location: index.php');
