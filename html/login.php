@@ -53,7 +53,6 @@
 					break;
 
 				case 'save':
-					// TODO: Aggiungi controlli privilegi con ev. redirect
 					if (isset($_POST)) {
 						$user = new \models\User();
 						$mapper = ServiceLocator::resolve('users');

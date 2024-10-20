@@ -18,13 +18,11 @@
 					break;
 
 				case 'edit':
-					// TODO: Aggiungi controlli privilegi con ev. redirect
 					$view = new \views\PostEditView($this->session, $post_id);
 					$view->render();
 					break;
 
 				case 'create':
-					// TODO: Aggiungi controlli privilegi con ev. redirect
 					if (isset($_GET['movie'])) {
 						$movie_ref = static::sanitize($_GET['movie']);
 
@@ -116,6 +114,10 @@
 					break;
 
 				case 'add_reaction':
+					// Livello di privilegio richiesto: 1 (utente registrato)
+					if (!$this->session->isAllowed())
+						header('Location: index.php');
+
 					$reaction_type = $post_type;
 					$reaction = \models\Reaction::createReaction($reaction_type);
 
@@ -134,40 +136,20 @@
 					break;
 
 				case 'answer':
-					// TODO: Aggiungi controlli privilegi con ev. redirect
 					$view = new \views\ReactionCreateView($this->session, 'answer', $post_id);
 					$view->render();
 					break;
 
 				case 'report':
-					// TODO: Aggiungi controlli privilegi con ev. redirect
 					$view = new \views\ReactionCreateView($this->session, 'report', $post_id);
 					$view->render();
 					break;
 
-				case 'elevate':
-					$mapper = ServiceLocator::resolve('posts');
-					$post = $mapper->getPostById($post_id);
-
-					$post->featured = true;
-					$mapper->save($post);
-
-					header("Location: {$_SERVER['HTTP_REFERER']}");
-					break;
-
-				case 'select_answer':
-					$answer_id = static::sanitize($_GET['answer']);
-
-					$mapper = ServiceLocator::resolve('posts');
-					$post = $mapper->getPostById($post_id);
-
-					$post->featuredAnswer = $answer_id;
-					$mapper->save($post);
-
-					header("Location: {$_SERVER['HTTP_REFERER']}");
-					break;
-
 				case 'send_report':
+					// Livello di privilegio richiesto: 1 (utente registrato)
+					if (!$this->session->isAllowed())
+						header('Location: index.php');
+
 					$post = new \models\Report();
 					$mapper = ServiceLocator::resolve('reports');
 
@@ -190,6 +172,36 @@
 					$movie_id = ServiceLocator::resolve('posts')->getPostById($post->post)->movie;
 					$redir = "movie.php?id={$movie_id}";
 					header("Location: $redir");
+					break;
+
+				case 'elevate':
+					// Livello di privilegio richiesto: 2 (moderatore)
+					if (!$this->session->isMod())
+						header('Location: index.php');
+
+					$mapper = ServiceLocator::resolve('posts');
+					$post = $mapper->getPostById($post_id);
+
+					$post->featured = true;
+					$mapper->save($post);
+
+					header("Location: {$_SERVER['HTTP_REFERER']}");
+					break;
+
+				case 'select_answer':
+					// Livello di privilegio richiesto: 2 (moderatore)
+					if (!$this->session->isMod())
+						header('Location: index.php');
+
+					$answer_id = static::sanitize($_GET['answer']);
+
+					$mapper = ServiceLocator::resolve('posts');
+					$post = $mapper->getPostById($post_id);
+
+					$post->featuredAnswer = $answer_id;
+					$mapper->save($post);
+
+					header("Location: {$_SERVER['HTTP_REFERER']}");
 					break;
 			}
 		}

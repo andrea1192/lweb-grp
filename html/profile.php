@@ -7,17 +7,19 @@
 
 		public function route() {
 
+			// Livello di privilegio richiesto: login eseguito
+			if (!$this->session->isLoggedIn())
+				header('Location: index.php');
+
 			switch ($_REQUEST['action'] ?? '') {
 
 				default:
 				case 'display':
-					// TODO: Aggiungi controlli privilegi con ev. redirect
 					$view = new \views\ProfileView($this->session);
 					$view->render();
 					break;
 
 				case 'save':
-					// TODO: Aggiungi controlli privilegi con ev. redirect
 					if (isset($_POST)) {
 						$password = static::sanitize($_POST['password']);
 
@@ -43,13 +45,11 @@
 					break;
 
 				case 'change_password':
-					// TODO: Aggiungi controlli privilegi con ev. redirect
 					$view = new \views\PasswordChangeView($this->session);
 					$view->render();
 					break;
 
 				case 'save_password':
-					// TODO: Aggiungi controlli privilegi con ev. redirect
 					if (isset($_POST)) {
 						$password = static::sanitize($_POST['password']);
 						$password_new = static::sanitize($_POST['password_new']);
@@ -84,13 +84,11 @@
 					break;
 
 				case 'confirm_delete':
-					// TODO: Aggiungi controlli privilegi con ev. redirect
 					$view = new \views\AccountDeleteView($this->session);
 					$view->render();
 					break;
 
 				case 'delete_account':
-					// TODO: Aggiungi controlli privilegi con ev. redirect
 					if (isset($_POST)) {
 						$password = static::sanitize($_POST['password']);
 

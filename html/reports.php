@@ -6,6 +6,11 @@
 	class ReportsController extends AbstractController {
 
 		public function route() {
+
+			// Livello di privilegio richiesto: login eseguito
+			if (!$this->session->isLoggedIn())
+				header('Location: index.php');
+
 			$view = new \views\ReportsView($this->session);
 			$view->render();
 		}

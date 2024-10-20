@@ -18,13 +18,11 @@
 					break;
 
 				case 'edit':
-					// TODO: Aggiungi controlli privilegi con ev. redirect
 					$view = new \views\MovieEditView($this->session, $movie_id);
 					$view->render();
 					break;
 
 				case 'create':
-					// TODO: Aggiungi controlli privilegi con ev. redirect
 					$view = new \views\MovieCreateView($this->session);
 					$view->render();
 					break;
@@ -79,7 +77,10 @@
 					break;
 
 				case 'accept':
-					// TODO: Aggiungi controlli privilegi con ev. redirect
+					// Livello di privilegio richiesto: 3 (admin)
+					if (!$this->session->isAdmin())
+						header('Location: index.php');
+
 					$request_id = $movie_id;
 
 					$requests = ServiceLocator::resolve('requests');
@@ -136,7 +137,10 @@
 					break;
 
 				case 'reject':
-					// TODO: Aggiungi controlli privilegi con ev. redirect
+					// Livello di privilegio richiesto: 3 (admin)
+					if (!$this->session->isAdmin())
+						header('Location: index.php');
+
 					$request_id = $movie_id;
 
 					$requests = ServiceLocator::resolve('requests');
@@ -150,7 +154,10 @@
 					break;
 
 				case 'delete':
-					// TODO: Aggiungi controlli privilegi con ev. redirect
+					// Livello di privilegio richiesto: 3 (admin)
+					if (!$this->session->isAdmin())
+						header('Location: index.php');
+
 					$request_id = $movie_id;
 
 					$requests = ServiceLocator::resolve('requests');
