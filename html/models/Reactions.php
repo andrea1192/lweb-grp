@@ -202,6 +202,7 @@
 			$object = parent::createObjectFromElement($element, $object);
 
 			$object->id = $element->getAttribute('id');
+			$object->status = $element->getAttribute('status');
 			$object->date = $element->getAttribute('date');
 			$object->text = $element->getElementsByTagName('text')->item(0)->textContent;
 
@@ -219,6 +220,7 @@
 
 			$attributes = [
 				'id' => '',
+				'status' => '',
 				'post' => '',
 				'author' => '',
 				'date' => ''

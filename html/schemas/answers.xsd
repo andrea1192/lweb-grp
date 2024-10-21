@@ -17,6 +17,14 @@
 				<xsd:element name="text" type="xsd:string" />
 			</xsd:sequence>
 			<xsd:attribute use="required" name="id" type="xsd:ID" />
+			<xsd:attribute use="required" name="status">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="active" />
+						<xsd:enumeration value="deleted" />
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
 			<xsd:attributeGroup ref="reactionAttr" />
 			<xsd:attribute use="required" name="date" type="xsd:dateTime" />
 		</xsd:complexType>

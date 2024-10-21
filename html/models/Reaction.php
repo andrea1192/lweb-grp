@@ -34,6 +34,7 @@
 
 	class Answer extends Reaction {
 		public $id;
+		public $status = 'active';
 		public $date;
 		public $text = '';
 

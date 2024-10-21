@@ -223,6 +223,7 @@
 					<div class="flex column">
 						{$components::getHiddenInput('type', 'answer')}
 						{$components::getHiddenInput('id', $this->reaction->id)}
+						{$components::getHiddenInput('status', $this->reaction->status)}
 						{$components::getHiddenInput('post', $this->reaction->post)}
 						{$components::getHiddenInput('author', $this->reaction->author)}
 						{$components::getHiddenInput('date', $this->reaction->date)}
