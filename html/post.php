@@ -119,18 +119,35 @@
 						header('Location: index.php');
 
 					$reaction_type = $post_type;
+					$reaction_author = ServiceLocator::resolve('session')->getUsername();
+
+					$mapper = ServiceLocator::resolve('reactions');
 					$reaction = \models\Reaction::createReaction($reaction_type);
 
 					$reaction->post = $post_id;
-					$reaction->author = ServiceLocator::resolve('session')->getUsername();
+					$reaction->author = $reaction_author;
 
-					if (property_exists($reaction, 'type'))
+					$post_author = ServiceLocator::resolve('posts')->select($post_id)->author;
+					$post_user = ServiceLocator::resolve('users')->select($post_author);
+
+					if (property_exists($reaction, 'type')) {
 						$reaction->type = $reaction_type;
-					if (property_exists($reaction, 'rating'))
-						$reaction->rating = static::sanitize($_POST['rating']);
+						$post_user->reputation += $reaction::REPUTATION_DELTAS[$reaction->type];
 
-					$mapper = ServiceLocator::resolve('reactions');
+						if ($reaction_old = $mapper->getReaction($post_id, $reaction_author, 'like'))
+							$post_user->reputation -= $reaction::REPUTATION_DELTAS[$reaction_old->type];
+					}
+
+					if (property_exists($reaction, 'rating')) {
+						$reaction->rating = static::sanitize($_POST['rating']);
+						$post_user->reputation += $reaction::REPUTATION_DELTAS[$reaction->rating];
+
+						if ($reaction_old = $mapper->getReaction($post_id, $reaction_author, $reaction_type))
+							$post_user->reputation -= $reaction::REPUTATION_DELTAS[$reaction_old->rating];
+					}
+
 					$mapper->save($reaction);
+					ServiceLocator::resolve('users')->update($post_author, $post_user);
 
 					header("Location: {$_SERVER['HTTP_REFERER']}");
 					break;

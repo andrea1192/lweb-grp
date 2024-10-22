@@ -55,11 +55,32 @@
 		public $reactions;
 	}
 
-	class Like extends BinaryRating {}
+	class Like extends BinaryRating {
+		public const REPUTATION_DELTAS = [
+			'like' => +1,
+			'dislike' => -1
+		];
+	}
 
-	class Usefulness extends NumericRating {}
+	class Usefulness extends NumericRating {
+		public const REPUTATION_DELTAS = [
+			1 => -2,
+			2 => -1,
+			3 => 0,
+			4 => +1,
+			5 => +2
+		];
+	}
 
-	class Agreement extends NumericRating {}
+	class Agreement extends NumericRating {
+		public const REPUTATION_DELTAS = [
+			1 => -2,
+			2 => -1,
+			3 => 0,
+			4 => +1,
+			5 => +2
+		];
+	}
 
 	class Spoilage extends NumericRating {}
 
