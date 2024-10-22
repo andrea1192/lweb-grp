@@ -22,6 +22,18 @@
 					return new \models\Report();
 			}
 		}
+
+		public static function getType($id) {
+			preg_match('/([[:alpha:]]+)([[:digit:]])/', $id, $matches);
+
+			$prefix = $matches[1];
+			$number = $matches[2];
+
+			switch ($prefix) {
+				case Answer::ID_PREFIX:
+					return 'answer';
+			}
+		}
 	}
 
 	abstract class BinaryRating extends Reaction {
@@ -33,6 +45,8 @@
 	}
 
 	class Answer extends Reaction {
+		protected const ID_PREFIX = 'a';
+
 		public $id;
 		public $status = 'active';
 		public $date;

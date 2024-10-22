@@ -3,8 +3,9 @@
 	require_once('models/Posts.php');
 
 	class Movie {
-		public $id;
+		public const ID_PREFIX = 'm';
 
+		public $id;
 		public $title = '';
 		public $year = '';
 		public $duration = '';
@@ -26,9 +27,25 @@
 
 			return $movie;
 		}
+
+		public static function getType($id) {
+			preg_match('/([[:alpha:]]+)([[:digit:]])/', $id, $matches);
+
+			$prefix = $matches[1];
+			$number = $matches[2];
+
+			switch ($prefix) {
+				case Movie::ID_PREFIX:
+					return 'movie';
+				case Request::ID_PREFIX:
+					return 'request';
+			}
+		}
 	}
 
 	class Request extends Movie {
+		public const ID_PREFIX = 'req';
+
 		public $status = 'submitted';
 	}
 ?>

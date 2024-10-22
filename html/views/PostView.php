@@ -31,12 +31,15 @@
 		public function __construct($session, $post_id) {
 			parent::__construct($session);
 
-			if (!preg_match('/c[0-9]*/', $post_id)) {
-				$this->post = $this->getMapper('posts')->getPostById($post_id);
-				$this->movie = $this->getMapper('movies')->getMovieById($this->post->movie);
-			} else {
-				$this->post = $this->getMapper('comments')->getCommentById($post_id);
-				$this->movie = $this->getMapper('requests')->getRequestById($this->post->request);
+			switch (\models\Movie::getType($movie_id)) {
+				case 'movie':
+					$this->post = $this->getMapper('posts')->getPostById($post_id);
+					$this->movie = $this->getMapper('movies')->getMovieById($this->post->movie);
+					break;
+				case 'request':
+					$this->post = $this->getMapper('comments')->getCommentById($post_id);
+					$this->movie = $this->getMapper('requests')->getRequestById($this->post->request);
+					break;
 			}
 		}
 
@@ -69,10 +72,14 @@
 
 			$this->post = \models\Post::createPost($post_type);
 
-			if (preg_match('/m[0-9]*/', $movie_id))
-				$this->movie = $this->getMapper('movies')->getMovieById($movie_id);
-			else
-				$this->movie = $this->getMapper('requests')->getRequestById($movie_id);
+			switch (\models\Movie::getType($movie_id)) {
+				case 'movie':
+					$this->movie = $this->getMapper('movies')->getMovieById($movie_id);
+					break;
+				case 'request':
+					$this->movie = $this->getMapper('requests')->getRequestById($movie_id);
+					break;
+			}
 
 			$this->post->movie = $this->movie->id;
 		}

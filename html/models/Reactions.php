@@ -193,7 +193,6 @@
 	class Answers extends Reactions {
 		protected const DOCUMENT_NAME = 'answers';
 		protected const ELEMENT_NAME = 'answer';
-		protected const ID_PREFIX = 'a';
 
 		public static function createObjectFromElement($element, $object = null) {
 			if (!$object)

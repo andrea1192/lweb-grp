@@ -29,6 +29,26 @@
 					return new \models\Extra();
 			}
 		}
+
+		public static function getType($id) {
+			preg_match('/([[:alpha:]]+)([[:digit:]])/', $id, $matches);
+
+			$prefix = $matches[1];
+			$number = $matches[2];
+
+			switch ($prefix) {
+				case Comment::ID_PREFIX:
+					return 'comment';
+				case Review::ID_PREFIX:
+					return 'review';
+				case Question::ID_PREFIX:
+					return 'question';
+				case Spoiler::ID_PREFIX:
+					return 'spoiler';
+				case Extra::ID_PREFIX:
+					return 'extra';
+			}
+		}
 	}
 
 	abstract class RatedPost extends Post {
@@ -36,22 +56,30 @@
 	}
 
 	class Comment extends RatedPost {
+		public const ID_PREFIX = 'c';
+
 		public $request;
 	}
 
 	class Review extends RatedPost {
+		public const ID_PREFIX = 'r';
 	}
 
 	class Question extends Post {
+		public const ID_PREFIX = 'q';
+
 		public $featured;
 		public $featuredAnswer;
 		public $answers;
 	}
 
 	class Spoiler extends RatedPost {
+		public const ID_PREFIX = 's';
 	}
 
 	class Extra extends Post {
+		public const ID_PREFIX = 'e';
+
 		public $reputation;
 	}
 

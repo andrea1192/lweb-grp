@@ -114,7 +114,6 @@
 	class Comments extends Posts {
 		protected const DOCUMENT_NAME = 'comments';
 		protected const ELEMENT_NAME = 'comment';
-		protected const ID_PREFIX = 'c';
 
 		public static function createObjectFromElement($element, $object = null) {
 			if (!$object)
@@ -182,7 +181,6 @@
 
 	class Reviews extends Posts {
 		protected const ELEMENT_NAME = 'review';
-		protected const ID_PREFIX = 'r';
 
 		public static function createObjectFromElement($element, $object = null) {
 			if (!$object)
@@ -216,7 +214,6 @@
 
 	class Questions extends Posts {
 		protected const ELEMENT_NAME = 'question';
-		protected const ID_PREFIX = 'q';
 
 		public static function createObjectFromElement($element, $object = null) {
 			if (!$object)
@@ -258,7 +255,6 @@
 
 	class Spoilers extends Posts {
 		protected const ELEMENT_NAME = 'spoiler';
-		protected const ID_PREFIX = 's';
 
 		public static function createObjectFromElement($element, $object = null) {
 			if (!$object)
@@ -292,7 +288,6 @@
 
 	class Extras extends Posts {
 		protected const ELEMENT_NAME = 'extra';
-		protected const ID_PREFIX = 'e';
 
 		public static function createObjectFromElement($element, $object = null) {
 			if (!$object)

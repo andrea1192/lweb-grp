@@ -27,17 +27,19 @@
 			parent::__construct($session);
 			$tabs = static::TABS;
 
-			if (preg_match('/m[0-9]*/', $movie_id)) {
-				$this->tabs = $tabs['movie'];
-				$this->tab = $tab;
-				$this->movie = $this->getMapper('movies')->getMovieById($movie_id);
-				$this->posts = $this->getMapper('posts')->getPostsByMovie($movie_id, $tab);
-
-			} else {
-				$this->tabs = $tabs['request'];
-				$this->tab = 'comment';
-				$this->movie = $this->getMapper('requests')->getRequestById($movie_id);
-				$this->posts = $this->getMapper('comments')->getCommentsByRequest($movie_id);
+			switch (\models\Movie::getType($movie_id)) {
+				case 'movie':
+					$this->tabs = $tabs['movie'];
+					$this->tab = $tab;
+					$this->movie = $this->getMapper('movies')->getMovieById($movie_id);
+					$this->posts = $this->getMapper('posts')->getPostsByMovie($movie_id, $tab);
+					break;
+				case 'request':
+					$this->tabs = $tabs['request'];
+					$this->tab = 'comment';
+					$this->movie = $this->getMapper('requests')->getRequestById($movie_id);
+					$this->posts = $this->getMapper('comments')->getCommentsByRequest($movie_id);
+					break;
 			}
 
 			if ($this->tab == 'question')
@@ -145,10 +147,14 @@
 		public function __construct($session, $movie_id) {
 			parent::__construct($session);
 
-			if (preg_match('/m[0-9]*/', $movie_id))
-				$this->movie = $this->getMapper('movies')->getMovieById($movie_id);
-			else
-				$this->movie = $this->getMapper('requests')->getRequestById($movie_id);
+			switch (\models\Movie::getType($movie_id)) {
+				case 'movie':
+					$this->movie = $this->getMapper('movies')->getMovieById($movie_id);
+					break;
+				case 'request':
+					$this->movie = $this->getMapper('requests')->getRequestById($movie_id);
+					break;
+			}
 		}
 
 		public function printTitle() {
