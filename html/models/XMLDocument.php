@@ -20,6 +20,43 @@
 			return \controllers\ServiceLocator::resolve($mapper);
 		}
 
+		public static function getMapperForType($type) {
+
+			switch ($type) {
+				case 'movie':
+					$mapper = 'movies';
+					break;
+				case 'request':
+					$mapper = 'requests';
+					break;
+
+				case 'review':
+				case 'question':
+				case 'spoiler':
+				case 'extra':
+					$mapper = 'posts';
+					break;
+				case 'comment':
+					$mapper = 'comments';
+					break;
+
+				case 'like':
+				case 'usefulness':
+				case 'agreement':
+				case 'spoilage':
+					$mapper = 'reactions';
+					break;
+				case 'answer':
+					$mapper = 'answers';
+					break;
+				case 'report':
+					$mapper = 'reports';
+					break;
+			}
+
+			return \controllers\ServiceLocator::resolve($mapper);
+		}
+
 		public function __construct() {
 			$this->loadDocument();
 		}
@@ -38,13 +75,25 @@
 			$this->document->save(static::getDocumentPath());
 		}
 
+		public function select($id) {
+			$type = Movie::getType($id)
+					?? Post::getType($id)
+					?? Reaction::getType($id);
+
+			$mapper = static::getMapperForType($type);
+			$element = $mapper->document->getElementById($id);
+
+			$mapper = $mapper::getMapperForItem($element);
+			return $mapper::createObjectFromElement($element);
+		}
+
 		public function save($object) {
 			$mapper = static::getMapperForItem($object);
 
 			if (empty($object->id)) {
 				$root = $mapper::DOCUMENT_NAME;
 				$elem = $mapper::ELEMENT_NAME;
-				$prefix = $mapper::ID_PREFIX;
+				$prefix = $object::ID_PREFIX;
 
 				$object->id = $this->generateID($root, $elem, $prefix);
 			}

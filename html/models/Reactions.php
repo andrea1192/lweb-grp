@@ -76,13 +76,16 @@
 			return (count($matches)) ? ($sum / count($matches)) : 0;
 		}
 
-		protected function getReaction($post_id, $author, $type) {
+		public function getReaction($post_id, $author, $type) {
 			$root = static::DOCUMENT_NAME;
 
 			$query = "/{$root}/{$type}[@post='{$post_id}' and @author='{$author}']";
 			$match = $this->xpath->query($query)->item(0);
 
-			return $match;
+			if (!$match) return;
+
+			$mapper = Reactions::getMapperForItem($match);
+			return $mapper::createObjectFromElement($match);
 		}
 
 		public function save($object) {
