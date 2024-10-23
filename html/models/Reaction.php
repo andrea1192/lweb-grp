@@ -85,6 +85,11 @@
 	class Spoilage extends NumericRating {}
 
 	class Report extends Reaction {
+		public const REPUTATION_DELTAS = [
+			'accepted' => +5,
+			'rejected' => -5
+		];
+
 		public $date;
 		public $message = '';
 		public $response = '';

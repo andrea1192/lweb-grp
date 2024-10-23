@@ -184,7 +184,15 @@
 					if (empty($post->date))
 						$post->date = date('c');
 
+					$author = ServiceLocator::resolve('users')->select($post->author);
+
+					if ($post->status == 'accepted')
+						$author->reputation += $post::REPUTATION_DELTAS[$post->status];
+					elseif ($post->status == 'rejected')
+						$author->reputation += $post::REPUTATION_DELTAS[$post->status];
+
 					$mapper->save($post);
+					ServiceLocator::resolve('users')->update($author->username, $author);
 
 					$movie_id = ServiceLocator::resolve('posts')->getPostById($post->post)->movie;
 					$redir = "movie.php?id={$movie_id}";
