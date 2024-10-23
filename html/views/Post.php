@@ -210,7 +210,16 @@
 		}
 
 		protected function generateSpecialFields() {
-			return UIComponents::getTextInput('Rating', 'rating', $this->post->rating);
+			$ratings = [
+				'ok' => 'ok: This content should be accepted',
+				'okma' => 'okma: This content needs some work',
+				'ko' => 'ko: This content should be rejected'
+			];
+
+			foreach ($ratings as $rating => $label)
+				$options[] = UIComponents::getSelectOption($label, $rating);
+
+			return UIComponents::getSelect('Rating', 'rating', $options);
 		}
 	}
 

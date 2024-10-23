@@ -351,22 +351,26 @@ label >span.label {
 }
 
 label >span.label:has(+input:focus),
+label >span.label:has(+select:focus),
 label >span.label:has(+textarea:focus) {
 	color: dodgerblue;
 }
 
 label >span.label:has(+input.filled),
+label >span.label:has(+select.filled),
 label >span.label:has(+textarea.filled) {
 	top: 10px;
 	background-color: #FFF0;
 }
 
 label >input,
+label >select,
 label >textarea {
 	width: 100%;
 	border: 1px solid #AAA;
 	border-radius: 4px;
 	padding: 16px;
+	background-color: #FFF;
 	font-family: inherit;
 	font-size: 1rem;
 }
@@ -377,12 +381,14 @@ label >textarea {
 }
 
 label >input:focus,
+label >select:focus,
 label >textarea:focus {
 	border: 2px solid dodgerblue;
 	outline: none;
 }
 
 label >input.filled,
+label >select.filled,
 label >textarea.filled {
 	border-width: 0;
 	border-bottom: 1px solid #AAA;
@@ -393,6 +399,7 @@ label >textarea.filled {
 }
 
 label >input.filled:focus,
+label >select.filled:focus,
 label >textarea.filled:focus {
 	border: none;
 	border-bottom: 2px solid dodgerblue;

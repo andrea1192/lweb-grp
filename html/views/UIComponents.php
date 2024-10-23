@@ -194,7 +194,7 @@
 
 		public static function getHiddenInput($name, $value = '') {
 			return <<<EOF
-			<input value="{$value}" name="{$name}" type="hidden" />
+			<input type="hidden" name="{$name}" value="{$value}" />
 			EOF;
 		}
 
@@ -202,7 +202,7 @@
 			return <<<EOF
 			<label>
 				<span class="label">{$label}</span>
-				<input class="{$cls}" value="{$value}" name="{$name}" type="password" />
+				<input type="password" class="{$cls}" name="{$name}" value="{$value}" />
 			</label>
 			EOF;
 		}
@@ -211,7 +211,7 @@
 			return <<<EOF
 			<label>
 				<span class="label">{$label}</span>
-				<input class="{$cls}" value="{$value}" name="{$name}" type="text" />
+				<input type="text" class="{$cls}" name="{$name}" value="{$value}" />
 			</label>
 			EOF;
 		}
@@ -231,6 +231,25 @@
 
 		public static function getFilledTextArea($label, $name, $value = '', $cls = '') {
 			return static::getTextArea($label, $name, $value, "filled {$cls}");
+		}
+
+		public static function getSelect($label, $name, $options) {
+			$options = implode("\n", $options);
+
+			return <<<EOF
+			<label>
+				<span class="label">{$label}</span>
+				<select name="{$name}">
+					{$options}
+				</select>
+			</label>
+			EOF;
+		}
+
+		public static function getSelectOption($label, $value) {
+			return <<<EOF
+			<option value="{$value}">{$label}</option>
+			EOF;
 		}
 	}
 ?>

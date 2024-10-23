@@ -295,7 +295,7 @@
 		}
 
 		public function generateUserForm() {
-			$action = $this->generateURL('send_report');
+			$send = $this->generateURL('send_report');
 			$message = UIComponents::getTextArea('Message', 'message');
 			$save_buttons = UIComponents::getFilledButton('Send report', 'send');
 
@@ -303,7 +303,7 @@
 
 			return <<<EOF
 			<div class="answers">
-				<form class="answer" method="post" action="{$action}">
+				<form class="answer" method="post" action="{$send}">
 					<div class="flex column">
 						{$components::getHiddenInput('type', 'report')}
 						{$components::getHiddenInput('post', $this->reaction->post)}
@@ -326,14 +326,25 @@
 		}
 
 		public function generateAdminForm() {
-			$action = $this->generateURL('send_report');
+			$send = $this->generateURL('send_report');
+			$rep_accept = '+'.$this->reaction::REPUTATION_DELTAS['accepted'];
+			$rep_reject = ''.$this->reaction::REPUTATION_DELTAS['rejected'];
+			$actions = [
+				'closed' => 'Close: Close this report without taking further actions',
+				'accepted' => "Accept: Accept this report and reward the submitter ({$rep_accept} reputation)",
+				'rejected' => "Reject: Reject this report and punish the submitter ({$rep_reject} reputation)"
+			];
 			$message = <<<EOF
 			<div>
 				<div class="small">Message from {$this->reaction->author}:</div>
 				<div class="content">{$this->reaction->message}</div>
 			</div>
 			EOF;
-			$status = UIComponents::getTextInput('Status', 'status', $this->reaction->status);
+
+			foreach ($actions as $action => $label)
+				$options[] = UIComponents::getSelectOption($label, $action);
+
+			$status = UIComponents::getSelect('Action', 'status', $options);
 			$response = UIComponents::getTextArea('Response', 'response', $this->reaction->response);
 			$save_buttons = UIComponents::getFilledButton('Send response', 'send');
 
@@ -341,7 +352,7 @@
 
 			return <<<EOF
 			<div class="answers">
-				<form class="answer" method="post" action="{$action}">
+				<form class="answer" method="post" action="{$send}">
 					<div class="flex column">
 						{$components::getHiddenInput('type', 'report')}
 						{$components::getHiddenInput('post', $this->reaction->post)}
