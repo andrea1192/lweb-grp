@@ -3,12 +3,12 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:noNamespaceSchemaLocation="requests.xsd">
 
-	<request id="req1" status="rejected">
+	<request id="req1" status="rejected" author="foo">
 		<title>The Secret Life of Walter Mitty</title>
 		<year>2013</year>
 	</request>
 
-	<request id="req2" status="submitted">
+	<request id="req2" status="submitted" author="foo">
 		<title>The Secret Life of Walter Mitty</title>
 		<year>2013</year>
 		<duration>114</duration>
@@ -16,7 +16,7 @@
 		<writer>James Thurber</writer>
 	</request>
 
-	<request id="req3" status="accepted">
+	<request id="req3" status="accepted" author="foo">
 		<title>The Secret Life of Walter Mitty</title>
 		<year>2013</year>
 		<duration>114</duration>

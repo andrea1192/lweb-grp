@@ -134,6 +134,7 @@
 				->textContent;
 
 			$object->status = $element->getAttribute('status');
+			$object->author = $element->getAttribute('author');
 			$object->posts = self::getMapper('comments')->getCommentsByRequest($object->id);
 
 			return $object;
@@ -162,8 +163,11 @@
 			}
 
 			$status = $document->createAttribute('status');
+			$author = $document->createAttribute('author');
 			$status->value = $object->status;
+			$author->value = $object->author;
 			$element->appendChild($status);
+			$element->appendChild($author);
 
 			return $element;
 		}

@@ -30,6 +30,7 @@
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:attribute>
+			<xsd:attribute use="required" name="author" type="xsd:string" />
 		</xsd:complexType>
 	</xsd:element>
 

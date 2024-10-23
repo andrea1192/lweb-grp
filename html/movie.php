@@ -36,6 +36,7 @@
 							$mapper = ServiceLocator::resolve('requests');
 
 							$movie->status = static::sanitize($_POST['status']);
+							$movie->author = static::sanitize($_POST['author']);
 						} else {
 							$movie = new \models\Movie();
 							$mapper = ServiceLocator::resolve('movies');
@@ -97,8 +98,14 @@
 					$movie = \models\Movie::createMovieFromRequest($request);
 
 					$request->status = 'accepted';
+					$request->author = static::sanitize($_POST['author']);
+
+					$author = ServiceLocator::resolve('users')->select($request->author);
+					$author->reputation += $request::REPUTATION_DELTAS[$request->status];
+
 					$request = $requests->save($request);
 					$movie = $movies->save($movie);
+					ServiceLocator::resolve('users')->update($author->username, $author);
 
 					// Gestisce il caricamento o la copia di poster (locandine)
 					$ext = $movies::MEDIA_EXT;

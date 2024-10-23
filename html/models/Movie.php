@@ -45,7 +45,11 @@
 
 	class Request extends Movie {
 		public const ID_PREFIX = 'req';
+		public const REPUTATION_DELTAS = [
+			'accepted' => +10
+		];
 
 		public $status = 'submitted';
+		public $author;
 	}
 ?>

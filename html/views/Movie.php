@@ -104,6 +104,8 @@
 
 			$status = (property_exists($this->movie, 'status')) ?
 				$components::getHiddenInput('status', $this->movie->status) : '';
+			$author = (property_exists($this->movie, 'author')) ?
+				$components::getHiddenInput('author', $this->movie->author) : '';
 
 			echo <<<EOF
 			<div id="backdrop" {$backdrop}>
@@ -116,6 +118,7 @@
 						<div id="description" class="flex fields">
 							{$components::getHiddenInput('id', $this->movie->id)}
 							{$status}
+							{$author}
 							{$components::getFilledTextInput('Title', 'title', $this->movie->title)}
 							<div class="flex fields" style="width: 30%">
 								{$components::getFilledTextInput('Year', 'year', $this->movie->year)}
