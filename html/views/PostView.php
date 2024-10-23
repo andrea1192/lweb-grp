@@ -31,12 +31,12 @@
 		public function __construct($session, $post_id) {
 			parent::__construct($session);
 
-			switch (\models\Movie::getType($movie_id)) {
-				case 'movie':
+			switch (\models\Post::getType($post_id)) {
+				default:
 					$this->post = $this->getMapper('posts')->getPostById($post_id);
 					$this->movie = $this->getMapper('movies')->getMovieById($this->post->movie);
 					break;
-				case 'request':
+				case 'comment':
 					$this->post = $this->getMapper('comments')->getCommentById($post_id);
 					$this->movie = $this->getMapper('requests')->getRequestById($this->post->request);
 					break;
