@@ -23,6 +23,11 @@
 			}
 		}
 
+		protected static function printPrologue() {
+			echo '<?xml version="1.0" encoding="UTF-8"?>';
+		}
+
+
 		private function generateMainMenu() {
 			return <<<EOF
 			<ul class="menu">
