@@ -154,7 +154,7 @@
 		}
 
 		public static function getTooltip($text) {
-			return "<div class=\"tooltip\">{$text}</div>";
+			return "<span class=\"tooltip\">{$text}</span>";
 		}
 
 		public static function getOverflowMenu($dropdown) {
