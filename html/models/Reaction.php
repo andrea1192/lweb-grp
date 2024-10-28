@@ -1,58 +1,42 @@
 <?php namespace models;
 
-	abstract class Reaction {
+	require_once('models/AbstractModel.php');
+
+	abstract class Reaction extends AbstractModel {
 		public $post;
 		public $author;
 
-		public static function createReaction($type) {
+		public function __construct($state = null) {
+			if (!$state)
+				return;
 
-			switch ($type) {
-				case 'answer':
-					return new \models\Answer();
-				case 'like':
-				case 'dislike':
-					return new \models\Like();
-				case 'usefulness':
-					return new \models\Usefulness();
-				case 'agreement':
-					return new \models\Agreement();
-				case 'spoilage':
-					return new \models\Spoilage();
-				case 'report':
-					return new \models\Report();
-			}
-		}
-
-		public static function getType($id) {
-			preg_match('/([[:alpha:]]+)([[:digit:]])/', $id, $matches);
-
-			$prefix = $matches[1];
-			$number = $matches[2];
-
-			switch ($prefix) {
-				case Answer::ID_PREFIX:
-					return 'answer';
-			}
+			$this->post = $state['post'];
+			$this->author = $state['author'];
 		}
 	}
 
 	abstract class BinaryRating extends Reaction {
 		public $type;
+
+		public function __construct($state = null) {
+			if (!$state)
+				return;
+
+			parent::__construct($state);
+			$this->type = $state['type'];
+		}
 	}
 
 	abstract class NumericRating extends Reaction {
 		public $rating;
-	}
 
-	class Answer extends Reaction {
-		protected const ID_PREFIX = 'a';
+		public function __construct($state = null) {
+			if (!$state)
+				return;
 
-		public $id;
-		public $status = 'active';
-		public $date;
-		public $text = '';
-
-		public $reactions;
+			parent::__construct($state);
+			$this->rating = $state['rating'];
+		}
 	}
 
 	class Like extends BinaryRating {
@@ -82,7 +66,42 @@
 		];
 	}
 
-	class Spoilage extends NumericRating {}
+	class Spoilage extends NumericRating {
+		public const REPUTATION_DELTAS = [
+			1 => 0,
+			2 => 0,
+			3 => 0,
+			4 => 0,
+			5 => 0,
+			6 => 0,
+			7 => 0,
+			8 => 0,
+			9 => 0,
+			10 => 0
+		];
+	}
+
+	class Answer extends Reaction {
+		public const ID_PREFIX = 'a';
+
+		public $id;
+		public $status = 'active';
+		public $date;
+		public $text = '';
+
+		public $reactions;
+
+		public function __construct($state = null) {
+			if (!$state)
+				return;
+
+			parent::__construct($state);
+			$this->id = $state['id'];
+			$this->status = $state['status'];
+			$this->date = $state['date'];
+			$this->text = $state['text'];
+		}
+	}
 
 	class Report extends Reaction {
 		public const REPUTATION_DELTAS = [
@@ -91,9 +110,20 @@
 		];
 
 		public $date;
+		public $status = 'open';
 		public $message = '';
 		public $response = '';
-		public $status = 'open';
+
+		public function __construct($state = null) {
+			if (!$state)
+				return;
+
+			parent::__construct($state);
+			$this->date = $state['date'];
+			$this->status = $state['status'];
+			$this->message = $state['message'];
+			$this->response = $state['response'];
+		}
 	}
 
 

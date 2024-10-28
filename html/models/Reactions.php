@@ -82,33 +82,16 @@
 			$query = "/{$root}/{$type}[@post='{$post_id}' and @author='{$author}']";
 			$match = $this->xpath->query($query)->item(0);
 
-			if (!$match) return;
-
-			$mapper = Reactions::getMapperForItem($match);
-			return $mapper::createObjectFromElement($match);
+			return $match;
 		}
 
-		public function save($object) {
-			$mapper = static::getMapperForItem($object);
-			$element = $mapper::createElementFromObject($object, $this->document);
+		protected function replaceElement($element) {
+			$post_id = $element->getAttribute('post');
+			$author = $element->getAttribute('author');
+			$type = $element->tagName;
 
-			if ($this->getReaction($object->post, $object->author, $mapper::ELEMENT_NAME))
-				$this->replaceReaction($object->post, $object->author, $element);
-			else
-				$this->appendElement($element);
-
-			return $object;
-		}
-
-		protected function replaceReaction($post_id, $author, $node) {
-			$mapper = static::getMapperForItem($node);
-
-			$root = $mapper::DOCUMENT_NAME;
-			$elem = $mapper::ELEMENT_NAME;
-
-			$query = "/{$root}/{$elem}[@post='{$post_id}' and @author='{$author}']";
-			$this->xpath->query($query)->item(0)->replaceWith($node);
-
+			$query = "/*/{$type}[@post='{$post_id}' and @author='{$author}']";
+			$this->xpath->query($query)->item(0)->replaceWith($element);
 			$this->saveDocument();
 		}
 	}
@@ -117,7 +100,7 @@
 
 		public static function createObjectFromElement($element, $object = null) {
 			if (!$object)
-				$object = \models\Reaction::createReaction($element->nodeName);
+				$object = \models\AbstractModel::build($element->nodeName, null);
 
 			$object = parent::createObjectFromElement($element, $object);
 			$object->type = $element->getAttribute('type');
@@ -149,7 +132,7 @@
 
 		public static function createObjectFromElement($element, $object = null) {
 			if (!$object)
-				$object = \models\Reaction::createReaction($element->nodeName);
+				$object = \models\AbstractModel::build($element->nodeName, null);
 
 			$object = parent::createObjectFromElement($element, $object);
 			$object->rating = $element->getAttribute('rating');
@@ -242,7 +225,8 @@
 		}
 
 		public function getFeaturedAnswer($post_id) {
-			$answer_id = $this->getMapper('posts')->getPostById($post_id)->featuredAnswer;
+			$answer_id =
+					\controllers\ServiceLocator::resolve('posts')->getPostById($post_id)->featuredAnswer;
 
 			if ($answer_id)
 				return $this->getAnswerById($answer_id);
@@ -268,26 +252,6 @@
 			$mapper = Answers::getMapperForItem($answer);
 			return $mapper::createObjectFromElement($answer);
 		}
-
-		public function save($object) {
-
-			if (empty($object->id)) {
-				$root = self::DOCUMENT_NAME;
-				$elem = self::ELEMENT_NAME;
-				$prefix = self::ID_PREFIX;
-
-				$object->id = $this->generateID($root, $elem, $prefix);
-			}
-
-			$element = self::createElementFromObject($object, $this->document);
-
-			if ($this->document->getElementById($object->id))
-				$this->replaceElement($object->id, $element);
-			else
-				$this->appendElement($element);
-
-			return $object;
-		}
 	}
 
 	class Reports extends Reactions {
@@ -299,7 +263,7 @@
 				$object = new Report();
 
 			$object = parent::createObjectFromElement($element, $object);
-			$unavail = new class {public $textContent = 'N/A';};
+			$unavail = new class {public $textContent = '';};
 
 			$object->date = $element->getAttribute('date');
 			$object->status = $element->getAttribute('status');
@@ -352,6 +316,17 @@
 			$matches = $this->xpath->query($query);
 
 			return new \models\ReactionList($matches);
+		}
+
+		protected function replaceElement($element) {
+			$post_id = $element->getAttribute('post');
+			$author = $element->getAttribute('author');
+			$date = $element->getAttribute('date');
+			$type = $element->tagName;
+
+			$query = "/*/{$type}[@post='{$post_id}' and @author='{$author}' and @date='{$date}']";
+			$this->xpath->query($query)->item(0)->replaceWith($element);
+			$this->saveDocument();
 		}
 	}
 

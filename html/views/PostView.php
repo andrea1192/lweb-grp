@@ -70,7 +70,7 @@
 		public function __construct($session, $post_type, $movie_id) {
 			parent::__construct($session);
 
-			$this->post = \models\Post::createPost($post_type);
+			$this->post = \models\AbstractModel::build($post_type, null);
 
 			switch (\models\Movie::getType($movie_id)) {
 				case 'movie':

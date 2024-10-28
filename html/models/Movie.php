@@ -1,8 +1,9 @@
 <?php namespace models;
 
+	require_once('models/AbstractModel.php');
 	require_once('models/Posts.php');
 
-	class Movie {
+	abstract class AbstractMovie extends AbstractModel {
 		public const ID_PREFIX = 'm';
 
 		public $id;
@@ -15,35 +16,38 @@
 
 		public $posts;
 
-		public static function createMovieFromRequest($request) {
-			$movie = new self();
+		public function __construct($state = null) {
+			if (!$state)
+				return;
 
-			$movie->title = $request->title;
-			$movie->year = $request->year;
-			$movie->duration = $request->duration;
-			$movie->summary = $request->summary;
-			$movie->director = $request->director;
-			$movie->writer = $request->writer;
-
-			return $movie;
+			$this->id = $state['id'];
+			$this->title = $state['title'];
+			$this->year = $state['year'];
 		}
 
-		public static function getType($id) {
-			preg_match('/([[:alpha:]]+)([[:digit:]])/', $id, $matches);
-
-			$prefix = $matches[1];
-			$number = $matches[2];
-
-			switch ($prefix) {
-				case Movie::ID_PREFIX:
-					return 'movie';
-				case Request::ID_PREFIX:
-					return 'request';
-			}
+		public function getState() {
+			return array_filter(
+					get_object_vars($this),
+					fn($property) => isset($property));
 		}
 	}
 
-	class Request extends Movie {
+	class Movie extends AbstractMovie {
+
+		public function __construct($state = null) {
+			if (!$state)
+				return;
+
+			parent::__construct($state);
+
+			$this->duration = $state['duration'];
+			$this->summary = $state['summary'];
+			$this->director = $state['director'];
+			$this->writer = $state['writer'];
+		}
+	}
+
+	class Request extends AbstractMovie {
 		public const ID_PREFIX = 'req';
 		public const REPUTATION_DELTAS = [
 			'accepted' => +10
@@ -51,5 +55,31 @@
 
 		public $status = 'submitted';
 		public $author;
+
+		public function __construct($state = null) {
+			if (!$state)
+				return;
+
+			parent::__construct($state);
+
+			$this->status = $state['status'];
+			$this->author = $state['author'];
+
+			$this->duration = $state['duration'] ?? '';
+			$this->summary = $state['summary'] ?? '';
+			$this->director = $state['director'] ?? '';
+			$this->writer = $state['writer'] ?? '';
+		}
+
+		public function setStatus($status) {
+			switch ($status) {
+				case 'submitted':
+				case 'accepted':
+				case 'rejected':
+				case 'deleted':
+					$this->status = $status;
+					break;
+			}
+		}
 	}
 ?>

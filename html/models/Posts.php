@@ -223,7 +223,8 @@
 			$object->featured = (bool) ($element->getAttribute('featured') == 'true');
 			$object->featuredAnswer = (string) $element->getAttribute('featuredAnswer');
 
-			$object->answers = self::getMapper('answers')->getAnswersByPost($object->id);
+			$object->answers =
+					\controllers\ServiceLocator::resolve('answers')->getAnswersByPost($object->id);
 			$object->reactions = [
 				'usefulness' => new \models\NumericReactionType($object->id, 'usefulness'),
 				'agreement' => new \models\NumericReactionType($object->id, 'agreement')

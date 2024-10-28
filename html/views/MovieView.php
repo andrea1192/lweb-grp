@@ -30,13 +30,13 @@
 			switch (\models\Movie::getType($movie_id)) {
 				case 'movie':
 					$this->tabs = $tabs['movie'];
-					$this->tab = $tab;
+					$this->tab = (!empty($tab)) ? $tab : 'question';
 					$this->movie = $this->getMapper('movies')->getMovieById($movie_id);
-					$this->posts = $this->getMapper('posts')->getPostsByMovie($movie_id, $tab);
+					$this->posts = $this->getMapper('posts')->getPostsByMovie($movie_id, $this->tab);
 					break;
 				case 'request':
 					$this->tabs = $tabs['request'];
-					$this->tab = 'comment';
+					$this->tab = (!empty($tab)) ? $tab : 'comment';
 					$this->movie = $this->getMapper('requests')->getRequestById($movie_id);
 					$this->posts = $this->getMapper('comments')->getCommentsByRequest($movie_id);
 					break;

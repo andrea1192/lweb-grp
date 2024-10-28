@@ -62,9 +62,18 @@
 		}
 
 		public function display() {
+			$placeholder = 'N/A';
+
 			$backdrop = $this->generateBackdrop();
 			$poster = $this->generatePoster();
 			$action_buttons = $this->generateActionButtons();
+
+			$movie_title = (!empty($this->movie->title)) ? $this->movie->title : $placeholder;
+			$movie_year = (!empty($this->movie->year)) ? $this->movie->year : $placeholder;
+			$movie_duration = (!empty($this->movie->duration)) ? $this->movie->duration : $placeholder;
+			$movie_summary = (!empty($this->movie->summary)) ? $this->movie->summary : $placeholder;
+			$movie_director = (!empty($this->movie->director)) ? $this->movie->director : $placeholder;
+			$movie_writer = (!empty($this->movie->writer)) ? $this->movie->writer : $placeholder;
 
 			echo <<<EOF
 			<div id="backdrop" {$backdrop}>
@@ -72,17 +81,17 @@
 					<div id="overview" class="flex wrapper">
 						{$poster}
 						<div id="description" class="flex">
-							<h1>{$this->movie->title}</h1>
-							<div>{$this->movie->year}, {$this->movie->duration}'</div>
-							<p>{$this->movie->summary}</p>
+							<h1>{$movie_title}</h1>
+							<div>{$movie_year}, {$movie_duration}'</div>
+							<p>{$movie_summary}</p>
 							<div id="details">
 								<div class="flex detail">
 									<div>Director</div>
-									<div>{$this->movie->director}</div>
+									<div>{$movie_director}</div>
 								</div>
 								<div class="flex detail">
 									<div>Writer</div>
-									<div>{$this->movie->writer}</div>
+									<div>{$movie_writer}</div>
 								</div>
 							</div>
 							{$action_buttons}
@@ -98,14 +107,10 @@
 			$backdrop = $this->generateBackdrop();
 			$poster = $this->generatePoster();
 			$files = $this->generateFiles();
+			$special_fields = $this->generateSpecialFields();
 			$save_buttons = $this->generateSaveButtons();
 
 			$components = 'views\UIComponents';
-
-			$status = (property_exists($this->movie, 'status')) ?
-				$components::getHiddenInput('status', $this->movie->status) : '';
-			$author = (property_exists($this->movie, 'author')) ?
-				$components::getHiddenInput('author', $this->movie->author) : '';
 
 			echo <<<EOF
 			<div id="backdrop" {$backdrop}>
@@ -117,8 +122,7 @@
 						</div>
 						<div id="description" class="flex fields">
 							{$components::getHiddenInput('id', $this->movie->id)}
-							{$status}
-							{$author}
+							{$special_fields}
 							{$components::getFilledTextInput('Title', 'title', $this->movie->title)}
 							<div class="flex fields" style="width: 30%">
 								{$components::getFilledTextInput('Year', 'year', $this->movie->year)}
@@ -220,6 +224,10 @@
 			EOF;
 		}
 
+		protected function generateSpecialFields() {
+			return UIComponents::getHiddenInput('type', 'movie');
+		}
+
 		protected function generateSaveButtons() {
 			$left = '';
 			$right = '';
@@ -268,13 +276,23 @@
 			return UIComponents::getOverlay($label, $icon, 'status');
 		}
 
+		protected function generateSpecialFields() {
+			$fields = '';
+
+			$fields .= UIComponents::getHiddenInput('type', 'request');
+			$fields .= UIComponents::getHiddenInput('status', $this->movie->status);
+			$fields .= UIComponents::getHiddenInput('author', $this->movie->author);
+
+			return $fields;
+		}
+
 		protected function generateActionButtons() {
 			$left = '';
 			$right = '';
 
 			if (!property_exists($this->movie, 'status') || ($this->movie->status == 'submitted')) {
 
-				if ($this->session->isAdmin()) {
+				if ($this->session->isMod()) {
 					$left .= UIComponents::getTonalButton(
 							'Review this content',
 							'edit',

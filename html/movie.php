@@ -7,13 +7,13 @@
 
 		public function route() {
 			$movie_id = static::sanitize($_GET['id'] ?? '');
-			$tab = static::sanitize($_GET['type'] ?? 'question');
+			$movie_type = static::sanitize($_REQUEST['type'] ?? '');
 
 			switch ($_REQUEST['action'] ?? '') {
 
 				default:
 				case 'display':
-					$view = new \views\MovieView($this->session, $movie_id, $tab);
+					$view = new \views\MovieView($this->session, $movie_id, $movie_type);
 					$view->render();
 					break;
 
@@ -30,50 +30,49 @@
 				case 'save':
 					// TODO: Aggiungi controlli privilegi con ev. redirect
 					if (isset($_POST)) {
+						$repo = ServiceLocator::resolve('movies');
 
-						if (isset($_POST['status'])) {
-							$movie = new \models\Request();
-							$mapper = ServiceLocator::resolve('requests');
+						$state['id'] = $movie_id;
+						$state['title'] = static::sanitize($_POST['title']);
+						$state['year'] = static::sanitize($_POST['year']);
+						$state['duration'] = static::sanitize($_POST['duration']);
+						$state['summary'] = static::sanitize($_POST['summary']);
+						$state['director'] = static::sanitize($_POST['director']);
+						$state['writer'] = static::sanitize($_POST['writer']);
 
-							$movie->status = static::sanitize($_POST['status']);
-							$movie->author = static::sanitize($_POST['author']);
+						$state['status'] = static::sanitize($_POST['status'] ?? '');
+						$state['author'] = static::sanitize($_POST['author'] ?? '');
+
+						// TODO: Separa azioni per creazione ed aggiornamento scheda
+						if (empty($state['id'])) {
+							$object = $repo->create($movie_type, $state);
 						} else {
-							$movie = new \models\Movie();
-							$mapper = ServiceLocator::resolve('movies');
+							$object = \models\AbstractModel::build($movie_type, $state);
+							$repo->update($object);
 						}
-
-						$movie->id = $movie_id;
-						$movie->title = static::sanitize($_POST['title']);
-						$movie->year = static::sanitize($_POST['year']);
-						$movie->duration = static::sanitize($_POST['duration']);
-						$movie->summary = static::sanitize($_POST['summary']);
-						$movie->director = static::sanitize($_POST['director']);
-						$movie->writer = static::sanitize($_POST['writer']);
-
-						$movie = $mapper->save($movie);
 
 						// Gestisce il caricamento di poster (locandine) o backdrop (sfondi)
 						if (($_FILES['poster']['size'] !== 0)
-									&& ($_FILES['poster']['type'] === $mapper::MEDIA_TYPE)) {
+									&& ($_FILES['poster']['type'] === $repo::MEDIA_TYPE)) {
 
-							$ext = $mapper::MEDIA_EXT;
-							$dir = $mapper::POSTERS_PATH;
-							$name = $dir.$movie->id.$ext;
+							$ext = $repo::MEDIA_EXT;
+							$dir = $repo::POSTERS_PATH;
+							$name = $dir.$object->id.$ext;
 
 							move_uploaded_file($_FILES['poster']['tmp_name'], $name);
 						}
 						if (($_FILES['backdrop']['size'] !== 0)
-									&& ($_FILES['backdrop']['type'] === $mapper::MEDIA_TYPE)) {
+									&& ($_FILES['backdrop']['type'] === $repo::MEDIA_TYPE)) {
 
-							$ext = $mapper::MEDIA_EXT;
-							$dir = $mapper::BACKDROPS_PATH;
-							$name = $dir.$movie->id.$ext;
+							$ext = $repo::MEDIA_EXT;
+							$dir = $repo::BACKDROPS_PATH;
+							$name = $dir.$object->id.$ext;
 
 							move_uploaded_file($_FILES['backdrop']['tmp_name'], $name);
 						}
 					}
 
-					$nextView = \views\Movie::factoryMethod($this->session, $movie);
+					$nextView = \views\Movie::factoryMethod($this->session, $object);
 					header("Location: {$nextView->generateURL()}");
 					break;
 
@@ -82,30 +81,27 @@
 					if (!$this->session->isAdmin())
 						header('Location: index.php');
 
-					$request_id = $movie_id;
-
-					$requests = ServiceLocator::resolve('requests');
 					$movies = ServiceLocator::resolve('movies');
+					$users = ServiceLocator::resolve('users');
 
-					$request = new \models\Request();
-					$request->id = $movie_id;
-					$request->title = static::sanitize($_POST['title']);
-					$request->year = static::sanitize($_POST['year']);
-					$request->duration = static::sanitize($_POST['duration']);
-					$request->summary = static::sanitize($_POST['summary']);
-					$request->director = static::sanitize($_POST['director']);
-					$request->writer = static::sanitize($_POST['writer']);
-					$movie = \models\Movie::createMovieFromRequest($request);
+					$state['id'] = $movie_id;
+					$state['status'] = 'accepted';
+					$state['author'] = static::sanitize($_POST['author']);
+					$state['title'] = static::sanitize($_POST['title']);
+					$state['year'] = static::sanitize($_POST['year']);
+					$state['duration'] = static::sanitize($_POST['duration']);
+					$state['summary'] = static::sanitize($_POST['summary']);
+					$state['director'] = static::sanitize($_POST['director']);
+					$state['writer'] = static::sanitize($_POST['writer']);
+					$request = new \models\Request($state);
 
-					$request->status = 'accepted';
-					$request->author = static::sanitize($_POST['author']);
+					$movie = $movies->create('movie', $state);
+					$request = $movies->update($request);
 
-					$author = ServiceLocator::resolve('users')->select($request->author);
+					// Aggiorna la reputazione del proponente della scheda
+					$author = $users->select($request->author);
 					$author->reputation += $request::REPUTATION_DELTAS[$request->status];
-
-					$request = $requests->save($request);
-					$movie = $movies->save($movie);
-					ServiceLocator::resolve('users')->update($author->username, $author);
+					$users->update($author->username, $author);
 
 					// Gestisce il caricamento o la copia di poster (locandine)
 					$ext = $movies::MEDIA_EXT;
@@ -151,10 +147,10 @@
 					$request_id = $movie_id;
 
 					$requests = ServiceLocator::resolve('requests');
-					$request = $requests->getRequestById($request_id);
+					$request = $requests->read($request_id);
 
-					$request->status = 'rejected';
-					$requests->save($request);
+					$request->setStatus('rejected');
+					$requests->update($request);
 
 					$nextView = \views\Movie::factoryMethod($this->session, $request);
 					header("Location: {$nextView->generateURL()}");
@@ -168,10 +164,10 @@
 					$request_id = $movie_id;
 
 					$requests = ServiceLocator::resolve('requests');
-					$request = $requests->getRequestById($request_id);
+					$request = $requests->read($request_id);
 
-					$request->status = 'deleted';
-					$requests->save($request);
+					$request->setStatus('deleted');
+					$requests->update($request);
 
 					header('Location: movies.php?action=list_requests');
 					break;

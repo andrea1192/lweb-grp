@@ -16,45 +16,68 @@
 			return static::DOCUMENT_ROOT.static::DOCUMENT_NAME.'.xml';
 		}
 
-		protected static function getMapper($mapper) {
-			return \controllers\ServiceLocator::resolve($mapper);
-		}
-
-		public static function getMapperForType($type) {
+		public static function getRepo($type) {
+			$sl = '\\controllers\\ServiceLocator';
 
 			switch ($type) {
 				case 'movie':
-					$mapper = 'movies';
-					break;
+					return $sl::resolve('movies');
 				case 'request':
-					$mapper = 'requests';
-					break;
+					return $sl::resolve('requests');
 
 				case 'review':
 				case 'question':
 				case 'spoiler':
 				case 'extra':
-					$mapper = 'posts';
-					break;
+					return $sl::resolve('posts');
 				case 'comment':
-					$mapper = 'comments';
-					break;
+					return $sl::resolve('comments');
 
 				case 'like':
 				case 'usefulness':
 				case 'agreement':
 				case 'spoilage':
-					$mapper = 'reactions';
-					break;
+					return $sl::resolve('reactions');
 				case 'answer':
-					$mapper = 'answers';
-					break;
+					return $sl::resolve('answers');
 				case 'report':
-					$mapper = 'reports';
-					break;
+					return $sl::resolve('reports');
 			}
+		}
 
-			return \controllers\ServiceLocator::resolve($mapper);
+		public static function getMapper($type) {
+			$ns = '\\models\\';
+
+			switch ($type) {
+				case 'movie':
+					return $ns.'Movies';
+				case 'request':
+					return $ns.'Requests';
+
+				case 'review':
+					return $ns.'Reviews';
+				case 'question':
+					return $ns.'Questions';
+				case 'spoiler':
+					return $ns.'Spoilers';
+				case 'extra':
+					return $ns.'Extras';
+				case 'comment':
+					return $ns.'Comments';
+
+				case 'like':
+					return $ns.'Likes';
+				case 'usefulness':
+					return $ns.'Usefulnesses';
+				case 'agreement':
+					return $ns.'Agreements';
+				case 'spoilage':
+					return $ns.'Spoilages';
+				case 'answer':
+					return $ns.'Answers';
+				case 'report':
+					return $ns.'Reports';
+			}
 		}
 
 		public function __construct() {
@@ -75,41 +98,65 @@
 			$this->document->save(static::getDocumentPath());
 		}
 
-		public function select($id) {
-			$type = Movie::getType($id)
-					?? Post::getType($id)
-					?? Reaction::getType($id);
+		public function create($type, $state) {
+			$repo = static::getRepo($type);
+			$mapper = static::getMapper($type);
+			$session = \controllers\ServiceLocator::resolve('session');
 
-			$mapper = static::getMapperForType($type);
-			$element = $mapper->document->getElementById($id);
+			$state['id'] = $repo->generateID($type);
+			$state['author'] = $session->getUsername();
+			$state['date'] = date('c');
 
-			$mapper = $mapper::getMapperForItem($element);
-			return $mapper::createObjectFromElement($element);
-		}
+			$object = \models\AbstractModel::build($type, $state);
 
-		public function save($object) {
-			$mapper = static::getMapperForItem($object);
-
-			if (empty($object->id)) {
-				$root = $mapper::DOCUMENT_NAME;
-				$elem = $mapper::ELEMENT_NAME;
-				$prefix = $object::ID_PREFIX;
-
-				$object->id = $this->generateID($root, $elem, $prefix);
-			}
-
-			$element = $mapper::createElementFromObject($object, $this->document);
-
-			if ($this->document->getElementById($object->id))
-				$this->replaceElement($object->id, $element);
-			else
-				$this->appendElement($element);
+			$element = $mapper::createElementFromObject($object, $repo->document);
+			$repo->appendElement($element);
 
 			return $object;
 		}
 
-		protected function replaceElement($id, $node) {
-			$this->document->getElementById($id)->replaceWith($node);
+		public function read($id) {
+			$type = \models\AbstractModel::getType($id);
+			$repo = static::getRepo($type);
+			$mapper = static::getMapper($type);
+
+			$element = $repo->getElement($id);
+
+			if ($element)
+				return $mapper::createObjectFromElement($element);
+		}
+
+		public function readReaction($post, $author, $type) {
+			$repo = static::getRepo($type);
+			$mapper = static::getMapper($type);
+
+			$element = $repo->getReaction($post, $author, $type);
+
+			if ($element)
+				return $mapper::createObjectFromElement($element);
+		}
+
+		public function update($object) {
+			$type = \models\AbstractModel::getType($object);
+			$repo = static::getRepo($type);
+			$mapper = static::getMapper($type);
+
+			$element = $mapper::createElementFromObject($object, $repo->document);
+			$repo->replaceElement($element);
+
+			return $object;
+		}
+
+		// public function delete($object) {}
+
+		// ========== Low-level interface ==========
+
+		protected function getElement($id) {
+			return $this->document->getElementById($id);
+		}
+
+		protected function replaceElement($element) {
+			$this->document->getElementById($element->id)->replaceWith($element);
 			$this->saveDocument();
 		}
 
@@ -118,25 +165,35 @@
 			$this->saveDocument();
 		}
 
-		public function delete($id) {
+		protected function deleteElement($id) {
 			$element = $this->document->getElementById($id);
 			$element->parentNode->removeChild($element);
 
 			$this->saveDocument();
 		}
 
-		protected function generateID($root, $element, $prefix) {
-			$query = "/{$root}/{$element}/@id";
+		protected function generateID($type) {
+			$mapper = static::getMapper($type);
+			$root = $mapper::DOCUMENT_NAME;
+			$elem = $mapper::ELEMENT_NAME;
+
+			$query = "/{$root}/{$elem}/@id";
 			$nodes = $this->xpath->evaluate($query);
 
+			if (!$nodes)
+				return '';
+
+			$prefix = '';
 			$largest = 0;
 
 			foreach ($nodes as $node) {
-				$id = $node->nodeValue;
-				$id = preg_replace("/{$prefix}/", '', $id);
+				preg_match('/([[:alpha:]]+)([[:digit:]])/', $node->nodeValue, $matches);
 
-				if ($id > $largest)
-					$largest = $id;
+				$prefix = $matches[1];
+				$number = $matches[2];
+
+				if ($number > $largest)
+					$largest = $number;
 			}
 
 			return $prefix.++$largest;

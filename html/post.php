@@ -34,6 +34,19 @@
 				case 'save':
 					// TODO: Aggiungi controlli privilegi con ev. redirect
 					if (isset($_POST)) {
+						$repo = ServiceLocator::resolve('posts');
+
+						$state['id'] = static::sanitize($_POST['id']);
+						$state['status'] = static::sanitize($_POST['status']);
+						$state['author'] = static::sanitize($_POST['author']);
+						$state['date'] = static::sanitize($_POST['date']);
+						$state['text'] = static::sanitize($_POST['text']);
+
+						$state['title'] = static::sanitize($_POST['title'] ?? '');
+						$state['rating'] = static::sanitize($_POST['rating'] ?? '');
+						$state['featured'] = (static::sanitize($_POST['featured'] ?? '') == 'true');
+						$state['featuredAnswer'] = static::sanitize($_POST['featuredAnswer'] ?? '');
+						$state['reputation'] = static::sanitize($_POST['reputation'] ?? '');
 
 						switch ($post_type) {
 							default:
@@ -41,55 +54,29 @@
 							case 'question':
 							case 'spoiler':
 							case 'extra':
-								$post = \models\Post::createPost($post_type);
-								$post->movie = static::sanitize($_POST['movie']);
-
-								$mapper = ServiceLocator::resolve('posts');
-								$redir = "movie.php?id={$post->movie}&type={$post_type}";
+								$state['movie'] = static::sanitize($_POST['movie']);
+								$redir = "movie.php?id={$state['movie']}&type={$post_type}";
 								break;
 
 							case 'comment':
-								$post = \models\Post::createPost($post_type);
-								$post->request = static::sanitize($_POST['request']);
-
-								$mapper = ServiceLocator::resolve('comments');
-								$redir = "movie.php?id={$post->request}&type={$post_type}";
+								$state['request'] = static::sanitize($_POST['request']);
+								$redir = "movie.php?id={$state['request']}&type={$post_type}";
 								break;
 
 							case 'answer':
-								$post = new \models\Answer();
-								$post->post = static::sanitize($_POST['post']);
-
-								$mapper = ServiceLocator::resolve('answers');
-								$movie_id = ServiceLocator::resolve('posts')->getPostById($post->post)->movie;
-								$redir = "movie.php?id={$movie_id}&type=question";
+								$state['post'] = static::sanitize($_POST['post']);
+								$redir = "movie.php?id={$repo->read($state['post'])->movie}&type=question";
 								break;
 						}
 
-						$post->id = static::sanitize($_POST['id']);
-						$post->status = static::sanitize($_POST['status']);
-						$post->author = static::sanitize($_POST['author']);
-						$post->date = static::sanitize($_POST['date']);
-						$post->text = static::sanitize($_POST['text']);
+						// TODO: Separa azioni per creazione ed aggiornamento post
+						if (empty($state['id'])) {
+							$object = $repo->create($post_type, $state);
+						} else {
+							$object = \models\AbstractModel::build($post_type, $state);
+							$repo->update($object);
+						}
 
-						if (empty($post->author))
-							$post->author = ServiceLocator::resolve('session')->getUsername();
-
-						if (empty($post->date))
-							$post->date = date('c');
-
-						if (isset($_POST['title']))
-							$post->title = static::sanitize($_POST['title']);
-						if (isset($_POST['rating']))
-							$post->rating = static::sanitize($_POST['rating']);
-						if (isset($_POST['featured']))
-							$post->featured = (bool) (static::sanitize($_POST['featured']) == 'true');
-						if (isset($_POST['featuredAnswer']))
-							$post->featuredAnswer = static::sanitize($_POST['featuredAnswer']);
-						if (isset($_POST['reputation']))
-							$post->reputation = static::sanitize($_POST['reputation']);
-
-						$mapper->save($post);
 					}
 
 					header("Location: $redir");
@@ -97,18 +84,20 @@
 
 				case 'delete':
 					// TODO: Aggiungi controlli privilegi con ev. redirect
-					if ($post_type != 'comment') {
-						$mapper = ServiceLocator::resolve('posts');
-						$post = $mapper->getPostById($post_id);
-						$redir = "movie.php?id={$post->movie}&type={$post_type}";
-					} else {
-						$mapper = ServiceLocator::resolve('comments');
-						$post = $mapper->getCommentById($post_id);
-						$redir = "movie.php?id={$post->request}&type={$post_type}";
-					}
+					$repo = ServiceLocator::resolve('posts');
+					$post = $repo->read($post_id);
 
-					$post->status = 'deleted';
-					$mapper->save($post);
+					$post->setStatus('deleted');
+					$repo->update($post);
+
+					switch ($post_type) {
+						default:
+							$redir = "movie.php?id={$post->movie}&type={$post_type}";
+							break;
+						case 'comment':
+							$redir = "movie.php?id={$post->request}&type={$post_type}";
+							break;
+					}
 
 					header("Location: $redir");
 					break;
@@ -118,35 +107,57 @@
 					if (!$this->session->isAllowed())
 						header('Location: index.php');
 
-					$reaction_type = $post_type;
-					$reaction_author = ServiceLocator::resolve('session')->getUsername();
+					$repo = ServiceLocator::resolve('posts');
+					$users = ServiceLocator::resolve('users');
 
-					$mapper = ServiceLocator::resolve('reactions');
-					$reaction = \models\Reaction::createReaction($reaction_type);
+					$state['author'] = ServiceLocator::resolve('session')->getUsername();
+					$state['post'] = $post_id;
+					$state['type'] = $post_type;
+					$state['rating'] = static::sanitize($_POST['rating'] ?? '');
 
-					$reaction->post = $post_id;
-					$reaction->author = $reaction_author;
+					if ($post_type == 'dislike')
+						$post_type = 'like';
 
-					$post_author = ServiceLocator::resolve('posts')->select($post_id)->author;
-					$post_user = ServiceLocator::resolve('users')->select($post_author);
+					$reaction_old =
+							$repo->readReaction($state['post'], $state['author'], $post_type);
 
-					if (property_exists($reaction, 'type')) {
-						$reaction->type = $reaction_type;
-						$post_user->reputation += $reaction::REPUTATION_DELTAS[$reaction->type];
+					if (!$reaction_old) {
+							$reaction = $repo->create($post_type, $state);
+						} else {
+							$reaction = \models\AbstractModel::build($post_type, $state);
+							$repo->update($reaction);
+						}
 
-						if ($reaction_old = $mapper->getReaction($post_id, $reaction_author, 'like'))
-							$post_user->reputation -= $reaction::REPUTATION_DELTAS[$reaction_old->type];
+					// Determina l'autore del post
+					$post_author = $repo->read($post_id)->author;
+					$post_user = $users->select($post_author);
+
+					// Aggiorna la reputazione dell'autore del post
+					switch ($post_type) {
+						case 'like':
+						case 'dislike':
+							if ($reaction)
+								$post_user->reputation +=
+										$reaction::REPUTATION_DELTAS[$reaction->type];
+
+							if ($reaction_old)
+								$post_user->reputation -=
+										$reaction::REPUTATION_DELTAS[$reaction_old->type];
+							break;
+
+						case 'usefulness':
+						case 'agreement':
+						case 'spoilage':
+							if ($reaction)
+								$post_user->reputation +=
+										$reaction::REPUTATION_DELTAS[$reaction->rating];
+
+							if ($reaction_old)
+								$post_user->reputation -=
+										$reaction::REPUTATION_DELTAS[$reaction_old->rating];
+							break;
 					}
 
-					if (property_exists($reaction, 'rating')) {
-						$reaction->rating = static::sanitize($_POST['rating']);
-						$post_user->reputation += $reaction::REPUTATION_DELTAS[$reaction->rating];
-
-						if ($reaction_old = $mapper->getReaction($post_id, $reaction_author, $reaction_type))
-							$post_user->reputation -= $reaction::REPUTATION_DELTAS[$reaction_old->rating];
-					}
-
-					$mapper->save($reaction);
 					ServiceLocator::resolve('users')->update($post_author, $post_user);
 
 					header("Location: {$_SERVER['HTTP_REFERER']}");
@@ -167,36 +178,34 @@
 					if (!$this->session->isAllowed())
 						header('Location: index.php');
 
-					$post = new \models\Report();
-					$mapper = ServiceLocator::resolve('reports');
+					$repo = ServiceLocator::resolve('reports');
+					$users = ServiceLocator::resolve('users');
 
-					$post->post = $post_id;
-					$post->author = static::sanitize($_POST['author']);
-					$post->date = static::sanitize($_POST['date']);
-					$post->status = static::sanitize($_POST['status']);
+					$state['post'] = $post_id;
+					$state['author'] = static::sanitize($_POST['author']);
+					$state['date'] = static::sanitize($_POST['date']);
+					$state['status'] = static::sanitize($_POST['status']);
+					$state['message'] = static::sanitize($_POST['message']);
+					$state['response'] = static::sanitize($_POST['response']);
 
-					$post->message = static::sanitize($_POST['message']);
-					$post->response = static::sanitize($_POST['response']);
+					// TODO: Separa azioni per creazione ed aggiornamento post
+					if ($state['status'] == 'open') {
+						$report = $repo->create('report', $state);
+					} else {
+						$report = \models\AbstractModel::build($post_type, $state);
+						$repo->update($report);
+					}
 
-					if (empty($post->author))
-						$post->author = ServiceLocator::resolve('session')->getUsername();
+					$author = $users->select($report->author);
 
-					if (empty($post->date))
-						$post->date = date('c');
+					if ($report->status == 'accepted')
+						$author->reputation += $report::REPUTATION_DELTAS[$report->status];
+					elseif ($report->status == 'rejected')
+						$author->reputation += $report::REPUTATION_DELTAS[$report->status];
 
-					$author = ServiceLocator::resolve('users')->select($post->author);
+					$users->update($author->username, $author);
 
-					if ($post->status == 'accepted')
-						$author->reputation += $post::REPUTATION_DELTAS[$post->status];
-					elseif ($post->status == 'rejected')
-						$author->reputation += $post::REPUTATION_DELTAS[$post->status];
-
-					$mapper->save($post);
-					ServiceLocator::resolve('users')->update($author->username, $author);
-
-					$movie_id = ServiceLocator::resolve('posts')->getPostById($post->post)->movie;
-					$redir = "movie.php?id={$movie_id}";
-					header("Location: $redir");
+					header("Location: movie.php?id={$repo->read($report->post)->movie}");
 					break;
 
 				case 'elevate':
@@ -204,11 +213,11 @@
 					if (!$this->session->isMod())
 						header('Location: index.php');
 
-					$mapper = ServiceLocator::resolve('posts');
-					$post = $mapper->getPostById($post_id);
+					$repo = ServiceLocator::resolve('posts');
+					$post = $repo->read($post_id);
 
-					$post->featured = true;
-					$mapper->save($post);
+					$post->setFeatured(true);
+					$repo->update($post);
 
 					header("Location: {$_SERVER['HTTP_REFERER']}");
 					break;
@@ -220,11 +229,11 @@
 
 					$answer_id = static::sanitize($_GET['answer']);
 
-					$mapper = ServiceLocator::resolve('posts');
-					$post = $mapper->getPostById($post_id);
+					$repo = ServiceLocator::resolve('posts');
+					$post = $repo->read($post_id);
 
-					$post->featuredAnswer = $answer_id;
-					$mapper->save($post);
+					$post->setFeaturedAnswer($answer_id);
+					$repo->update($post);
 
 					header("Location: {$_SERVER['HTTP_REFERER']}");
 					break;

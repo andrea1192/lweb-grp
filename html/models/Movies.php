@@ -70,7 +70,8 @@
 			$object->director = $element->getElementsByTagName('director')->item(0)->textContent;
 			$object->writer = $element->getElementsByTagName('writer')->item(0)->textContent;
 
-			$object->posts = self::getMapper('posts')->getPostsByMovie($object->id);
+			$object->posts =
+					\controllers\ServiceLocator::resolve('posts')->getPostsByMovie($object->id);
 
 			return $object;
 		}
@@ -119,7 +120,7 @@
 				$object = new Request();
 
 			$object = parent::createObjectFromElement($element, $object);
-			$unavail = new class {public $textContent = 'N/A';};
+			$unavail = new class {public $textContent = '';};
 			$object->duration =
 				($element->getElementsByTagName('duration')->item(0) ?? $unavail)
 				->textContent;
@@ -135,7 +136,8 @@
 
 			$object->status = $element->getAttribute('status');
 			$object->author = $element->getAttribute('author');
-			$object->posts = self::getMapper('comments')->getCommentsByRequest($object->id);
+			$object->posts =
+					\controllers\ServiceLocator::resolve('comments')->getCommentsByRequest($object->id);
 
 			return $object;
 		}
@@ -155,8 +157,7 @@
 			foreach ($keys as $key => $value) {
 				$keys[$key] = $document->createElement($key);
 
-				if (!empty($object->$key) && $object->$key != 'N/A') {
-
+				if (!empty($object->$key)) {
 					$keys[$key]->textContent = $object->$key;
 					$element->appendChild($keys[$key]);
 				}
