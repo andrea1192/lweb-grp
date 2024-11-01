@@ -31,57 +31,6 @@
 			}
 		}
 
-		public static function createObjectFromElement($element, $object = null) {
-			if (!$object)
-				return;
-
-			$object->id = $element->getAttribute('id');
-			$object->status = $element->getAttribute('status');
-			$object->movie = $element->getAttribute('movie');
-			$object->author = $element->getAttribute('author');
-			$object->date = $element->getAttribute('date');
-
-			$object->title = $element->getElementsByTagName('title')->item(0)->textContent;
-			$object->text = $element->getElementsByTagName('text')->item(0)->textContent;
-
-			return $object;
-		}
-
-		public static function mapCommonAttributes($object, $document, $element) {
-			$id = $document->createAttribute('id');
-			$status = $document->createAttribute('status');
-			$movie = $document->createAttribute('movie');
-			$author = $document->createAttribute('author');
-			$date = $document->createAttribute('date');
-
-			$id->value = $object->id;
-			$status->value = $object->status;
-			$movie->value = $object->movie;
-			$author->value = $object->author;
-			$date->value = $object->date;
-
-			$element->appendChild($id);
-			$element->appendChild($status);
-			$element->appendChild($movie);
-			$element->appendChild($author);
-			$element->appendChild($date);
-
-			return $element;
-		}
-
-		public static function mapCommonElements($object, $document, $element) {
-			$title = $document->createElement('title');
-			$text = $document->createElement('text');
-
-			$title->textContent = $object->title;
-			$text->textContent = $object->text;
-
-			$element->appendChild($title);
-			$element->appendChild($text);
-
-			return $element;
-		}
-
 		public function getFeaturedPosts($movie_id, $type = '*') {
 			$query = "/posts/{$type}[@status!='deleted' and @movie='{$movie_id}' and @featured='true']";
 			$matches = $this->xpath->query($query);
@@ -104,58 +53,13 @@
 		}
 
 		public function getPostById($id) {
-			$post = $this->document->getElementById($id);
-
-			$mapper = Posts::getMapperForItem($post);
-			return $mapper::createObjectFromElement($post);
+			return $this->read($id);
 		}
 	}
 
 	class Comments extends Posts {
 		protected const DOCUMENT_NAME = 'comments';
 		protected const ELEMENT_NAME = 'comment';
-
-		public static function createObjectFromElement($element, $object = null) {
-			if (!$object)
-				$object = new Comment();
-
-			$object = parent::createObjectFromElement($element, $object);
-			$object->request = $element->getAttribute('request');
-			$object->rating = $element->getElementsByTagName('rating')->item(0)->textContent;
-
-			return $object;
-		}
-
-		public static function createElementFromObject($object, $document, $element = null) {
-			if (!$element)
-				$element = $document->createElement('comment');
-
-			$id = $document->createAttribute('id');
-			$status = $document->createAttribute('status');
-			$request = $document->createAttribute('request');
-			$author = $document->createAttribute('author');
-			$date = $document->createAttribute('date');
-
-			$id->value = $object->id;
-			$status->value = $object->status;
-			$request->value = $object->request;
-			$author->value = $object->author;
-			$date->value = $object->date;
-
-			$element->appendChild($id);
-			$element->appendChild($status);
-			$element->appendChild($request);
-			$element->appendChild($author);
-			$element->appendChild($date);
-
-			$rating = $document->createElement('rating');
-			$rating->textContent = $object->rating;
-			$element->appendChild($rating);
-
-			$element = parent::mapCommonElements($object, $document, $element);
-
-			return $element;
-		}
 
 		public function getCommentsByRequest($movie_id) {
 			$query = "/comments/comment[@status!='deleted' and @request='{$movie_id}']";
@@ -172,156 +76,9 @@
 		}
 
 		public function getCommentById($id) {
-			$comment = $this->document->getElementById($id);
-
-			$mapper = Posts::getMapperForItem($comment);
-			return $mapper::createObjectFromElement($comment);
+			return $this->read($id);
 		}
 	}
-
-	class Reviews extends Posts {
-		protected const ELEMENT_NAME = 'review';
-
-		public static function createObjectFromElement($element, $object = null) {
-			if (!$object)
-				$object = new Review();
-
-			$object = parent::createObjectFromElement($element, $object);
-			$object->rating = $element->getElementsByTagName('rating')->item(0)->textContent;
-
-			$object->reactions = [
-				'like' => new \models\BinaryReactionType($object->id, 'like', 'like', 'dislike')
-			];
-
-			return $object;
-		}
-
-		public static function createElementFromObject($object, $document, $element = null) {
-			if (!$element)
-				$element = $document->createElement('review');
-
-			$element = parent::mapCommonAttributes($object, $document, $element);
-
-			$rating = $document->createElement('rating');
-			$rating->textContent = $object->rating;
-			$element->appendChild($rating);
-
-			$element = parent::mapCommonElements($object, $document, $element);
-
-			return $element;
-		}
-	}
-
-	class Questions extends Posts {
-		protected const ELEMENT_NAME = 'question';
-
-		public static function createObjectFromElement($element, $object = null) {
-			if (!$object)
-				$object = new Question();
-
-			$object = parent::createObjectFromElement($element, $object);
-			$object->featured = (bool) ($element->getAttribute('featured') == 'true');
-			$object->featuredAnswer = (string) $element->getAttribute('featuredAnswer');
-
-			$object->answers =
-					\controllers\ServiceLocator::resolve('answers')->getAnswersByPost($object->id);
-			$object->reactions = [
-				'usefulness' => new \models\NumericReactionType($object->id, 'usefulness'),
-				'agreement' => new \models\NumericReactionType($object->id, 'agreement')
-			];
-
-			return $object;
-		}
-
-		public static function createElementFromObject($object, $document, $element = null) {
-			if (!$element)
-				$element = $document->createElement('question');
-
-			$element = parent::mapCommonAttributes($object, $document, $element);
-
-			$featured = $document->createAttribute('featured');
-			$featuredAnswer = $document->createAttribute('featuredAnswer');
-
-			$featured->value = $object->featured ? 'true' : 'false';
-			$featuredAnswer->value = $object->featuredAnswer;
-
-			$element->appendChild($featured);
-			$element->appendChild($featuredAnswer);
-
-			$element = parent::mapCommonElements($object, $document, $element);
-
-			return $element;
-		}
-	}
-
-	class Spoilers extends Posts {
-		protected const ELEMENT_NAME = 'spoiler';
-
-		public static function createObjectFromElement($element, $object = null) {
-			if (!$object)
-				$object = new Spoiler();
-
-			$object = parent::createObjectFromElement($element, $object);
-			$object->rating = $element->getElementsByTagName('rating')->item(0)->textContent;
-
-			$object->reactions = [
-				'spoilage' => new \models\NumericReactionType($object->id, 'spoilage')
-			];
-
-			return $object;
-		}
-
-		public static function createElementFromObject($object, $document, $element = null) {
-			if (!$element)
-				$element = $document->createElement('spoiler');
-
-			$element = parent::mapCommonAttributes($object, $document, $element);
-
-			$rating = $document->createElement('rating');
-			$rating->textContent = $object->rating;
-			$element->appendChild($rating);
-
-			$element = parent::mapCommonElements($object, $document, $element);
-
-			return $element;
-		}
-	}
-
-	class Extras extends Posts {
-		protected const ELEMENT_NAME = 'extra';
-
-		public static function createObjectFromElement($element, $object = null) {
-			if (!$object)
-				$object = new Extra();
-
-			$object = parent::createObjectFromElement($element, $object);
-			$object->reputation = $element->getAttribute('rep');
-
-			return $object;
-		}
-
-		public static function createElementFromObject($object, $document, $element = null) {
-			if (!$element)
-				$element = $document->createElement('extra');
-
-			$element = parent::mapCommonAttributes($object, $document, $element);
-
-			$reputation = $document->createAttribute('rep');
-			$reputation->textContent = $object->reputation;
-			$element->appendChild($reputation);
-
-			$element = parent::mapCommonElements($object, $document, $element);
-
-			return $element;
-		}
-	}
-
-	// class DeletedPosts extends Posts {
-
-	// 	public static function createObjectFromElement($element, $object = null) {
-	// 		return new DeletedPost();
-	// 	}
-	// }
 
 
 	class PostList extends \IteratorIterator implements \Countable {
@@ -340,8 +97,12 @@
 
 		public function current(): \models\Post {
 			$element = parent::current();
-			$mapper = \models\Posts::getMapperForItem($element);
-			return $mapper::createObjectFromElement($element);
+
+			$type = \models\AbstractModel::getType($element);
+			$mapper = \controllers\ServiceLocator::resolve('posts')::getMapper($type);
+
+			$state = $mapper::createStateFromElement($element);
+			return \models\AbstractModel::build($type, $state);
 		}
 	}
 ?>

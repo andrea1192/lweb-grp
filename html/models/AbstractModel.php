@@ -2,6 +2,12 @@
 
 	abstract class AbstractModel {
 
+		public function getState() {
+			return array_filter(
+					get_object_vars($this),
+					fn($property) => isset($property));
+		}
+
 		public static function getType($subject) {
 
 			if (is_object($subject)) {

@@ -48,7 +48,7 @@
 	<xsd:complexType name="extraPost">
 		<xsd:complexContent>
 			<xsd:extension base="post">
-				<xsd:attribute name="rep" type="xsd:integer" />
+				<xsd:attribute name="reputation" type="xsd:integer" />
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>

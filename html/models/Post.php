@@ -72,6 +72,17 @@
 
 	class Review extends RatedPost {
 		public const ID_PREFIX = 'r';
+
+		public function __construct($state = null) {
+			if (!$state)
+				return;
+
+			parent::__construct($state);
+
+			$this->reactions = [
+				'like' => new \models\BinaryReactionType($state['id'], 'like', 'like', 'dislike')
+			];
+		}
 	}
 
 	class Question extends Post {
@@ -90,6 +101,15 @@
 
 			$this->featured = $state['featured'];
 			$this->featuredAnswer = $state['featuredAnswer'];
+
+			$this->answers =
+					\controllers\ServiceLocator::resolve('answers')
+					->getAnswersByPost($state['id']);
+
+			$this->reactions = [
+				'usefulness' => new \models\NumericReactionType($state['id'], 'usefulness'),
+				'agreement' => new \models\NumericReactionType($state['id'], 'agreement')
+			];
 		}
 
 		public function setFeatured($state) {
@@ -103,6 +123,17 @@
 
 	class Spoiler extends RatedPost {
 		public const ID_PREFIX = 's';
+
+		public function __construct($state = null) {
+			if (!$state)
+				return;
+
+			parent::__construct($state);
+
+			$this->reactions = [
+				'spoilage' => new \models\NumericReactionType($state['id'], 'spoilage')
+			];
+		}
 	}
 
 	class Extra extends Post {

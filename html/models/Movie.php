@@ -24,12 +24,6 @@
 			$this->title = $state['title'];
 			$this->year = $state['year'];
 		}
-
-		public function getState() {
-			return array_filter(
-					get_object_vars($this),
-					fn($property) => isset($property));
-		}
 	}
 
 	class Movie extends AbstractMovie {
@@ -44,6 +38,10 @@
 			$this->summary = $state['summary'];
 			$this->director = $state['director'];
 			$this->writer = $state['writer'];
+
+			$this->posts =
+					\controllers\ServiceLocator::resolve('posts')
+					->getPostsByMovie($state['id']);
 		}
 	}
 
@@ -69,6 +67,10 @@
 			$this->summary = $state['summary'] ?? '';
 			$this->director = $state['director'] ?? '';
 			$this->writer = $state['writer'] ?? '';
+
+			$this->posts =
+					\controllers\ServiceLocator::resolve('comments')
+					->getCommentsByRequest($state['id']);
 		}
 
 		public function setStatus($status) {

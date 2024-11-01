@@ -1,5 +1,7 @@
 <?php namespace models;
 
+	require_once('models/AbstractMapper.php');
+
 	abstract class XMLDocument {
 		protected const SCHEMAS_ROOT = 'schemas/';
 		protected const DOCUMENT_ROOT = 'static/';
@@ -50,33 +52,33 @@
 
 			switch ($type) {
 				case 'movie':
-					return $ns.'Movies';
+					return $ns.'MovieMapper';
 				case 'request':
-					return $ns.'Requests';
+					return $ns.'RequestMapper';
 
 				case 'review':
-					return $ns.'Reviews';
+					return $ns.'ReviewMapper';
 				case 'question':
-					return $ns.'Questions';
+					return $ns.'QuestionMapper';
 				case 'spoiler':
-					return $ns.'Spoilers';
+					return $ns.'SpoilerMapper';
 				case 'extra':
-					return $ns.'Extras';
+					return $ns.'ExtraMapper';
 				case 'comment':
-					return $ns.'Comments';
+					return $ns.'CommentMapper';
 
 				case 'like':
-					return $ns.'Likes';
+					return $ns.'LikeMapper';
 				case 'usefulness':
-					return $ns.'Usefulnesses';
+					return $ns.'UsefulnessMapper';
 				case 'agreement':
-					return $ns.'Agreements';
+					return $ns.'AgreementMapper';
 				case 'spoilage':
-					return $ns.'Spoilages';
+					return $ns.'SpoilageMapper';
 				case 'answer':
-					return $ns.'Answers';
+					return $ns.'AnswerMapper';
 				case 'report':
-					return $ns.'Reports';
+					return $ns.'ReportMapper';
 			}
 		}
 
@@ -98,6 +100,10 @@
 			$this->document->save(static::getDocumentPath());
 		}
 
+		public function getDocument() {
+			return $this->document;
+		}
+
 		public function create($type, $state) {
 			$repo = static::getRepo($type);
 			$mapper = static::getMapper($type);
@@ -107,12 +113,10 @@
 			$state['author'] = $session->getUsername();
 			$state['date'] = date('c');
 
-			$object = \models\AbstractModel::build($type, $state);
-
-			$element = $mapper::createElementFromObject($object, $repo->document);
+			$element = $mapper::createElementFromState($state);
 			$repo->appendElement($element);
 
-			return $object;
+			return \models\AbstractModel::build($type, $state);
 		}
 
 		public function read($id) {
@@ -122,8 +126,10 @@
 
 			$element = $repo->getElement($id);
 
-			if ($element)
-				return $mapper::createObjectFromElement($element);
+			if ($element) {
+				$state = $mapper::createStateFromElement($element);
+				return \models\AbstractModel::build($type, $state);
+			}
 		}
 
 		public function readReaction($post, $author, $type) {
@@ -132,8 +138,10 @@
 
 			$element = $repo->getReaction($post, $author, $type);
 
-			if ($element)
-				return $mapper::createObjectFromElement($element);
+			if ($element) {
+				$state = $mapper::createStateFromElement($element);
+				return \models\AbstractModel::build($type, $state);
+			}
 		}
 
 		public function update($object) {
@@ -141,7 +149,8 @@
 			$repo = static::getRepo($type);
 			$mapper = static::getMapper($type);
 
-			$element = $mapper::createElementFromObject($object, $repo->document);
+			$state = $object->getState();
+			$element = $mapper::createElementFromState($state);
 			$repo->replaceElement($element);
 
 			return $object;

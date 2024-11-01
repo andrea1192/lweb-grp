@@ -100,6 +100,11 @@
 			$this->status = $state['status'];
 			$this->date = $state['date'];
 			$this->text = $state['text'];
+
+			$this->reactions = [
+					'usefulness' => new \models\NumericReactionType($state['id'], 'usefulness'),
+					'agreement' => new \models\NumericReactionType($state['id'], 'agreement')
+				];
 		}
 	}
 

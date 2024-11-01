@@ -96,7 +96,12 @@
 					$request = new \models\Request($state);
 
 					$movie = $movies->create('movie', $state);
-					$request = $movies->update($request);
+
+					if (empty($state['id'])) {
+							$request = $movies->create('request', $state);
+						} else {
+							$request = $movies->update($request);
+						}
 
 					// Aggiorna la reputazione del proponente della scheda
 					$author = $users->select($request->author);

@@ -31,7 +31,7 @@
 		<text>He goes Iron Man near the end</text>
 	</spoiler>
 
-	<extra id="e1" status="active" movie="m1" author="foo" date="2020-01-01T00:00:00" rep="20">
+	<extra id="e1" status="active" movie="m1" author="foo" date="2020-01-01T00:00:00" reputation="20">
 		<title>Deleted scenes</title>
 		<text>http://example.com/...</text>
 	</extra>

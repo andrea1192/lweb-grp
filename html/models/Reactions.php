@@ -30,16 +30,6 @@
 			}
 		}
 
-		public static function createObjectFromElement($element, $object = null) {
-			if (!$object)
-				return;
-
-			$object->post = $element->getAttribute('post');
-			$object->author = $element->getAttribute('author');
-
-			return $object;
-		}
-
 		public function getReactionsByPost($post_id, $type = '*') {
 			$query = "/reactions/{$type}[@post='{$post_id}']";
 			$matches = $this->xpath->query($query);
@@ -64,22 +54,20 @@
 		public function getReactionAverageByPost($post_id, $type) {
 			$query = "/reactions/{$type}[@post='{$post_id}']";
 			$matches = $this->xpath->query($query);
+			$mapper = static::getMapper($type);
 
 			$sum = 0;
 
 			foreach ($matches as $match) {
-				$mapper = Reactions::getMapperForItem($match);
-				$reaction = $mapper::createObjectFromElement($match);
-				$sum += $reaction->rating;
+				$state = $mapper::createStateFromElement($match);
+				$sum += $state['rating'];
 			}
 
 			return (count($matches)) ? ($sum / count($matches)) : 0;
 		}
 
 		public function getReaction($post_id, $author, $type) {
-			$root = static::DOCUMENT_NAME;
-
-			$query = "/{$root}/{$type}[@post='{$post_id}' and @author='{$author}']";
+			$query = "/*/{$type}[@post='{$post_id}' and @author='{$author}']";
 			$match = $this->xpath->query($query)->item(0);
 
 			return $match;
@@ -96,133 +84,9 @@
 		}
 	}
 
-	class BinaryRatings extends Reactions {
-
-		public static function createObjectFromElement($element, $object = null) {
-			if (!$object)
-				$object = \models\AbstractModel::build($element->nodeName, null);
-
-			$object = parent::createObjectFromElement($element, $object);
-			$object->type = $element->getAttribute('type');
-
-			return $object;
-		}
-
-		public static function createElementFromObject($object, $document, $element = null) {
-			if (!$element)
-				$element = $document->createElement(static::ELEMENT_NAME);
-
-			$attributes = [
-				'post' => '',
-				'author' => '',
-				'type' => ''
-			];
-
-			foreach ($attributes as $key => $value) {
-				$attributes[$key] = $document->createAttribute($key);
-				$attributes[$key]->value = $object->$key;
-				$element->appendChild($attributes[$key]);
-			}
-
-			return $element;
-		}
-	}
-
-	class NumericRatings extends Reactions {
-
-		public static function createObjectFromElement($element, $object = null) {
-			if (!$object)
-				$object = \models\AbstractModel::build($element->nodeName, null);
-
-			$object = parent::createObjectFromElement($element, $object);
-			$object->rating = $element->getAttribute('rating');
-
-			return $object;
-		}
-
-		public static function createElementFromObject($object, $document, $element = null) {
-			if (!$element)
-				$element = $document->createElement(static::ELEMENT_NAME);
-
-			$attributes = [
-				'post' => '',
-				'author' => '',
-				'rating' => ''
-			];
-
-			foreach ($attributes as $key => $value) {
-				$attributes[$key] = $document->createAttribute($key);
-				$attributes[$key]->value = $object->$key;
-				$element->appendChild($attributes[$key]);
-			}
-
-			return $element;
-		}
-	}
-
-	class Likes extends BinaryRatings {
-		protected const ELEMENT_NAME = 'like';
-	}
-
-	class Usefulnesses extends NumericRatings {
-		protected const ELEMENT_NAME = 'usefulness';
-	}
-
-	class Agreements extends NumericRatings {
-		protected const ELEMENT_NAME = 'agreement';
-	}
-
-	class Spoilages extends NumericRatings {
-		protected const ELEMENT_NAME = 'spoilage';
-	}
-
 	class Answers extends Reactions {
 		protected const DOCUMENT_NAME = 'answers';
 		protected const ELEMENT_NAME = 'answer';
-
-		public static function createObjectFromElement($element, $object = null) {
-			if (!$object)
-				$object = new Answer();
-
-			$object = parent::createObjectFromElement($element, $object);
-
-			$object->id = $element->getAttribute('id');
-			$object->status = $element->getAttribute('status');
-			$object->date = $element->getAttribute('date');
-			$object->text = $element->getElementsByTagName('text')->item(0)->textContent;
-
-			$object->reactions = [
-					'usefulness' => new \models\NumericReactionType($object->id, 'usefulness'),
-					'agreement' => new \models\NumericReactionType($object->id, 'agreement')
-				];
-
-			return $object;
-		}
-
-		public static function createElementFromObject($object, $document, $element = null) {
-			if (!$element)
-				$element = $document->createElement('answer');
-
-			$attributes = [
-				'id' => '',
-				'status' => '',
-				'post' => '',
-				'author' => '',
-				'date' => ''
-			];
-
-			foreach ($attributes as $key => $value) {
-				$attributes[$key] = $document->createAttribute($key);
-				$attributes[$key]->value = $object->$key;
-				$element->appendChild($attributes[$key]);
-			}
-
-			$text = $document->createElement('text');
-			$text->textContent = $object->text;
-			$element->appendChild($text);
-
-			return $element;
-		}
 
 		public function getFeaturedAnswer($post_id) {
 			$answer_id =
@@ -247,62 +111,13 @@
 		}
 
 		public function getAnswerById($id) {
-			$answer = $this->document->getElementById($id);
-
-			$mapper = Answers::getMapperForItem($answer);
-			return $mapper::createObjectFromElement($answer);
+			return $this->read($id);
 		}
 	}
 
 	class Reports extends Reactions {
 		protected const DOCUMENT_NAME = 'reports';
 		protected const ELEMENT_NAME = 'report';
-
-		public static function createObjectFromElement($element, $object = null) {
-			if (!$object)
-				$object = new Report();
-
-			$object = parent::createObjectFromElement($element, $object);
-			$unavail = new class {public $textContent = '';};
-
-			$object->date = $element->getAttribute('date');
-			$object->status = $element->getAttribute('status');
-			$object->message =
-				($element->getElementsByTagName('message')->item(0) ?? $unavail)
-				->textContent;
-			$object->response =
-				($element->getElementsByTagName('response')->item(0) ?? $unavail)
-				->textContent;
-
-			return $object;
-		}
-
-		public static function createElementFromObject($object, $document, $element = null) {
-			if (!$element)
-				$element = $document->createElement('report');
-
-			$attributes = [
-				'post' => '',
-				'author' => '',
-				'date' => '',
-				'status' => ''
-			];
-
-			foreach ($attributes as $key => $value) {
-				$attributes[$key] = $document->createAttribute($key);
-				$attributes[$key]->value = $object->$key;
-				$element->appendChild($attributes[$key]);
-			}
-
-			$message = $document->createElement('message');
-			$response = $document->createElement('response');
-			$message->textContent = $object->message;
-			$response->textContent = $object->response;
-			$element->appendChild($message);
-			$element->appendChild($response);
-
-			return $element;
-		}
 
 		public function getReports() {
 			$query = "/reports/*";
@@ -334,8 +149,12 @@
 
 		public function current(): \models\Reaction {
 			$element = parent::current();
-			$mapper = \models\Reactions::getMapperForItem($element);
-			return $mapper::createObjectFromElement($element);
+
+			$type = \models\AbstractModel::getType($element);
+			$mapper = \controllers\ServiceLocator::resolve('reactions')::getMapper($type);
+
+			$state = $mapper::createStateFromElement($element);
+			return \models\AbstractModel::build($type, $state);
 		}
 	}
 ?>
