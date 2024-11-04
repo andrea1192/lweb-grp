@@ -2,6 +2,7 @@
 
 	class Reaction extends AbstractView {
 		protected $reaction;
+		protected $ref;
 
 		public static function generateReactionButtons($reactions) {
 			$buttons = '';
@@ -133,33 +134,37 @@
 			return $buttons;
 		}
 
-		public function __construct($session, $reaction) {
+		public function __construct($session, $reaction = null, $ref = null) {
 			parent::__construct($session);
 
 			$this->reaction = $reaction;
+			$this->ref = $ref ?? $reaction->post;
 		}
 
 		public function generateURL($action = 'display', $reaction_type = 'like') {
-			$URL = "post.php?id={$this->reaction->post}";
+			if ($this->reaction)
+				$post_id = $this->reaction->post;
+			else
+				$post_id = $this->ref->id;
 
-			$reaction_id = (property_exists($this->reaction, 'id')) ? $this->reaction->id : '';
+			$URL = "post.php?id={$post_id}";
 
 			switch ($action) {
 				default:
-				case 'save':
-					$URL = "post.php?id={$reaction_id}";
-					$URL .= "&action=save";
+				case 'create':
+					$URL = "post.php?&action=create";
 					break;
 				case 'add_reaction':
 					$URL .= "&action=add_reaction";
 					$URL .= "&type={$reaction_type}";
 					break;
 				case 'send_report':
-					$URL .= "&action=send_report";
+				case 'close_report':
+					$URL .= "&action={$action}";
 					break;
 				case 'select_answer':
 					$URL .= "&action=select_answer";
-					$URL .= "&answer={$reaction_id}";
+					$URL .= "&answer={$this->reaction->id}";
 					break;
 			}
 
@@ -211,9 +216,9 @@
 		}
 
 		public function generateInsertForm() {
-			$action = $this->generateURL('save');
+			$action = $this->generateURL('create');
 			$text = UIComponents::getTextArea('Text', 'text');
-			$save_buttons = UIComponents::getFilledButton('Save changes', 'save');
+			$save_buttons = UIComponents::getFilledButton('Submit', 'send');
 
 			$components = 'views\UIComponents';
 
@@ -222,11 +227,7 @@
 				<form class="answer" method="post" action="{$action}">
 					<div class="flex column">
 						{$components::getHiddenInput('type', 'answer')}
-						{$components::getHiddenInput('id', $this->reaction->id)}
-						{$components::getHiddenInput('status', $this->reaction->status)}
-						{$components::getHiddenInput('post', $this->reaction->post)}
-						{$components::getHiddenInput('author', $this->reaction->author)}
-						{$components::getHiddenInput('date', $this->reaction->date)}
+						{$components::getHiddenInput('post', $this->ref->id)}
 						{$text}
 						<div class="flex footer">
 							<div class="flex left">
@@ -290,11 +291,6 @@
 		}
 
 		public function generateInsertForm() {
-
-			return $this->generateUserForm();
-		}
-
-		public function generateUserForm() {
 			$send = $this->generateURL('send_report');
 			$message = UIComponents::getTextArea('Message', 'message');
 			$save_buttons = UIComponents::getFilledButton('Send report', 'send');
@@ -306,11 +302,8 @@
 				<form class="answer" method="post" action="{$send}">
 					<div class="flex column">
 						{$components::getHiddenInput('type', 'report')}
-						{$components::getHiddenInput('post', $this->reaction->post)}
-						{$components::getHiddenInput('author', $this->reaction->author)}
-						{$components::getHiddenInput('date', $this->reaction->date)}
-						{$components::getHiddenInput('status', $this->reaction->status)}
-						{$components::getHiddenInput('response', $this->reaction->response)}
+						{$components::getHiddenInput('post', $this->ref->id)}
+						{$components::getHiddenInput('response', '')}
 						{$message}
 						<div class="flex footer">
 							<div class="flex left">
@@ -326,7 +319,7 @@
 		}
 
 		public function generateAdminForm() {
-			$send = $this->generateURL('send_report');
+			$send = $this->generateURL('close_report');
 			$rep_accept = '+'.$this->reaction::REPUTATION_DELTAS['accepted'];
 			$rep_reject = ''.$this->reaction::REPUTATION_DELTAS['rejected'];
 			$actions = [

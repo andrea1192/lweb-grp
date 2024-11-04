@@ -99,7 +99,7 @@
 				EOF;
 
 				foreach ($this->featuredPosts as $featuredPost) {
-					$view = \views\Post::factoryMethod($this->session, $featuredPost);
+					$view = \views\Post::factoryMethod($this->session, $featuredPost, $this->movie);
 					$view->displayFeatured();
 				}
 
@@ -107,7 +107,7 @@
 			}
 
 			foreach ($this->posts as $post) {
-				$view = \views\Post::factoryMethod($this->session, $post);
+				$view = \views\Post::factoryMethod($this->session, $post, $this->movie);
 				$view->display();
 			}
 		}
@@ -117,7 +117,7 @@
 			if (property_exists($this->movie, 'status') && ($this->movie->status != 'submitted'))
 				return '';
 
-			$URL = "post.php?action=create&type={$this->tab}&movie={$this->movie->id}";
+			$URL = "post.php?action=compose&type={$this->tab}&movie={$this->movie->id}";
 			$URL = htmlspecialchars($URL, ENT_QUOTES | ENT_SUBSTITUTE | ENT_XHTML);
 
 			if ($this->session->isAllowed())
@@ -131,11 +131,6 @@
 
 	abstract class AbstractEditView extends AbstractView {
 		public $movie;
-
-		public function editOverview() {
-			$view = \views\Movie::factoryMethod($this->session, $this->movie);
-			$view->edit();
-		}
 
 		public function render() {
 			require_once('templates/MovieEditTemplate.php');
@@ -157,18 +152,28 @@
 			}
 		}
 
+		public function printForm() {
+			$view = \views\Movie::factoryMethod($this->session, $this->movie);
+			$view->edit();
+		}
+
 		public function printTitle() {
 			print("Editing {$this->movie->title} ({$this->movie->year}) - grp");
 
 		}
 	}
 
-	class MovieCreateView extends AbstractEditView {
+	class MovieComposeView extends AbstractEditView {
 
 		public function __construct($session) {
 			parent::__construct($session);
 
-			$this->movie = new \models\Request();
+			$this->movie = null;
+		}
+
+		public function printForm() {
+			$view = new \views\Request($this->session, $this->movie);
+			$view->compose();
 		}
 
 		public function printTitle() {

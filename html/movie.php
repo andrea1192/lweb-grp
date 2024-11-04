@@ -6,10 +6,11 @@
 	class MovieController extends AbstractController {
 
 		public function route() {
+			$action = static::sanitize($_REQUEST['action'] ?? '');
 			$movie_id = static::sanitize($_GET['id'] ?? '');
 			$movie_type = static::sanitize($_REQUEST['type'] ?? '');
 
-			switch ($_REQUEST['action'] ?? '') {
+			switch ($action) {
 
 				default:
 				case 'display':
@@ -22,13 +23,21 @@
 					$view->render();
 					break;
 
-				case 'create':
-					$view = new \views\MovieCreateView($this->session);
+				case 'compose':
+					$view = new \views\MovieComposeView($this->session);
 					$view->render();
 					break;
 
-				case 'save':
-					// TODO: Aggiungi controlli privilegi con ev. redirect
+				case 'create':
+				case 'update':
+					// Livello di privilegio richiesto per inviare richieste: 1 (utente)
+					if ($action == 'create' && !$this->session->isAllowed())
+						header('Location: index.php');
+
+					// Livello di privilegio richiesto per modificare richieste: 2 (mod)
+					if ($action == 'update' && !$this->session->isMod())
+						header('Location: index.php');
+
 					if (isset($_POST)) {
 						$repo = ServiceLocator::resolve('movies');
 
@@ -40,11 +49,11 @@
 						$state['director'] = static::sanitize($_POST['director']);
 						$state['writer'] = static::sanitize($_POST['writer']);
 
-						$state['status'] = static::sanitize($_POST['status'] ?? '');
+						$state['status'] = static::sanitize($_POST['status'] ?? 'submitted');
 						$state['author'] = static::sanitize($_POST['author'] ?? '');
 
-						// TODO: Separa azioni per creazione ed aggiornamento scheda
-						if (empty($state['id'])) {
+						// Porta a termine l'operazione corretta
+						if ($action == 'create') {
 							$object = $repo->create($movie_type, $state);
 						} else {
 							$object = \models\AbstractModel::build($movie_type, $state);
@@ -96,12 +105,7 @@
 					$request = new \models\Request($state);
 
 					$movie = $movies->create('movie', $state);
-
-					if (empty($state['id'])) {
-							$request = $movies->create('request', $state);
-						} else {
-							$request = $movies->update($request);
-						}
+					$request = $movies->update($request);
 
 					// Aggiorna la reputazione del proponente della scheda
 					$author = $users->select($request->author);

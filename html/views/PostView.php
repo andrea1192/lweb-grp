@@ -14,16 +14,6 @@
 			$view = \views\Movie::factoryMethod($this->session, $this->movie);
 			$view->displayReference();
 		}
-
-		public function printPost() {
-			$view = \views\Post::factoryMethod($this->session, $this->post);
-			$view->display();
-		}
-
-		public function editPost() {
-			$view = \views\Post::factoryMethod($this->session, $this->post);
-			$view->edit();
-		}
 	}
 
 	class PostView extends AbstractPostView {
@@ -43,6 +33,11 @@
 			}
 		}
 
+		public function printPost() {
+			$view = \views\Post::factoryMethod($this->session, $this->post);
+			$view->display();
+		}
+
 		public function printTitle() {
 			print("Post: {$this->post->title} - grp");
 
@@ -55,6 +50,11 @@
 
 	class PostEditView extends PostView {
 
+		public function printForm() {
+			$view = \views\Post::factoryMethod($this->session, $this->post);
+			$view->edit();
+		}
+
 		public function printTitle() {
 			print("Editing post: {$this->post->title} - grp");
 
@@ -65,12 +65,13 @@
 		}
 	}
 
-	class PostCreateView extends AbstractPostView {
+	class PostComposeView extends AbstractPostView {
+		public $post_type;
 
 		public function __construct($session, $post_type, $movie_id) {
 			parent::__construct($session);
 
-			$this->post = \models\AbstractModel::build($post_type, null);
+			$this->post_type = $post_type;
 
 			switch (\models\Movie::getType($movie_id)) {
 				case 'movie':
@@ -80,8 +81,11 @@
 					$this->movie = $this->getMapper('requests')->getRequestById($movie_id);
 					break;
 			}
+		}
 
-			$this->post->movie = $this->movie->id;
+		public function printForm() {
+			$view = \views\Post::build($this->session, $this->post_type, null, $this->movie->id);
+			$view->compose();
 		}
 
 		public function printTitle() {
@@ -95,26 +99,17 @@
 	}
 
 	class ReactionCreateView extends PostView {
-		public $reaction;
+		public $reaction_type;
 
 		public function __construct($session, $reaction_type, $post_id) {
 			parent::__construct($session, $post_id);
 
-			switch ($reaction_type) {
-				case 'answer':
-					$this->reaction = new \models\Answer();
-					break;
-				case 'report':
-					$this->reaction = new \models\Report();
-					break;
-			}
-
-			$this->reaction->post = $this->post->id;
+			$this->reaction_type = $reaction_type;
 		}
 
-		public function editPost() {
+		public function printForm() {
 			$postView = \views\AbstractView::factoryMethod($this->session, $this->post);
-			$reactionView = \views\AbstractView::factoryMethod($this->session, $this->reaction);
+			$reactionView = \views\Reaction::build($this->session, $this->reaction_type, null, $this->post);
 
 			$reaction = $reactionView->generateInsertForm();
 			$postView->displayReference(active: false, reactions: $reaction);

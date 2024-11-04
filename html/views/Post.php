@@ -5,26 +5,34 @@
 	class Post extends AbstractView {
 		protected const POST_TYPE = '';
 		protected $post;
+		protected $ref;
 
 		protected static function getPostType() {
 			return static::POST_TYPE;
 		}
 
-		public function __construct($session, $post) {
+		public function __construct($session, $post = null, $ref = null) {
 			parent::__construct($session);
 
 			$this->post = $post;
+			$this->ref = $ref
+					?? $post->movie
+					?? $post->request;
 		}
 
 		public function generateURL($action = 'display') {
-			$URL = "post.php?id={$this->post->id}&type={$this->getPostType()}";
+			$URL = "post.php?type={$this->getPostType()}";
+
+			if ($this->post)
+				$URL .= "&id={$this->post->id}";
 
 			switch ($action) {
 				default:
 				case 'display':
 					break;
 				case 'edit':
-				case 'save':
+				case 'create':
+				case 'update':
 				case 'answer':
 				case 'report':
 				case 'delete':
@@ -88,7 +96,7 @@
 		}
 
 		public function edit() {
-			$action = $this->generateURL('save');
+			$action = $this->generateURL('update');
 			$reference_field = $this->generateReferenceField();
 			$special_fields = $this->generateSpecialFields();
 			$save_buttons = $this->generateSaveButtons();
@@ -107,6 +115,35 @@
 					{$components::getTextInput('Title', 'title', $this->post->title)}
 					{$special_fields}
 					{$components::getTextArea('Text', 'text', $this->post->text)}
+					<div class="flex footer">
+						<div class="flex left">
+							{$save_buttons}
+						</div>
+
+						<div class="flex right">
+						</div>
+					</div>
+				</div>
+			</form>
+			EOF;
+		}
+
+		public function compose() {
+			$action = $this->generateURL('create');
+			$reference_field = $this->generateReferenceField();
+			$special_fields = $this->generateSpecialFields();
+			$save_buttons = $this->generateSaveButtons();
+
+			$components = 'views\UIComponents';
+
+			echo <<<EOF
+			<form class="post" method="post" action="{$action}">
+				<div class="flex column">
+					{$components::getHiddenInput('type', $this->getPostType())}
+					{$reference_field}
+					{$components::getTextInput('Title', 'title')}
+					{$special_fields}
+					{$components::getTextArea('Text', 'text')}
 					<div class="flex footer">
 						<div class="flex left">
 							{$save_buttons}
@@ -151,7 +188,7 @@
 		}
 
 		protected function generateReferenceField() {
-			return UIComponents::getHiddenInput('movie', $this->post->movie);
+			return UIComponents::getHiddenInput('movie', $this->ref);
 		}
 
 		protected function generateSpecialFields() {
@@ -159,7 +196,10 @@
 		}
 
 		protected function generateSaveButtons() {
-			return UIComponents::getFilledButton('Save changes', 'save');
+			if (!$this->post)
+				return UIComponents::getFilledButton('Submit', 'send');
+			else
+				return UIComponents::getFilledButton('Save changes', 'save');
 		}
 
 		protected function generateActionButtons() {
@@ -180,7 +220,7 @@
 		}
 
 		protected function generateSpecialFields() {
-			return UIComponents::getTextInput('Rating', 'rating', $this->post->rating);
+			return UIComponents::getTextInput('Rating', 'rating', $this->post->rating ?? '');
 		}
 	}
 
@@ -206,7 +246,7 @@
 		}
 
 		protected function generateReferenceField() {
-			return UIComponents::getHiddenInput('request', $this->post->request);
+			return UIComponents::getHiddenInput('request', $this->ref);
 		}
 
 		protected function generateSpecialFields() {
@@ -282,6 +322,9 @@
 		protected function generateSpecialFields() {
 			$fields = '';
 
+			if (!$this->post)
+				return '';
+
 			$fields .= UIComponents::getHiddenInput('featured', $this->post->featured ? 'true' : 'false');
 			$fields .= UIComponents::getHiddenInput('featuredAnswer', $this->post->featuredAnswer);
 
@@ -313,32 +356,7 @@
 		}
 
 		protected function generateSpecialFields() {
-			return UIComponents::getTextInput('Reputation', 'reputation', $this->post->reputation);
+			return UIComponents::getTextInput('Reputation', 'reputation', $this->post->reputation ?? '');
 		}
 	}
-
-	// class DeletedPost extends Post {
-
-	// 	public function displayReference($active = false, $reactions = '') {
-
-	// 		echo <<<EOF
-	// 		<div class="post">
-	// 			<div class="header">
-	// 				<div class="details">
-	// 					<h1>[Deleted Post]</h1>
-	// 				</div>
-	// 			</div>
-	// 			<div class="content">
-	// 			</div>
-	// 			<div class="flex footer">
-	// 				<div class="flex left reactions">
-	// 				</div>
-	// 				<div class="flex right">
-	// 				</div>
-	// 			</div>
-	// 			{$reactions}
-	// 		</div>
-	// 		EOF;
-	// 	}
-	// }
 ?>

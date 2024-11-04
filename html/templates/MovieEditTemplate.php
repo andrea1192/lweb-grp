@@ -16,7 +16,7 @@
 	<body>
 		<?php $this->printHeader() ?>
 
-		<?php $this->editOverview() ?>
+		<?php $this->printForm() ?>
 
 		<?php $this->printFooter() ?>
 	</body>

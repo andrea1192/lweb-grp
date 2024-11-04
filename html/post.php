@@ -6,10 +6,11 @@
 	class PostController extends AbstractController {
 
 		public function route() {
+			$action = static::sanitize($_REQUEST['action'] ?? '');
 			$post_id = static::sanitize($_GET['id'] ?? '');
 			$post_type = static::sanitize($_GET['type'] ?? $_POST['type'] ?? '');
 
-			switch ($_GET['action'] ?? '') {
+			switch ($action) {
 
 				default:
 				case 'display':
@@ -22,24 +23,28 @@
 					$view->render();
 					break;
 
-				case 'create':
+				case 'compose':
 					if (isset($_GET['movie'])) {
 						$movie_ref = static::sanitize($_GET['movie']);
 
-						$view = new \views\PostCreateView($this->session, $post_type, $movie_ref);
+						$view = new \views\PostComposeView($this->session, $post_type, $movie_ref);
 						$view->render();
 					}
 					break;
 
-				case 'save':
-					// TODO: Aggiungi controlli privilegi con ev. redirect
+				case 'create':
+				case 'update':
+					// Livello di privilegio richiesto: 1 (utente registrato)
+					if (!$this->session->isAllowed())
+						header('Location: index.php');
+
 					if (isset($_POST)) {
 						$repo = ServiceLocator::resolve('posts');
 
-						$state['id'] = static::sanitize($_POST['id']);
-						$state['status'] = static::sanitize($_POST['status']);
-						$state['author'] = static::sanitize($_POST['author']);
-						$state['date'] = static::sanitize($_POST['date']);
+						$state['id'] = $post_id;
+						$state['status'] = static::sanitize($_POST['status'] ?? 'active');
+						$state['author'] = static::sanitize($_POST['author'] ?? '');
+						$state['date'] = static::sanitize($_POST['date'] ?? '');
 						$state['text'] = static::sanitize($_POST['text']);
 
 						$state['title'] = static::sanitize($_POST['title'] ?? '');
@@ -69,21 +74,23 @@
 								break;
 						}
 
-						// TODO: Separa azioni per creazione ed aggiornamento post
-						if (empty($state['id'])) {
+						// Porta a termine l'operazione corretta
+						if ($action == 'create') {
 							$object = $repo->create($post_type, $state);
 						} else {
 							$object = \models\AbstractModel::build($post_type, $state);
 							$repo->update($object);
 						}
-
 					}
 
 					header("Location: $redir");
 					break;
 
 				case 'delete':
-					// TODO: Aggiungi controlli privilegi con ev. redirect
+					// Livello di privilegio richiesto: 1 (utente registrato)
+					if (!$this->session->isAllowed())
+						header('Location: index.php');
+
 					$repo = ServiceLocator::resolve('posts');
 					$post = $repo->read($post_id);
 
@@ -174,26 +181,33 @@
 					break;
 
 				case 'send_report':
-					// Livello di privilegio richiesto: 1 (utente registrato)
-					if (!$this->session->isAllowed())
+				case 'close_report':
+					// Livello di privilegio richiesto per inviare report: 1 (utente)
+					if ($action == 'send_report' && !$this->session->isAllowed())
+						header('Location: index.php');
+
+					// Livello di privilegio richiesto per gestire report: 2 (mod)
+					if ($action == 'close_report' && !$this->session->isMod())
 						header('Location: index.php');
 
 					$repo = ServiceLocator::resolve('reports');
 					$users = ServiceLocator::resolve('users');
 
 					$state['post'] = $post_id;
-					$state['author'] = static::sanitize($_POST['author']);
-					$state['date'] = static::sanitize($_POST['date']);
-					$state['status'] = static::sanitize($_POST['status']);
+					$state['author'] = static::sanitize($_POST['author'] ?? '');
+					$state['date'] = static::sanitize($_POST['date'] ?? '');
+					$state['status'] = static::sanitize($_POST['status'] ?? 'open');
 					$state['message'] = static::sanitize($_POST['message']);
 					$state['response'] = static::sanitize($_POST['response']);
 
-					// TODO: Separa azioni per creazione ed aggiornamento post
-					if ($state['status'] == 'open') {
+					// Porta a termine l'operazione corretta
+					if ($action == 'send_report') {
 						$report = $repo->create('report', $state);
+						$redir = "movie.php?id={$repo->read($report->post)->movie}";
 					} else {
 						$report = \models\AbstractModel::build($post_type, $state);
 						$repo->update($report);
+						$redir = $_SERVER['HTTP_REFERER'];
 					}
 
 					$author = $users->select($report->author);
@@ -205,7 +219,7 @@
 
 					$users->update($author->username, $author);
 
-					header("Location: movie.php?id={$repo->read($report->post)->movie}");
+					header("Location: $redir");
 					break;
 
 				case 'elevate':

@@ -10,14 +10,17 @@
 		}
 
 		public function generateURL($action = 'display') {
-			$URL = "movie.php?id={$this->movie->id}";
+			$URL = 'movie.php';
+
+			if ($this->movie)
+				$URL .= "?id={$this->movie->id}";
 
 			switch ($action) {
 				default:
 				case 'display':
 					break;
 				case 'edit':
-				case 'save':
+				case 'update':
 				case 'accept':
 				case 'reject':
 				case 'delete':
@@ -141,11 +144,50 @@
 			EOF;
 		}
 
+		public function compose() {
+			$action = $this->generateURL();
+			$backdrop = $this->generateBackdrop();
+			$poster = $this->generatePoster();
+			$files = $this->generateFiles();
+			$special_fields = $this->generateSpecialFields();
+			$save_buttons = $this->generateSaveButtons();
+
+			$components = 'views\UIComponents';
+
+			echo <<<EOF
+			<div id="backdrop" {$backdrop}>
+				<div class="blur">
+					<form id="overview" class="flex wrapper" method="post" action="{$action}" enctype="multipart/form-data">
+						<div class="flex column">
+							{$poster}
+							{$files}
+						</div>
+						<div id="description" class="flex fields">
+							{$special_fields}
+							{$components::getFilledTextInput('Title', 'title')}
+							<div class="flex fields" style="width: 30%">
+								{$components::getFilledTextInput('Year', 'year')}
+								{$components::getFilledTextInput('Duration', 'duration')}
+							</div>
+							{$components::getFilledTextArea('Summary', 'summary')}
+							<div class="flex fields column" style="width: 40%">
+								{$components::getFilledTextInput('Director', 'director')}
+								{$components::getFilledTextInput('Writer', 'writer')}
+							</div>
+							{$save_buttons}
+						</div>
+					</form>
+				</div>
+			</div>
+			EOF;
+		}
+
 		protected function generateBackdrop() {
 			$dir = $this->getMapper('movies')::BACKDROPS_PATH;
 			$ext = $this->getMapper('movies')::MEDIA_EXT;
+			$id = $this->movie->id ?? '';
 
-			$backdrop = $dir.$this->movie->id.$ext;
+			$backdrop = $dir.$id.$ext;
 
 			return "style=\"background-image: url('{$backdrop}')\"";
 		}
@@ -153,8 +195,9 @@
 		protected function generatePoster() {
 			$dir = $this->getMapper('movies')::POSTERS_PATH;
 			$ext = $this->getMapper('movies')::MEDIA_EXT;
+			$id = $this->movie->id ?? '';
 
-			$poster = $dir.$this->movie->id.$ext;
+			$poster = $dir.$id.$ext;
 			$status = $this->generateStatus();
 
 			if (file_exists($poster)) {
@@ -232,7 +275,7 @@
 			$left = '';
 			$right = '';
 
-			$right .= UIComponents::getTonalButton('Save changes', 'save', action: 'save');
+			$right .= UIComponents::getTonalButton('Save changes', 'save', action: 'update');
 
 			return <<<EOF
 			<div class="flex bottom">
@@ -252,6 +295,9 @@
 
 		protected function generateStatus() {
 			$label = '';
+
+			if (!$this->movie)
+				return '';
 
 			switch ($this->movie->status) {
 				default:
@@ -273,15 +319,16 @@
 					break;
 			}
 
-			return UIComponents::getOverlay($label, $icon, 'status');
+			return UIComponents::getOverlay($label, $icon, cls: 'status');
 		}
 
 		protected function generateSpecialFields() {
-			$fields = '';
+			$fields = UIComponents::getHiddenInput('type', 'request');
 
-			$fields .= UIComponents::getHiddenInput('type', 'request');
-			$fields .= UIComponents::getHiddenInput('status', $this->movie->status);
-			$fields .= UIComponents::getHiddenInput('author', $this->movie->author);
+			if ($this->movie) {
+				$fields .= UIComponents::getHiddenInput('status', $this->movie->status ?? '');
+				$fields .= UIComponents::getHiddenInput('author', $this->movie->author ?? '');
+			}
 
 			return $fields;
 		}
@@ -332,36 +379,33 @@
 			$left = '';
 			$right = '';
 
-			if ($this->movie->status == 'submitted') {
+			if (!$this->movie) {
+				$right .= UIComponents::getTonalButton(
+						'Submit request',
+						'send',
+						action: 'create',
+						content: UIComponents::getTooltip('Submit this request to the staff for approval')
+				);
 
-				if ($this->session->isMod()) {
-					$left .= UIComponents::getTonalButton(
-							'Save and accept request',
-							'check',
-							action: 'accept',
-							content: UIComponents::getTooltip('Save changes and accept this request for inclusion in Movies')
-					);
-					$left .= UIComponents::getOutlinedButton(
-							'Reject request',
-							'close',
-							action: 'reject',
-							content: UIComponents::getTooltip('Reject this request')
-					);
-
-					$right .= UIComponents::getOutlinedButton(
-							'Save only',
-							'save',
-							action: 'save',
-							content: UIComponents::getTooltip('Save changes without accepting the request')
-					);
-				} else {
-					$right .= UIComponents::getTonalButton(
-							'Submit request',
-							'send',
-							action: 'save',
-							content: UIComponents::getTooltip('Submit this request to the staff for approval')
-					);
-				}
+			} elseif ($this->movie->status == 'submitted' && $this->session->isMod()) {
+				$left .= UIComponents::getTonalButton(
+						'Save and accept request',
+						'check',
+						action: 'accept',
+						content: UIComponents::getTooltip('Save changes and accept this request for inclusion in Movies')
+				);
+				$left .= UIComponents::getOutlinedButton(
+						'Reject request',
+						'close',
+						action: 'reject',
+						content: UIComponents::getTooltip('Reject this request')
+				);
+				$right .= UIComponents::getOutlinedButton(
+						'Save only',
+						'save',
+						action: 'update',
+						content: UIComponents::getTooltip('Save changes without accepting the request')
+				);
 			}
 
 			return <<<EOF

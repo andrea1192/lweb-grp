@@ -19,7 +19,7 @@
 		<?php $this->printMovieReference() ?>
 
 		<div id="content" class="elevated pane">
-			<?php $this->editPost() ?>
+			<?php $this->printForm() ?>
 		</div>
 
 		<?php $this->printFooter() ?>

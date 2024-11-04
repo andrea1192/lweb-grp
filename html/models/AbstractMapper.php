@@ -179,6 +179,7 @@
 			$element->appendChild(static::createAttribute('author', $state));
 			$element->appendChild(static::createAttribute('date', $state));
 
+			$element->appendChild(static::createElement('rating', $state));
 			$element->appendChild(static::createElement('title', $state));
 			$element->appendChild(static::createElement('text', $state));
 

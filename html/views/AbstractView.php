@@ -9,7 +9,41 @@
 			$this->session = $session;
 		}
 
-		public static function factoryMethod($session, $model) {
+		public static function build($session, $type, $model, $ref) {
+
+			switch ($type) {
+				case 'movie':
+					return new Movie($session, $model, $ref);
+				case 'request':
+					return new Request($session, $model, $ref);
+
+				case 'review':
+					return new Review($session, $model, $ref);
+				case 'question':
+					return new Question($session, $model, $ref);
+				case 'spoiler':
+					return new Spoiler($session, $model, $ref);
+				case 'extra':
+					return new Extra($session, $model, $ref);
+				case 'comment':
+					return new Comment($session, $model, $ref);
+
+				case 'like':
+					return new Like($session, $model, $ref);
+				case 'usefulness':
+					return new Usefulness($session, $model, $ref);
+				case 'agreement':
+					return new Agreement($session, $model, $ref);
+				case 'spoilage':
+					return new Spoilage($session, $model, $ref);
+				case 'answer':
+					return new Answer($session, $model, $ref);
+				case 'report':
+					return new Report($session, $model, $ref);
+			}
+		}
+
+		public static function factoryMethod($session, $model, $ref = null) {
 			$class = get_class($model);
 			$parents = class_parents($model);
 			array_unshift($parents, $class);
@@ -18,7 +52,11 @@
 				$view = preg_replace('/models/', 'views', $parent, limit: 1);
 
 				if (class_exists($view)) {
-					return new $view($session, $model);
+					if ($ref) {
+						return new $view($session, $model, $ref);
+					} else {
+						return new $view($session, $model);
+					}
 				}
 			}
 		}
