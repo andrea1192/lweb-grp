@@ -113,10 +113,11 @@
 			$state['author'] = $session->getUsername();
 			$state['date'] = date('c');
 
+			$object = \models\AbstractModel::build($type, $state);
 			$element = $mapper::createElementFromState($state);
 			$repo->appendElement($element);
 
-			return \models\AbstractModel::build($type, $state);
+			return $object;
 		}
 
 		public function read($id) {

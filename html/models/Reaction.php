@@ -6,9 +6,8 @@
 		public $post;
 		public $author;
 
-		public function __construct($state = null) {
-			if (!$state)
-				return;
+		protected function __construct($state) {
+			parent::__construct($state);
 
 			$this->post = $state['post'];
 			$this->author = $state['author'];
@@ -18,10 +17,7 @@
 	abstract class BinaryRating extends Reaction {
 		public $type;
 
-		public function __construct($state = null) {
-			if (!$state)
-				return;
-
+		protected function __construct($state) {
 			parent::__construct($state);
 			$this->type = $state['type'];
 		}
@@ -30,10 +26,7 @@
 	abstract class NumericRating extends Reaction {
 		public $rating;
 
-		public function __construct($state = null) {
-			if (!$state)
-				return;
-
+		protected function __construct($state) {
 			parent::__construct($state);
 			$this->rating = $state['rating'];
 		}
@@ -91,11 +84,9 @@
 
 		public $reactions;
 
-		public function __construct($state = null) {
-			if (!$state)
-				return;
-
+		protected function __construct($state) {
 			parent::__construct($state);
+
 			$this->id = $state['id'];
 			$this->status = $state['status'];
 			$this->date = $state['date'];
@@ -119,11 +110,9 @@
 		public $message = '';
 		public $response = '';
 
-		public function __construct($state = null) {
-			if (!$state)
-				return;
-
+		protected function __construct($state) {
 			parent::__construct($state);
+
 			$this->date = $state['date'];
 			$this->status = $state['status'];
 			$this->message = $state['message'];

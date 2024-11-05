@@ -73,5 +73,20 @@
 
 			return $notification;
 		}
+
+		public function holdsErrors() {
+			return isset($_SESSION['errors']);
+		}
+
+		public function pushErrors($errors) {
+			$_SESSION['errors'] = $errors;
+		}
+
+		public function popErrors() {
+			$errors = $_SESSION['errors'];
+			unset($_SESSION['errors']);
+
+			return $errors;
+		}
 	}
 ?>

@@ -75,14 +75,27 @@
 						}
 
 						// Porta a termine l'operazione corretta
-						if ($action == 'create') {
-							$object = $repo->create($post_type, $state);
-						} else {
-							$object = \models\AbstractModel::build($post_type, $state);
-							$repo->update($object);
+						try {
+							if ($action == 'create') {
+								$object = $repo->create($post_type, $state);
+							} else {
+								$object = \models\AbstractModel::build($post_type, $state);
+								$repo->update($object);
+							}
+						} catch (\Exception $e) {
+							static::abort(
+									'Couldn\'t complete operation. Invalid or missing data.',
+									$e->getErrors()
+							);
 						}
 					}
 
+					// Aggiorna e reindirizza l'utente
+					if ($action == 'create') {
+						$this->session->pushNotification('Post successfully created.');
+					} else {
+						$this->session->pushNotification('Post successfully updated.');
+					}
 					header("Location: $redir");
 					break;
 

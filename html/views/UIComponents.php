@@ -198,39 +198,75 @@
 			EOF;
 		}
 
-		public static function getPasswordInput($label, $name, $value = '', $cls = '') {
+		public static function getPasswordInput($label, $name, $value = '', $cls = '', $errors = []) {
+
+			if (!empty($errors) && array_key_exists($name, $errors)) {
+				$supp = "<span class=\"supp\">{$errors[$name]}</span>";
+				$icon = static::getIcon('error');
+				$cls .= 'invalid';
+			} else {
+				$supp = '';
+				$icon = '';
+			}
+
 			return <<<EOF
 			<label>
 				<span class="label">{$label}</span>
 				<input type="password" class="{$cls}" name="{$name}" value="{$value}" />
+				{$icon}
+				{$supp}
 			</label>
 			EOF;
 		}
 
-		public static function getTextInput($label, $name, $value = '', $cls = '') {
+		public static function getTextInput($label, $name, $value = '', $cls = '', $errors = []) {
+
+			if (!empty($errors) && array_key_exists($name, $errors)) {
+				$supp = "<span class=\"supp\">{$errors[$name]}</span>";
+				$icon = static::getIcon('error');
+				$cls .= 'invalid';
+			} else {
+				$supp = '';
+				$icon = '';
+			}
+
 			return <<<EOF
 			<label>
 				<span class="label">{$label}</span>
 				<input type="text" class="{$cls}" name="{$name}" value="{$value}" />
+				{$icon}
+				{$supp}
 			</label>
 			EOF;
 		}
 
-		public static function getTextArea($label, $name, $value = '', $cls = '') {
+		public static function getTextArea($label, $name, $value = '', $cls = '', $errors = []) {
+
+			if (!empty($errors) && array_key_exists($name, $errors)) {
+				$supp = "<span class=\"supp\">{$errors[$name]}</span>";
+				$icon = static::getIcon('error');
+				$cls .= 'invalid';
+			} else {
+				$supp = '';
+				$icon = '';
+			}
+
 			return <<<EOF
 			<label>
 				<span class="label">{$label}</span>
 				<textarea class="{$cls}" name="{$name}" rows="5" cols="80">{$value}</textarea>
+				{$icon}
+				{$supp}
 			</label>
 			EOF;
 		}
 
-		public static function getFilledTextInput($label, $name, $value = '', $cls = '') {
-			return static::getTextInput($label, $name, $value, "filled {$cls}");
+		public static function getFilledTextInput($label, $name, $value = '', $cls = '', $errors = []) {
+			return static::getTextInput($label, $name, $value, "filled {$cls}", $errors);
 		}
 
-		public static function getFilledTextArea($label, $name, $value = '', $cls = '') {
-			return static::getTextArea($label, $name, $value, "filled {$cls}");
+		public static function getFilledTextArea($label, $name, $value = '', $cls = '', $errors = []) {
+			return static::getTextArea($label, $name, $value, "filled {$cls}", $errors);
 		}
 
 		public static function getSelect($label, $name, $options) {

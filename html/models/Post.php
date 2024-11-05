@@ -14,17 +14,18 @@
 
 		public $reactions;
 
-		public function __construct($state = null) {
-			if (!$state)
-				return;
+		protected function __construct($state) {
+			parent::__construct($state);
 
-			$this->id = $state['id'];
-			$this->status = $state['status'];
-			$this->movie = $state['movie'];
-			$this->author = $state['author'];
-			$this->date = $state['date'];
-			$this->title = $state['title'];
-			$this->text = $state['text'];
+			$this->id = $this->validateString('id');
+			$this->status = $this->validateString('status');
+			$this->movie = $this->validateString('movie');
+			$this->author = $this->validateString('author');
+			$this->date = $this->validateString('date');
+			$this->title = $this->validateString('title');
+			$this->text = $this->validateString('text');
+
+			$this->checkValidation();
 		}
 
 		public function setStatus($status) {
@@ -40,13 +41,12 @@
 	abstract class RatedPost extends Post {
 		public $rating;
 
-		public function __construct($state = null) {
-			if (!$state)
-				return;
-
+		protected function __construct($state) {
 			parent::__construct($state);
 
-			$this->rating = $state['rating'];
+			$this->rating = $this->validateNumeric('rating', min: 0, max: 10);
+
+			$this->checkValidation();
 		}
 	}
 
@@ -55,28 +55,24 @@
 
 		public $request;
 
-		public function __construct($state = null) {
-			if (!$state)
-				return;
+		protected function __construct($state) {
+			$this->id = $this->validateString('id');
+			$this->status = $this->validateString('status');
+			$this->request = $this->validateString('request');
+			$this->author = $this->validateString('author');
+			$this->date = $this->validateString('date');
+			$this->title = $this->validateString('title');
+			$this->rating = $this->validateString('rating');
+			$this->text = $this->validateString('text');
 
-			$this->id = $state['id'];
-			$this->status = $state['status'];
-			$this->request = $state['request'];
-			$this->author = $state['author'];
-			$this->date = $state['date'];
-			$this->title = $state['title'];
-			$this->rating = $state['rating'];
-			$this->text = $state['text'];
+			$this->checkValidation();
 		}
 	}
 
 	class Review extends RatedPost {
 		public const ID_PREFIX = 'r';
 
-		public function __construct($state = null) {
-			if (!$state)
-				return;
-
+		protected function __construct($state) {
 			parent::__construct($state);
 
 			$this->reactions = [
@@ -93,14 +89,11 @@
 
 		public $answers;
 
-		public function __construct($state = null) {
-			if (!$state)
-				return;
-
+		protected function __construct($state) {
 			parent::__construct($state);
 
-			$this->featured = $state['featured'];
-			$this->featuredAnswer = $state['featuredAnswer'];
+			$this->featured = $this->validateString('featured', required: false);
+			$this->featuredAnswer = $this->validateString('featuredAnswer', required: false);
 
 			$this->answers =
 					\controllers\ServiceLocator::resolve('answers')
@@ -110,6 +103,8 @@
 				'usefulness' => new \models\NumericReactionType($state['id'], 'usefulness'),
 				'agreement' => new \models\NumericReactionType($state['id'], 'agreement')
 			];
+
+			$this->checkValidation();
 		}
 
 		public function setFeatured($state) {
@@ -124,10 +119,7 @@
 	class Spoiler extends RatedPost {
 		public const ID_PREFIX = 's';
 
-		public function __construct($state = null) {
-			if (!$state)
-				return;
-
+		protected function __construct($state) {
 			parent::__construct($state);
 
 			$this->reactions = [
@@ -141,13 +133,12 @@
 
 		public $reputation;
 
-		public function __construct($state = null) {
-			if (!$state)
-				return;
-
+		protected function __construct($state) {
 			parent::__construct($state);
 
-			$this->reputation = $state['reputation'];
+			$this->reputation = $this->validateNumeric('reputation');
+
+			$this->checkValidation();
 		}
 	}
 ?>

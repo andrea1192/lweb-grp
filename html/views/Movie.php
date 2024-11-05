@@ -2,11 +2,15 @@
 	
 	class Movie extends AbstractView {
 		protected $movie;
+		protected $errors;
 
 		public function __construct($session, $movie) {
 			parent::__construct($session);
 
 			$this->movie = $movie;
+
+			if ($_SERVER['SCRIPT_NAME'] == '/movie.php' && $this->session->holdsErrors())
+				$this->errors = $this->session->popErrors();
 		}
 
 		public function generateURL($action = 'display') {
@@ -114,6 +118,7 @@
 			$save_buttons = $this->generateSaveButtons();
 
 			$components = 'views\UIComponents';
+			$errors = $this->errors;
 
 			echo <<<EOF
 			<div id="backdrop" {$backdrop}>
@@ -126,15 +131,15 @@
 						<div id="description" class="flex fields">
 							{$components::getHiddenInput('id', $this->movie->id)}
 							{$special_fields}
-							{$components::getFilledTextInput('Title', 'title', $this->movie->title)}
-							<div class="flex fields" style="width: 30%">
-								{$components::getFilledTextInput('Year', 'year', $this->movie->year)}
-								{$components::getFilledTextInput('Duration', 'duration', $this->movie->duration)}
+							{$components::getFilledTextInput('Title', 'title', $this->movie->title, errors: $errors)}
+							<div class="flex fields" style="width: 40%">
+								{$components::getFilledTextInput('Year', 'year', $this->movie->year, errors: $errors)}
+								{$components::getFilledTextInput('Duration', 'duration', $this->movie->duration, errors: $errors)}
 							</div>
-							{$components::getFilledTextArea('Summary', 'summary', $this->movie->summary)}
+							{$components::getFilledTextArea('Summary', 'summary', $this->movie->summary, errors: $errors)}
 							<div class="flex fields column" style="width: 40%">
-								{$components::getFilledTextInput('Director', 'director', $this->movie->director)}
-								{$components::getFilledTextInput('Writer', 'writer', $this->movie->writer)}
+								{$components::getFilledTextInput('Director', 'director', $this->movie->director, errors: $errors)}
+								{$components::getFilledTextInput('Writer', 'writer', $this->movie->writer, errors: $errors)}
 							</div>
 							{$save_buttons}
 						</div>
@@ -153,6 +158,7 @@
 			$save_buttons = $this->generateSaveButtons();
 
 			$components = 'views\UIComponents';
+			$errors = $this->errors;
 
 			echo <<<EOF
 			<div id="backdrop" {$backdrop}>
@@ -164,15 +170,15 @@
 						</div>
 						<div id="description" class="flex fields">
 							{$special_fields}
-							{$components::getFilledTextInput('Title', 'title')}
-							<div class="flex fields" style="width: 30%">
-								{$components::getFilledTextInput('Year', 'year')}
-								{$components::getFilledTextInput('Duration', 'duration')}
+							{$components::getFilledTextInput('Title', 'title', errors: $errors)}
+							<div class="flex fields" style="width: 40%">
+								{$components::getFilledTextInput('Year', 'year', errors: $errors)}
+								{$components::getFilledTextInput('Duration', 'duration', errors: $errors)}
 							</div>
-							{$components::getFilledTextArea('Summary', 'summary')}
+							{$components::getFilledTextArea('Summary', 'summary', errors: $errors)}
 							<div class="flex fields column" style="width: 40%">
-								{$components::getFilledTextInput('Director', 'director')}
-								{$components::getFilledTextInput('Writer', 'writer')}
+								{$components::getFilledTextInput('Director', 'director', errors: $errors)}
+								{$components::getFilledTextInput('Writer', 'writer', errors: $errors)}
 							</div>
 							{$save_buttons}
 						</div>

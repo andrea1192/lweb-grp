@@ -408,6 +408,11 @@ label >textarea.filled:focus {
 
 /* Regole per campi contenenti dati non validi */
 
+label:has(>input.invalid),
+label:has(>textarea.invalid) {
+	margin-bottom: 1.2rem;
+}
+
 label >span.supp {
 	position: absolute;
 	bottom: -4px;
@@ -426,11 +431,13 @@ label >span.icon {
 	color: red;
 }
 
-label.invalid >span.label {
+label >span.label:has(+input.invalid),
+label >span.label:has(+textarea.invalid) {
 	color: red;
 }
 
-label.invalid >input {
+label >input.invalid,
+label >textarea.invalid {
 	border-color: red;
 	padding-right: 56px;
 }

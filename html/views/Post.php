@@ -6,6 +6,7 @@
 		protected const POST_TYPE = '';
 		protected $post;
 		protected $ref;
+		protected $errors;
 
 		protected static function getPostType() {
 			return static::POST_TYPE;
@@ -18,6 +19,9 @@
 			$this->ref = $ref
 					?? $post->movie
 					?? $post->request;
+
+			if ($_SERVER['SCRIPT_NAME'] == '/post.php' && $this->session->holdsErrors())
+				$this->errors = $this->session->popErrors();
 		}
 
 		public function generateURL($action = 'display') {
@@ -102,6 +106,7 @@
 			$save_buttons = $this->generateSaveButtons();
 
 			$components = 'views\UIComponents';
+			$errors = $this->errors;
 
 			echo <<<EOF
 			<form class="post" method="post" action="{$action}">
@@ -112,9 +117,9 @@
 					{$reference_field}
 					{$components::getHiddenInput('author', $this->post->author)}
 					{$components::getHiddenInput('date', $this->post->date)}
-					{$components::getTextInput('Title', 'title', $this->post->title)}
+					{$components::getTextInput('Title', 'title', $this->post->title, errors: $errors)}
 					{$special_fields}
-					{$components::getTextArea('Text', 'text', $this->post->text)}
+					{$components::getTextArea('Text', 'text', $this->post->text, errors: $errors)}
 					<div class="flex footer">
 						<div class="flex left">
 							{$save_buttons}
@@ -135,15 +140,16 @@
 			$save_buttons = $this->generateSaveButtons();
 
 			$components = 'views\UIComponents';
+			$errors = $this->errors;
 
 			echo <<<EOF
 			<form class="post" method="post" action="{$action}">
 				<div class="flex column">
 					{$components::getHiddenInput('type', $this->getPostType())}
 					{$reference_field}
-					{$components::getTextInput('Title', 'title')}
+					{$components::getTextInput('Title', 'title', errors: $errors)}
 					{$special_fields}
-					{$components::getTextArea('Text', 'text')}
+					{$components::getTextArea('Text', 'text', errors: $errors)}
 					<div class="flex footer">
 						<div class="flex left">
 							{$save_buttons}
@@ -220,7 +226,7 @@
 		}
 
 		protected function generateSpecialFields() {
-			return UIComponents::getTextInput('Rating', 'rating', $this->post->rating ?? '');
+			return UIComponents::getTextInput('Rating', 'rating', $this->post->rating ?? '', errors: $this->errors);
 		}
 	}
 
@@ -356,7 +362,7 @@
 		}
 
 		protected function generateSpecialFields() {
-			return UIComponents::getTextInput('Reputation', 'reputation', $this->post->reputation ?? '');
+			return UIComponents::getTextInput('Reputation', 'reputation', $this->post->reputation ?? '', errors: $this->errors);
 		}
 	}
 ?>

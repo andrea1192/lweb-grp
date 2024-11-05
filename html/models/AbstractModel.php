@@ -1,6 +1,12 @@
 <?php namespace models;
 
 	abstract class AbstractModel {
+		protected $__errors;
+		protected $__source;
+
+		protected function __construct($state) {
+			$this->__source = $state;
+		}
 
 		public function getState() {
 			return array_filter(
@@ -47,6 +53,48 @@
 			}
 		}
 
+		protected function validateNumeric($property, $required = true, $min = PHP_INT_MIN, $max = PHP_INT_MAX) {
+
+			if (empty($this->__source[$property])) {
+
+				if ($required) {
+					$this->__errors[$property] = "{$property} is required";
+				}
+				return;
+			}
+
+			if (!is_numeric($this->__source[$property])) {
+				$this->__errors[$property] = "{$property} must be numeric";
+				return;
+			}
+
+			if ($this->__source[$property] < $min || $this->__source[$property] > $max) {
+				$this->__errors[$property] = "{$property} must be between {$min} and {$max}";
+				return $this->__source[$property];
+			}
+
+			return $this->__source[$property];
+		}
+
+
+		protected function validateString($property, $required = true) {
+
+			if (empty($this->__source[$property])) {
+
+				if ($required) {
+					$this->__errors[$property] = "{$property} is required";
+				}
+				return;
+			}
+
+			return $this->__source[$property];
+		}
+
+		protected function checkValidation() {
+			if (!empty($this->__errors))
+				throw new InvalidDataException('Validation errors!', $this->__errors);
+		}
+
 		public static function build($type, $state) {
 
 			switch ($type) {
@@ -79,5 +127,20 @@
 				case 'report':
 					return new Report($state);
 			}
+		}
+	}
+
+
+	class InvalidDataException extends \Exception {
+		private $__errors;
+
+		public function __construct($message, $errors) {
+			parent::__construct($message);
+
+			$this->__errors = $errors;
+		}
+
+		public function getErrors() {
+			return $this->__errors;
 		}
 	}

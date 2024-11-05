@@ -53,11 +53,18 @@
 						$state['author'] = static::sanitize($_POST['author'] ?? '');
 
 						// Porta a termine l'operazione corretta
-						if ($action == 'create') {
-							$object = $repo->create($movie_type, $state);
-						} else {
-							$object = \models\AbstractModel::build($movie_type, $state);
-							$repo->update($object);
+						try {
+							if ($action == 'create') {
+								$object = $repo->create($movie_type, $state);
+							} else {
+								$object = \models\AbstractModel::build($movie_type, $state);
+								$repo->update($object);
+							}
+						} catch (\Exception $e) {
+							static::abort(
+									'Couldn\'t complete operation. Invalid or missing data.',
+									$e->getErrors()
+							);
 						}
 
 						// Gestisce il caricamento di poster (locandine) o backdrop (sfondi)
@@ -81,6 +88,12 @@
 						}
 					}
 
+					// Aggiorna e reindirizza l'utente
+					if ($action == 'create') {
+						$this->session->pushNotification('Request submitted for approval.');
+					} else {
+						$this->session->pushNotification('Request successfully updated.');
+					}
 					$nextView = \views\Movie::factoryMethod($this->session, $object);
 					header("Location: {$nextView->generateURL()}");
 					break;
@@ -102,10 +115,20 @@
 					$state['summary'] = static::sanitize($_POST['summary']);
 					$state['director'] = static::sanitize($_POST['director']);
 					$state['writer'] = static::sanitize($_POST['writer']);
-					$request = new \models\Request($state);
 
-					$movie = $movies->create('movie', $state);
-					$request = $movies->update($request);
+					// Porta a termine l'operazione
+					try {
+						$movie = $movies->create('movie', $state);
+
+						$request = \models\AbstractModel::build('request', $state);
+						$request = $movies->update($request);
+
+					} catch (\Exception $e) {
+						static::abort(
+								'Couldn\'t complete operation. Invalid or missing data.',
+								$e->getErrors()
+						);
+					}
 
 					// Aggiorna la reputazione del proponente della scheda
 					$author = $users->select($request->author);
@@ -144,6 +167,8 @@
 						copy($req_name, $mov_name);
 					}
 
+					// Aggiorna e reindirizza l'utente
+					$this->session->pushNotification('Movie successfully added to the archive.');
 					$nextView = \views\Movie::factoryMethod($this->session, $movie);
 					header("Location: {$nextView->generateURL()}");
 					break;

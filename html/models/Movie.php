@@ -16,32 +16,32 @@
 
 		public $posts;
 
-		public function __construct($state = null) {
-			if (!$state)
-				return;
+		protected function __construct($state) {
+			parent::__construct($state);
 
-			$this->id = $state['id'];
-			$this->title = $state['title'];
-			$this->year = $state['year'];
+			$this->id = $this->validateString('id');
+			$this->title = $this->validateString('title');
+			$this->year = $this->validateNumeric('year');
+
+			$this->checkValidation();
 		}
 	}
 
 	class Movie extends AbstractMovie {
 
-		public function __construct($state = null) {
-			if (!$state)
-				return;
-
+		protected function __construct($state) {
 			parent::__construct($state);
 
-			$this->duration = $state['duration'];
-			$this->summary = $state['summary'];
-			$this->director = $state['director'];
-			$this->writer = $state['writer'];
+			$this->duration = $this->validateNumeric('duration');
+			$this->summary = $this->validateString('summary');
+			$this->director = $this->validateString('director');
+			$this->writer = $this->validateString('writer');
 
 			$this->posts =
 					\controllers\ServiceLocator::resolve('posts')
 					->getPostsByMovie($state['id']);
+
+			$this->checkValidation();
 		}
 	}
 
@@ -54,23 +54,22 @@
 		public $status = 'submitted';
 		public $author;
 
-		public function __construct($state = null) {
-			if (!$state)
-				return;
-
+		protected function __construct($state) {
 			parent::__construct($state);
 
-			$this->status = $state['status'];
-			$this->author = $state['author'];
+			$this->status = $this->validateString('status');
+			$this->author = $this->validateString('author');
 
-			$this->duration = $state['duration'] ?? '';
-			$this->summary = $state['summary'] ?? '';
-			$this->director = $state['director'] ?? '';
-			$this->writer = $state['writer'] ?? '';
+			$this->duration = $this->validateNumeric('duration', required: false);
+			$this->summary = $this->validateString('summary', required: false);
+			$this->director = $this->validateString('director', required: false);
+			$this->writer = $this->validateString('writer', required: false);
 
 			$this->posts =
 					\controllers\ServiceLocator::resolve('comments')
 					->getCommentsByRequest($state['id']);
+
+			$this->checkValidation();
 		}
 
 		public function setStatus($status) {

@@ -10,6 +10,15 @@
 			return htmlspecialchars($input, ENT_QUOTES | ENT_SUBSTITUTE | ENT_XHTML);
 		}
 
+		protected static function abort($message, $errors) {
+			$session = ServiceLocator::resolve('session');
+			$session->pushNotification($message);
+			$session->pushErrors($errors);
+
+			header("Location: {$_SERVER['HTTP_REFERER']}");
+			die();
+		}
+
 		public function __construct() {
 
 			ServiceLocator::register('session', function() {
