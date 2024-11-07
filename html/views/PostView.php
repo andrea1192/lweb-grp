@@ -24,12 +24,22 @@
 			switch (\models\Post::getType($post_id)) {
 				default:
 					$this->post = $this->getMapper('posts')->getPostById($post_id);
-					$this->movie = $this->getMapper('movies')->getMovieById($this->post->movie);
+
+					if ($this->post)
+						$this->movie = $this->getMapper('movies')->getMovieById($this->post->movie);
 					break;
 				case 'comment':
 					$this->post = $this->getMapper('comments')->getCommentById($post_id);
-					$this->movie = $this->getMapper('requests')->getRequestById($this->post->request);
+
+					if ($this->post)
+						$this->movie = $this->getMapper('requests')->getRequestById($this->post->request);
 					break;
+			}
+
+			if (empty($this->post)) {
+				$this->session->pushNotification("Post #{$post_id} not found in the archive. Sorry about that.");
+				header('Location: index.php');
+				die();
 			}
 		}
 

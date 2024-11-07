@@ -42,6 +42,12 @@
 					break;
 			}
 
+			if (empty($this->movie)) {
+				$this->session->pushNotification("Movie #{$movie_id} not found in the archive. Sorry about that.");
+				header('Location: index.php');
+				die();
+			}
+
 			if ($this->tab == 'question')
 				$this->featuredPosts = $this->getMapper('posts')->getFeaturedPosts($movie_id);
 		}
