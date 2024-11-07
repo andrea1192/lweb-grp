@@ -226,8 +226,13 @@
 			$featured = static::getDocument()->createAttribute('featured');
 			$featuredAnswer = static::getDocument()->createAttribute('featuredAnswer');
 
-			$featured->value = $state['featured'] ? 'true' : 'false';
-			$featuredAnswer->value = $state['featuredAnswer'];
+			if (!empty($state['featured']))
+				$featured->value = $state['featured'] ? 'true' : 'false';
+			else
+				$featured->value = 'false';
+
+			if (!empty($state['featuredAnswer']))
+				$featuredAnswer->value = $state['featuredAnswer'];
 
 			$element->appendChild($featured);
 			$element->appendChild($featuredAnswer);
