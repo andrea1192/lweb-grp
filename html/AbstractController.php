@@ -10,10 +10,13 @@
 			return htmlspecialchars($input, ENT_QUOTES | ENT_SUBSTITUTE | ENT_XHTML);
 		}
 
-		protected static function abort($message, $errors) {
+		protected static function abort($message = null, $errors = null) {
 			$session = ServiceLocator::resolve('session');
-			$session->pushNotification($message);
-			$session->pushErrors($errors);
+
+			if ($message)
+				$session->pushNotification($message);
+			if ($errors)
+				$session->pushErrors($errors);
 
 			header("Location: {$_SERVER['HTTP_REFERER']}");
 			die();

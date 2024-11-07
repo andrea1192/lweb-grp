@@ -66,7 +66,12 @@
 						$user->mail_pri = static::sanitize($_POST['mail_pri']);
 						$user->mail_sec = static::sanitize($_POST['mail_sec']);
 
-						$mapper->insert($user);
+						try {
+							$mapper->insert($user);
+						} catch (\Exception $e) {
+							static::abort('Username already taken. Please choose another one.');
+						}
+
 						$this->session->setUser($user->username);
 						$this->session->pushNotification(
 								"Account created. Welcome, {$user->username}!");
