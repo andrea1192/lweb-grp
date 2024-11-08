@@ -31,19 +31,19 @@
 	class Users extends Database {
 
 		public function getUserByUsername($username) {
-			return $this->select($username);
+			return $this->read($username);
 		}
 
-		public function select($username) {
+		public function read($id) {
 			$query = 'SELECT * FROM Users WHERE username = ?';
-			$match = $this->query($query, [$username]);
+			$match = $this->query($query, [$id]);
 
 			if ($match)
 				return new User($match);
 		}
 
-		public function insert($user) {
-			$state = $user->getState();
+		public function create($type, $state) {
+			$user = new \models\User($state);
 
 			$values = array_values($state);
 			$parameters = implode(',', array_keys($state));
@@ -55,7 +55,7 @@
 		}
 
 		public function update($username, $user) {
-			$current = $this->select($username);
+			$current = $this->read($username);
 			$diff = array_diff_assoc($user->getState(), $current->getState());
 
 			if (empty($diff))

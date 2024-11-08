@@ -131,7 +131,7 @@
 					}
 
 					// Aggiorna la reputazione del proponente della scheda
-					$author = $users->select($request->author);
+					$author = $users->read($request->author);
 					$author->reputation += $request::REPUTATION_DELTAS[$request->status];
 					$users->update($author->username, $author);
 

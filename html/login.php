@@ -54,22 +54,33 @@
 
 				case 'save':
 					if (isset($_POST)) {
-						$user = new \models\User();
 						$mapper = ServiceLocator::resolve('users');
 
-						$user->username = static::sanitize($_POST['username']);
-						$user->password = static::sanitize($_POST['password']);
-						$user->password = password_hash($user->password, PASSWORD_DEFAULT);
+						$state['username'] = static::sanitize($_POST['username']);
+						$state['password'] = static::sanitize($_POST['password']);
 
-						$user->name = static::sanitize($_POST['name']);
-						$user->address = static::sanitize($_POST['address']);
-						$user->mail_pri = static::sanitize($_POST['mail_pri']);
-						$user->mail_sec = static::sanitize($_POST['mail_sec']);
+						if (!empty($state['password']))
+							$state['password'] = password_hash($state['password'], PASSWORD_DEFAULT);
+
+						$state['name'] = static::sanitize($_POST['name']);
+						$state['address'] = static::sanitize($_POST['address']);
+						$state['mail_pri'] = static::sanitize($_POST['mail_pri']);
+						$state['mail_sec'] = static::sanitize($_POST['mail_sec']);
 
 						try {
-							$mapper->insert($user);
-						} catch (\Exception $e) {
-							static::abort('Username already taken. Please choose another one.');
+							$mapper->create('user', $state);
+
+						} catch (\models\InvalidDataException $e) {
+							static::abort(
+								'Couldn\'t complete operation. Invalid or missing data.',
+								$e->getErrors()
+							);
+
+						} catch (\mysqli_sql_exception $e) {
+							static::abort(
+								'Username already taken. Please choose another one.',
+								['username' => 'username already taken']
+							);
 						}
 
 						$this->session->setUser($user->username);

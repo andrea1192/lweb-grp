@@ -1,6 +1,8 @@
 <?php namespace models;
 
-	class User {
+	require_once('models/AbstractModel.php');
+
+	class User extends AbstractModel {
 		public $username;
 		public $password;
 		public $name;
@@ -8,25 +10,21 @@
 		public $mail_pri;
 		public $mail_sec;
 		public $reputation;
-
 		private $privilege;
 
-		public function __construct($state = null) {
+		public function __construct($state) {
+			parent::__construct($state);
 
-			if (!$state)
-				return;
+			$this->username = $this->validateString('username');
+			$this->password = $this->validateString('password');
+			$this->name = $this->validateString('name', required: false);
+			$this->address = $this->validateString('address', required: false);
+			$this->mail_pri = $this->validateString('mail_pri', required: false);
+			$this->mail_sec = $this->validateString('mail_sec', required: false);
+			$this->reputation = $this->validateNumeric('reputation', required: false);
+			$this->privilege = $this->validateNumeric('privilege', required: false);
 
-			foreach ($state as $key => $value) {
-				if (property_exists($this, $key)) {
-					$this->$key = $value;
-				}
-			}
-		}
-
-		public function getState() {
-			return array_filter(
-					get_object_vars($this),
-					fn($property) => isset($property));
+			$this->checkValidation();
 		}
 
 		public function getUserType() {

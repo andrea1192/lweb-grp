@@ -150,7 +150,7 @@
 
 					// Determina l'autore del post
 					$post_author = $repo->read($post_id)->author;
-					$post_user = $users->select($post_author);
+					$post_user = $users->read($post_author);
 
 					// Aggiorna la reputazione dell'autore del post
 					switch ($post_type) {
@@ -223,7 +223,7 @@
 						$redir = $_SERVER['HTTP_REFERER'];
 					}
 
-					$author = $users->select($report->author);
+					$author = $users->read($report->author);
 
 					if ($report->status == 'accepted')
 						$author->reputation += $report::REPUTATION_DELTAS[$report->status];
