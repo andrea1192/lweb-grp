@@ -178,7 +178,7 @@
 							break;
 					}
 
-					ServiceLocator::resolve('users')->update($post_author, $post_user);
+					ServiceLocator::resolve('users')->update($post_user);
 
 					header("Location: {$_SERVER['HTTP_REFERER']}");
 					break;
@@ -230,7 +230,7 @@
 					elseif ($report->status == 'rejected')
 						$author->reputation += $report::REPUTATION_DELTAS[$report->status];
 
-					$users->update($author->username, $author);
+					$users->update($author);
 
 					header("Location: $redir");
 					break;

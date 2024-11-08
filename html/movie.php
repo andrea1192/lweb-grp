@@ -133,7 +133,7 @@
 					// Aggiorna la reputazione del proponente della scheda
 					$author = $users->read($request->author);
 					$author->reputation += $request::REPUTATION_DELTAS[$request->status];
-					$users->update($author->username, $author);
+					$users->update($author);
 
 					// Gestisce il caricamento o la copia di poster (locandine)
 					$ext = $movies::MEDIA_EXT;
