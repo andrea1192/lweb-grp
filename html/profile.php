@@ -36,8 +36,10 @@
 							$this->session->pushNotification(
 									'Changes saved.');
 						} else {
-							$this->session->pushNotification(
-									'Invalid password. Please try again.');
+							static::abort(
+									'Invalid password. Please try again.',
+									['password' => 'password is invalid']
+							);
 						}
 					}
 
@@ -60,6 +62,7 @@
 
 						if ($user
 								&& password_verify($password, $user->password)
+								&& !empty($password_new)
 								&& $password_new === $password_confirm) {
 							$user->password = password_hash($password_new, PASSWORD_DEFAULT);
 
@@ -69,14 +72,28 @@
 							$redir = 'profile.php';
 
 						} elseif (!password_verify($password, $user->password)) {
-							$this->session->pushNotification(
-									'Invalid password. Please try again.');
-							$redir = $_SERVER['HTTP_REFERER'];
+							static::abort(
+									'Invalid password. Please try again.',
+									['password' => 'password is invalid']
+							);
+
+						} elseif (empty($password_new)) {
+							static::abort(
+									'Passwords are required. Please choose one.',
+									[
+											'password_new' => 'passwords are required',
+											'password_confirm' => 'passwords are required'
+									]
+							);
 
 						} elseif ($password_new !== $password_confirm) {
-							$this->session->pushNotification(
-									'Passwords not matching. Please try again.');
-							$redir = $_SERVER['HTTP_REFERER'];
+							static::abort(
+									'Passwords not matching. Please try again.',
+									[
+											'password_new' => 'passwords do not match',
+											'password_confirm' => 'passwords do not match'
+									]
+							);
 						}
 					}
 
@@ -103,9 +120,10 @@
 									'Account deleted :-(');
 							$redir = 'index.php';
 						} else {
-							$this->session->pushNotification(
-									'Invalid password. Please try again.');
-							$redir = $_SERVER['HTTP_REFERER'];
+							static::abort(
+									'Invalid password. Try again?',
+									['password' => 'password is invalid']
+							);
 						}
 					}
 

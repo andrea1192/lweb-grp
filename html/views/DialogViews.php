@@ -52,6 +52,7 @@
 			$action = 'login.php?action=save';
 
 			$components = '\views\UIComponents';
+			$errors = ($this->session->holdsErrors()) ? $this->session->popErrors() : [];
 
 			echo <<<EOF
 			<form id="login" class="dialog flex column" action="{$action}" method="post">
@@ -59,9 +60,9 @@
 				<h1>Create account</h1>
 				<div id="fields" class="flex column">
 					{$components::getTextInput(
-							'Username*', 'username', $_POST['username'] ?? '')}
+							'Username*', 'username', $_POST['username'] ?? '', errors: $errors)}
 					{$components::getPasswordInput(
-							'Password*', 'password', $_POST['password'] ?? '')}
+							'Password*', 'password', $_POST['password'] ?? '', errors: $errors)}
 					{$components::getTextInput(
 							'Name', 'name', $_POST['name'] ?? '')}
 					{$components::getTextInput(
@@ -103,6 +104,7 @@
 			$change_password = 'profile.php?action=change_password';
 
 			$components = '\views\UIComponents';
+			$errors = ($this->session->holdsErrors()) ? $this->session->popErrors() : [];
 
 			echo <<<EOF
 			<form id="login" class="dialog flex column" action="{$save}" method="post">
@@ -120,7 +122,7 @@
 
 					<div class="flex column">
 						<span class="prompt">Enter your current password to confirm:</span>
-						{$components::getPasswordInput('Password', 'password')}
+						{$components::getPasswordInput('Password', 'password', errors: $errors)}
 					</div>
 				</div>
 				<div id="controls" class="flex">
@@ -161,15 +163,16 @@
 			$action = 'profile.php?action=save_password';
 
 			$components = '\views\UIComponents';
+			$errors = ($this->session->holdsErrors()) ? $this->session->popErrors() : [];
 
 			echo <<<EOF
 			<form id="login" class="dialog flex column" action="{$action}" method="post">
 				<div>{$components::getIcon('password')}</div>
 				<h1>Change password</h1>
 				<div id="fields" class="flex column">
-					{$components::getPasswordInput('Current password', 'password')}
-					{$components::getPasswordInput('New password', 'password_new')}
-					{$components::getPasswordInput('Confirm new password', 'password_confirm')}
+					{$components::getPasswordInput('Current password', 'password', errors: $errors)}
+					{$components::getPasswordInput('New password', 'password_new', errors: $errors)}
+					{$components::getPasswordInput('Confirm new password', 'password_confirm', errors: $errors)}
 				</div>
 				<div id="controls" class="flex">
 					<div class="flex left">
@@ -194,6 +197,7 @@
 			$action = 'profile.php?action=delete_account';
 
 			$components = '\views\UIComponents';
+			$errors = ($this->session->holdsErrors()) ? $this->session->popErrors() : [];
 
 			echo <<<EOF
 			<form id="login" class="dialog flex column" action="{$action}" method="post">
@@ -203,7 +207,7 @@
 					<span>Are you sure you want to delete your account?</span>
 					<div class="flex column">
 						<span class="prompt">Enter your current password to confirm:</span>
-						{$components::getPasswordInput('Password', 'password')}
+						{$components::getPasswordInput('Password', 'password', errors: $errors)}
 					</div>
 				</div>
 				<div id="controls" class="flex">
