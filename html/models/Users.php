@@ -1,6 +1,7 @@
 <?php namespace models;
 
 	require_once('connection.php');
+	require_once('models/Repository.php');
 	require_once('models/User.php');
 
 	class Database {
@@ -28,7 +29,7 @@
 		}
 	}
 
-	class Users extends Database {
+	class Users extends Database implements IRepository {
 
 		public function getUserByUsername($username) {
 			return $this->read($username);
@@ -54,9 +55,11 @@
 			$this->query($query, $values);
 		}
 
-		public function update($username, $user) {
+		public function update($object) {
+			$username = $object->username;
+
 			$current = $this->read($username);
-			$diff = array_diff_assoc($user->getState(), $current->getState());
+			$diff = array_diff_assoc($object->getState(), $current->getState());
 
 			if (empty($diff))
 				return;

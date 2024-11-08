@@ -1,8 +1,9 @@
 <?php namespace models;
 
+	require_once('models/Repository.php');
 	require_once('models/AbstractMapper.php');
 
-	abstract class XMLDocument {
+	abstract class XMLDocument implements IRepository {
 		protected const SCHEMAS_ROOT = 'schemas/';
 		protected const DOCUMENT_ROOT = 'static/';
 		protected const DOCUMENT_NAME = '';

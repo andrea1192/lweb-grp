@@ -9,9 +9,14 @@
 		}
 
 		public function getState() {
-			return array_filter(
+			$state = array_filter(
 					get_object_vars($this),
 					fn($property) => isset($property));
+
+			unset($state['__source']);
+			unset($state['__errors']);
+
+			return $state;
 		}
 
 		public static function getType($subject) {

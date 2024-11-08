@@ -32,7 +32,7 @@
 							$user->mail_pri = static::sanitize($_POST['mail_pri']);
 							$user->mail_sec = static::sanitize($_POST['mail_sec']);
 
-							$mapper->update($this->session->getUsername(), $user);
+							$mapper->update($user);
 							$this->session->pushNotification(
 									'Changes saved.');
 						} else {
@@ -63,7 +63,7 @@
 								&& $password_new === $password_confirm) {
 							$user->password = password_hash($password_new, PASSWORD_DEFAULT);
 
-							$mapper->update($this->session->getUsername(), $user);
+							$mapper->update($user);
 							$this->session->pushNotification(
 									'Password saved.');
 							$redir = 'profile.php';
@@ -97,7 +97,7 @@
 
 						if ($user && password_verify($password, $user->password)) {
 							$user->setPrivilege(-1);
-							$mapper->update($this->session->getUsername(), $user);
+							$mapper->update($user);
 							$this->session->setUser(null);
 							$this->session->pushNotification(
 									'Account deleted :-(');

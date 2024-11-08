@@ -10,7 +10,7 @@
 		public $mail_pri;
 		public $mail_sec;
 		public $reputation;
-		private $privilege;
+		protected $privilege;
 
 		public function __construct($state) {
 			parent::__construct($state);
