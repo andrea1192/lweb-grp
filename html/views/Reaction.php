@@ -59,7 +59,7 @@
 						</div>
 						EOF;
 						$button .= UIComponents::getTextButton(
-								$stats->average,
+								round($stats->average, 1),
 								'lightbulb',
 								action: null,
 								enabled: $status,
@@ -83,7 +83,7 @@
 						</div>
 						EOF;
 						$button .= UIComponents::getTextButton(
-								$stats->average,
+								round($stats->average, 1),
 								'thumb_up',
 								action: null,
 								enabled: $status,
@@ -112,7 +112,7 @@
 						</div>
 						EOF;
 						$button .= UIComponents::getTextButton(
-								$stats->average,
+								round($stats->average, 1),
 								'speed',
 								action: null,
 								enabled: $status,
