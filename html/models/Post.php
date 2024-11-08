@@ -50,20 +50,18 @@
 		}
 	}
 
-	class Comment extends RatedPost {
+	class Comment extends Post {
 		public const ID_PREFIX = 'c';
 
 		public $request;
+		public $rating;
 
 		protected function __construct($state) {
-			$this->id = $this->validateString('id');
-			$this->status = $this->validateString('status');
+			$state['movie'] = $state['request'];
+			parent::__construct($state);
+
 			$this->request = $this->validateString('request');
-			$this->author = $this->validateString('author');
-			$this->date = $this->validateString('date');
-			$this->title = $this->validateString('title');
 			$this->rating = $this->validateString('rating');
-			$this->text = $this->validateString('text');
 
 			$this->checkValidation();
 		}
