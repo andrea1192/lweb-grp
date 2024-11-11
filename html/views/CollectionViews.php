@@ -116,4 +116,45 @@
 			print('</div>');
 		}
 	}
+
+	class UsersView extends AbstractListView {
+
+		public function __construct() {
+			parent::__construct();
+
+			$users = $this->getMapper('users');
+
+			$this->title = 'Users';
+			$this->items = $users->readAll();
+		}
+
+		public function printList() {
+			$components = 'views\UIComponents';
+
+			print("<h1>{$this->title}</h1>");
+			print('<div>');
+
+			foreach ($this->items as $user) {
+				echo <<<EOF
+				<div class="post">
+					<div class="header">
+						<div class="details">
+							<h1>{$user->username}</h1>
+							<div class="flex small">
+								<span>{$user->getUserType()}</span>
+								<span>Reputation {$user->reputation}</span>
+							</div>
+						</div>
+						<div class="flex right">
+							<div>{$components::getTextButton('Edit', 'edit')}</div>
+							<div>{$components::getTextButton('Ban', 'lock', cls: 'colored-red')}</div>
+						</div>
+					</div>
+				</div>
+				EOF;
+			}
+
+			print('</div>');
+		}
+	}
 ?>

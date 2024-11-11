@@ -99,7 +99,7 @@
 				$dropdown_items = UIComponents::getDropdownItem('Profile', 'person', 'profile.php');
 
 				if ($this->session->isAdmin()) {
-					$dropdown_items .= UIComponents::getDropdownItem('Users', 'group');
+					$dropdown_items .= UIComponents::getDropdownItem('Users', 'group', 'users.php');
 				}
 
 				$dropdown_items .= UIComponents::getDropdownItem('Reports', 'report', 'reports.php');

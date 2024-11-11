@@ -16,16 +16,19 @@
 			);
 		}
 
-		public function query($query, $parameters) {
+		public function query($query, $parameters = null) {
 			$stmt = $this->connection->prepare($query);
 			$stmt->execute($parameters);
 
 			$result = $stmt->get_result();
 
-			if ($result)
-				return $result->fetch_assoc();
-			else
-				return $result;
+			if ($result) {
+				if ($result->num_rows == 1) {
+					return $result->fetch_assoc();
+				} else {
+					return $result->fetch_all(MYSQLI_ASSOC);
+				}
+			}
 		}
 	}
 
@@ -41,6 +44,17 @@
 
 			if ($match)
 				return new User($match);
+		}
+
+		public function readAll() {
+			$query = 'SELECT * FROM Users';
+			$matches = $this->query($query);
+
+			foreach ($matches as $match) {
+				$users[] = new User($match);
+			}
+
+			return $users;
 		}
 
 		public function create($type, $state) {
