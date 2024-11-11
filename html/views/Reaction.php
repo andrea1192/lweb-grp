@@ -14,7 +14,7 @@
 
 			foreach ($reactions as $type => $stats) {
 				$button = '';
-				$reaction_view = new ReactionType($session, $stats);
+				$reaction_view = new ReactionType($stats);
 
 				if (!$session->isLoggedIn())
 					$tooltip = '<div class="tooltip">Sign in to react</div>';
@@ -134,8 +134,8 @@
 			return $buttons;
 		}
 
-		public function __construct($session, $reaction = null, $ref = null) {
-			parent::__construct($session);
+		public function __construct($reaction = null, $ref = null) {
+			parent::__construct();
 
 			$this->reaction = $reaction;
 			$this->ref = $ref ?? $reaction->post;

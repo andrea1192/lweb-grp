@@ -14,17 +14,17 @@
 
 				default:
 				case 'display':
-					$view = new \views\MovieView($this->session, $movie_id, $movie_type);
+					$view = new \views\MovieView($movie_id, $movie_type);
 					$view->render();
 					break;
 
 				case 'edit':
-					$view = new \views\MovieEditView($this->session, $movie_id);
+					$view = new \views\MovieEditView($movie_id);
 					$view->render();
 					break;
 
 				case 'compose':
-					$view = new \views\MovieComposeView($this->session);
+					$view = new \views\MovieComposeView();
 					$view->render();
 					break;
 
@@ -94,7 +94,7 @@
 					} else {
 						$this->session->pushNotification('Request successfully updated.');
 					}
-					$nextView = \views\Movie::factoryMethod($this->session, $object);
+					$nextView = \views\Movie::matchModel($object);
 					header("Location: {$nextView->generateURL()}");
 					break;
 
@@ -169,7 +169,7 @@
 
 					// Aggiorna e reindirizza l'utente
 					$this->session->pushNotification('Movie successfully added to the archive.');
-					$nextView = \views\Movie::factoryMethod($this->session, $movie);
+					$nextView = \views\Movie::matchModel($movie);
 					header("Location: {$nextView->generateURL()}");
 					break;
 
@@ -186,7 +186,7 @@
 					$request->setStatus('rejected');
 					$requests->update($request);
 
-					$nextView = \views\Movie::factoryMethod($this->session, $request);
+					$nextView = \views\Movie::matchModel($request);
 					header("Location: {$nextView->generateURL()}");
 					break;
 

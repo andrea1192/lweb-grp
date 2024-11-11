@@ -15,7 +15,7 @@
 
 				default:
 				case 'display':
-					$view = new \views\ProfileView($this->session);
+					$view = new \views\ProfileView();
 					$view->render();
 					break;
 
@@ -47,7 +47,7 @@
 					break;
 
 				case 'change_password':
-					$view = new \views\PasswordChangeView($this->session);
+					$view = new \views\PasswordChangeView();
 					$view->render();
 					break;
 
@@ -101,7 +101,7 @@
 					break;
 
 				case 'confirm_delete':
-					$view = new \views\AccountDeleteView($this->session);
+					$view = new \views\AccountDeleteView();
 					$view->render();
 					break;
 

@@ -25,7 +25,7 @@
 			print('<div>');
 
 			foreach ($this->items as $item) {
-				$view = \views\AbstractView::factoryMethod($this->session, $item);
+				$view = \views\AbstractView::matchModel($item);
 				$view->display();
 			}
 
@@ -45,7 +45,7 @@
 			print('<div class="flex grid">');
 
 			foreach ($this->items as $item) {
-				$view = \views\AbstractView::factoryMethod($this->session, $item);
+				$view = \views\AbstractView::matchModel($item);
 				$view->displayCard();
 			}
 
@@ -59,8 +59,8 @@
 
 	class MoviesView extends AbstractGridView {
 
-		public function __construct($session, $item_type) {
-			parent::__construct($session);
+		public function __construct($item_type) {
+			parent::__construct();
 
 			switch ($item_type) {
 				case 'movies':
@@ -83,8 +83,8 @@
 
 	class ReportsView extends AbstractListView {
 
-		public function __construct($session) {
-			parent::__construct($session);
+		public function __construct() {
+			parent::__construct();
 
 			$reports = $this->getMapper('reports');
 			$current_user = $this->session->getUsername();
@@ -106,8 +106,8 @@
 			foreach ($this->items as $item) {
 				$post = $this->getMapper('posts')->getPostById($item->post);
 
-				$postView = \views\AbstractView::factoryMethod($this->session, $post);
-				$reactionView = \views\AbstractView::factoryMethod($this->session, $item);
+				$postView = \views\AbstractView::matchModel($post);
+				$reactionView = \views\AbstractView::matchModel($item);
 
 				$reaction = $reactionView->generate();
 				$postView->displayReference(active: false, reactions: $reaction);

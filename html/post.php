@@ -14,12 +14,12 @@
 
 				default:
 				case 'display':
-					$view = new \views\PostView($this->session, $post_id);
+					$view = new \views\PostView($post_id);
 					$view->render();
 					break;
 
 				case 'edit':
-					$view = new \views\PostEditView($this->session, $post_id);
+					$view = new \views\PostEditView($post_id);
 					$view->render();
 					break;
 
@@ -27,7 +27,7 @@
 					if (isset($_GET['movie'])) {
 						$movie_ref = static::sanitize($_GET['movie']);
 
-						$view = new \views\PostComposeView($this->session, $post_type, $movie_ref);
+						$view = new \views\PostComposeView($post_type, $movie_ref);
 						$view->render();
 					}
 					break;
@@ -184,12 +184,12 @@
 					break;
 
 				case 'answer':
-					$view = new \views\ReactionCreateView($this->session, 'answer', $post_id);
+					$view = new \views\ReactionCreateView('answer', $post_id);
 					$view->render();
 					break;
 
 				case 'report':
-					$view = new \views\ReactionCreateView($this->session, 'report', $post_id);
+					$view = new \views\ReactionCreateView('report', $post_id);
 					$view->render();
 					break;
 

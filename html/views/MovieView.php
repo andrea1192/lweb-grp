@@ -23,8 +23,8 @@
 		public $posts;
 		public $featuredPosts;
 
-		public function __construct($session, $movie_id, $tab) {
-			parent::__construct($session);
+		public function __construct($movie_id, $tab) {
+			parent::__construct();
 			$tabs = static::TABS;
 
 			switch (\models\Movie::getType($movie_id)) {
@@ -58,7 +58,7 @@
 		}
 
 		public function printOverview() {
-			$view = \views\Movie::factoryMethod($this->session, $this->movie);
+			$view = \views\Movie::matchModel($this->movie);
 			$view->display();
 		}
 
@@ -105,7 +105,7 @@
 				EOF;
 
 				foreach ($this->featuredPosts as $featuredPost) {
-					$view = \views\Post::factoryMethod($this->session, $featuredPost, $this->movie);
+					$view = \views\Post::matchModel($featuredPost, $this->movie);
 					$view->displayFeatured();
 				}
 
@@ -113,7 +113,7 @@
 			}
 
 			foreach ($this->posts as $post) {
-				$view = \views\Post::factoryMethod($this->session, $post, $this->movie);
+				$view = \views\Post::matchModel($post, $this->movie);
 				$view->display();
 			}
 		}
@@ -145,8 +145,8 @@
 
 	class MovieEditView extends AbstractEditView {
 
-		public function __construct($session, $movie_id) {
-			parent::__construct($session);
+		public function __construct($movie_id) {
+			parent::__construct();
 
 			switch (\models\Movie::getType($movie_id)) {
 				case 'movie':
@@ -159,7 +159,7 @@
 		}
 
 		public function printForm() {
-			$view = \views\Movie::factoryMethod($this->session, $this->movie);
+			$view = \views\Movie::matchModel($this->movie);
 			$view->edit();
 		}
 
@@ -171,14 +171,14 @@
 
 	class MovieComposeView extends AbstractEditView {
 
-		public function __construct($session) {
-			parent::__construct($session);
+		public function __construct() {
+			parent::__construct();
 
 			$this->movie = null;
 		}
 
 		public function printForm() {
-			$view = new \views\Request($this->session, $this->movie);
+			$view = new \views\Request($this->movie);
 			$view->compose();
 		}
 

@@ -4,8 +4,8 @@
 		protected $movie;
 		protected $errors;
 
-		public function __construct($session, $movie) {
-			parent::__construct($session);
+		public function __construct($movie) {
+			parent::__construct();
 
 			$this->movie = $movie;
 

@@ -11,15 +11,15 @@
 		public $movie;
 
 		public function printMovieReference() {
-			$view = \views\Movie::factoryMethod($this->session, $this->movie);
+			$view = \views\Movie::matchModel($this->movie);
 			$view->displayReference();
 		}
 	}
 
 	class PostView extends AbstractPostView {
 
-		public function __construct($session, $post_id) {
-			parent::__construct($session);
+		public function __construct($post_id) {
+			parent::__construct();
 
 			switch (\models\Post::getType($post_id)) {
 				default:
@@ -44,7 +44,7 @@
 		}
 
 		public function printPost() {
-			$view = \views\Post::factoryMethod($this->session, $this->post);
+			$view = \views\Post::matchModel($this->post);
 			$view->display();
 		}
 
@@ -61,7 +61,7 @@
 	class PostEditView extends PostView {
 
 		public function printForm() {
-			$view = \views\Post::factoryMethod($this->session, $this->post);
+			$view = \views\Post::matchModel($this->post);
 			$view->edit();
 		}
 
@@ -78,8 +78,8 @@
 	class PostComposeView extends AbstractPostView {
 		public $post_type;
 
-		public function __construct($session, $post_type, $movie_id) {
-			parent::__construct($session);
+		public function __construct($post_type, $movie_id) {
+			parent::__construct();
 
 			$this->post_type = $post_type;
 
@@ -94,7 +94,7 @@
 		}
 
 		public function printForm() {
-			$view = \views\Post::build($this->session, $this->post_type, null, $this->movie->id);
+			$view = \views\Post::build($this->post_type, null, $this->movie->id);
 			$view->compose();
 		}
 
@@ -111,15 +111,15 @@
 	class ReactionCreateView extends PostView {
 		public $reaction_type;
 
-		public function __construct($session, $reaction_type, $post_id) {
-			parent::__construct($session, $post_id);
+		public function __construct($reaction_type, $post_id) {
+			parent::__construct($post_id);
 
 			$this->reaction_type = $reaction_type;
 		}
 
 		public function printForm() {
-			$postView = \views\AbstractView::factoryMethod($this->session, $this->post);
-			$reactionView = \views\Reaction::build($this->session, $this->reaction_type, null, $this->post);
+			$postView = \views\AbstractView::matchModel($this->post);
+			$reactionView = \views\Reaction::build($this->reaction_type, null, $this->post);
 
 			$reaction = $reactionView->generateInsertForm();
 			$postView->displayReference(active: false, reactions: $reaction);

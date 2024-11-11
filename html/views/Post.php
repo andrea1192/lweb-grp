@@ -12,8 +12,8 @@
 			return static::POST_TYPE;
 		}
 
-		public function __construct($session, $post = null, $ref = null) {
-			parent::__construct($session);
+		public function __construct($post = null, $ref = null) {
+			parent::__construct();
 
 			$this->post = $post;
 			$this->ref = $ref
@@ -303,7 +303,7 @@
 				$answer = $this->getMapper('answers')->getFeaturedAnswer($this->post->id);
 
 				if ($answer) {
-					$view = \views\Reaction::factoryMethod($this->session, $answer);
+					$view = \views\Reaction::matchModel($answer);
 					$html .= $view->generateDisplay(active: false, selected: true);
 				}
 
@@ -313,7 +313,7 @@
 				foreach ($answers as $answer) {
 					$selected = (bool) ($answer->id == $this->post->featuredAnswer);
 
-					$view = \views\Reaction::factoryMethod($this->session, $answer);
+					$view = \views\Reaction::matchModel($answer);
 					$html .= $view->generateDisplay(selected: $selected);
 				}
 			}

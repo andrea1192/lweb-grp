@@ -88,8 +88,8 @@
 	class ProfileView extends DialogView {
 		public $user;
 
-		public function __construct($session) {
-			parent::__construct($session);
+		public function __construct() {
+			parent::__construct();
 
 			$this->user = $this->session->getUser();
 		}

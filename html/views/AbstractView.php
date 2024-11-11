@@ -5,45 +5,45 @@
 	abstract class AbstractView {
 		protected $session;
 
-		public function __construct($session) {
-			$this->session = $session;
+		public function __construct() {
+			$this->session = \controllers\ServiceLocator::resolve('session');
 		}
 
-		public static function build($session, $type, $model, $ref) {
+		public static function build($type, $model, $ref) {
 
 			switch ($type) {
 				case 'movie':
-					return new Movie($session, $model, $ref);
+					return new Movie($model, $ref);
 				case 'request':
-					return new Request($session, $model, $ref);
+					return new Request($model, $ref);
 
 				case 'review':
-					return new Review($session, $model, $ref);
+					return new Review($model, $ref);
 				case 'question':
-					return new Question($session, $model, $ref);
+					return new Question($model, $ref);
 				case 'spoiler':
-					return new Spoiler($session, $model, $ref);
+					return new Spoiler($model, $ref);
 				case 'extra':
-					return new Extra($session, $model, $ref);
+					return new Extra($model, $ref);
 				case 'comment':
-					return new Comment($session, $model, $ref);
+					return new Comment($model, $ref);
 
 				case 'like':
-					return new Like($session, $model, $ref);
+					return new Like($model, $ref);
 				case 'usefulness':
-					return new Usefulness($session, $model, $ref);
+					return new Usefulness($model, $ref);
 				case 'agreement':
-					return new Agreement($session, $model, $ref);
+					return new Agreement($model, $ref);
 				case 'spoilage':
-					return new Spoilage($session, $model, $ref);
+					return new Spoilage($model, $ref);
 				case 'answer':
-					return new Answer($session, $model, $ref);
+					return new Answer($model, $ref);
 				case 'report':
-					return new Report($session, $model, $ref);
+					return new Report($model, $ref);
 			}
 		}
 
-		public static function factoryMethod($session, $model, $ref = null) {
+		public static function matchModel($model, $ref = null) {
 			$class = get_class($model);
 			$parents = class_parents($model);
 			array_unshift($parents, $class);
@@ -53,9 +53,9 @@
 
 				if (class_exists($view)) {
 					if ($ref) {
-						return new $view($session, $model, $ref);
+						return new $view($model, $ref);
 					} else {
-						return new $view($session, $model);
+						return new $view($model);
 					}
 				}
 			}

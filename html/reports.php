@@ -11,7 +11,7 @@
 			if (!$this->session->isLoggedIn())
 				header('Location: index.php');
 
-			$view = new \views\ReportsView($this->session);
+			$view = new \views\ReportsView();
 			$view->render();
 		}
 	}

@@ -11,7 +11,7 @@
 
 				default:
 				case 'signin':
-					$view = new \views\SigninView($this->session);
+					$view = new \views\SigninView();
 					$view->render();
 					break;
 
@@ -48,7 +48,7 @@
 					break;
 
 				case 'signup':
-					$view = new \views\SignupView($this->session);
+					$view = new \views\SignupView();
 					$view->render();
 					break;
 

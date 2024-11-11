@@ -12,10 +12,10 @@
 
 				default:
 				case 'list_movies':
-					$view = new \views\MoviesView($this->session, 'movies');
+					$view = new \views\MoviesView('movies');
 					break;
 				case 'list_requests':
-					$view = new \views\MoviesView($this->session, 'requests');
+					$view = new \views\MoviesView('requests');
 					break;
 			}
 
