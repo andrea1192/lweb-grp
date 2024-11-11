@@ -5,6 +5,7 @@
 	require_once('views/Movie.php');
 	require_once('views/Post.php');
 	require_once('views/Reaction.php');
+	require_once('views/User.php');
 
 	abstract class AbstractCollectionView extends AbstractView {
 		public $title;
@@ -129,29 +130,12 @@
 		}
 
 		public function printList() {
-			$components = 'views\UIComponents';
-
 			print("<h1>{$this->title}</h1>");
 			print('<div>');
 
 			foreach ($this->items as $user) {
-				echo <<<EOF
-				<div class="post">
-					<div class="header">
-						<div class="details">
-							<h1>{$user->username}</h1>
-							<div class="flex small">
-								<span>{$user->getUserType()}</span>
-								<span>Reputation {$user->reputation}</span>
-							</div>
-						</div>
-						<div class="flex right">
-							<div>{$components::getTextButton('Edit', 'edit')}</div>
-							<div>{$components::getTextButton('Ban', 'lock', cls: 'colored-red')}</div>
-						</div>
-					</div>
-				</div>
-				EOF;
+				$view = new User($user);
+				$view->displayListItem();
 			}
 
 			print('</div>');

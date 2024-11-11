@@ -21,7 +21,7 @@
 
 				case 'save':
 					if (isset($_POST)) {
-						$password = static::sanitize($_POST['password']);
+						$password = static::sanitize($_POST['confirm_password']);
 
 						$user = $this->session->getUser();
 						$mapper = ServiceLocator::resolve('users');

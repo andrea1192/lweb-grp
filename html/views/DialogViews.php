@@ -1,6 +1,7 @@
 <?php namespace views;
 
 	require_once('views/AbstractView.php');
+	require_once('views/User.php');
 
 	abstract class DialogView extends AbstractView {
 
@@ -99,48 +100,24 @@
 		}
 
 		public function printDialog() {
-			$save = 'profile.php?action=save';
+			$action = 'profile.php?action=save';
 			$confirm_delete = 'profile.php?action=confirm_delete';
 			$change_password = 'profile.php?action=change_password';
-
 			$components = '\views\UIComponents';
-			$errors = ($this->session->holdsErrors()) ? $this->session->popErrors() : [];
+
+			$controls_left = UIComponents::getTextButton(
+					'Delete account',
+					'delete',
+					$confirm_delete,
+					cls:'colored-red');
+			$controls_right = UIComponents::getFilledButton(
+					'Save changes',
+					'save');
+
+			$view = new User($this->user);
+			$view->display($action, $controls_left, $controls_right, confirm: true);
 
 			echo <<<EOF
-			<form id="login" class="dialog flex column" action="{$save}" method="post">
-				<div>{$components::getIcon('account_circle')}</div>
-				<h1>{$this->user->username}</h1>
-				<div id="fields" class="flex column">
-					{$components::getTextInput(
-							'Name', 'name', $this->user->name)}
-					{$components::getTextInput(
-							'Address', 'address', $this->user->address)}
-					{$components::getTextInput(
-							'Primary e-mail', 'mail_pri', $this->user->mail_pri)}
-					{$components::getTextInput(
-							'Secondary e-mail', 'mail_sec', $this->user->mail_sec)}
-
-					<div class="flex column">
-						<span class="prompt">Enter your current password to confirm:</span>
-						{$components::getPasswordInput('Password', 'password', errors: $errors)}
-					</div>
-				</div>
-				<div id="controls" class="flex">
-					<div class="flex left">
-						{$components::getTextButton(
-								'Delete account',
-								'delete',
-								$confirm_delete,
-								cls:'colored-red')}
-					</div>
-					<div class="flex right">
-						{$components::getFilledButton(
-								'Save changes',
-								'save')}
-					</div>
-				</div>
-			</form>
-
 			<div class="dialog flex cross-center">
 				<span>Other options:</span>
 				{$components::getTextButton(
@@ -227,6 +204,34 @@
 				</div>
 			</form>
 			EOF;
+		}
+	}
+
+	class UserEditView extends DialogView {
+		public $user;
+
+		public function __construct($user) {
+			parent::__construct();
+
+			$this->user = \controllers\ServiceLocator::resolve('users')->read($user);
+		}
+
+		public function printTitle() {
+			print("Edit user: {$this->user->username} - grp");
+		}
+
+		public function printDialog() {
+			$view = new User($this->user);
+			$action_update = $view->generateURL('update');
+			$action_ban = $view->generateURL('ban');
+			$components = '\views\UIComponents';
+
+			$controls_left = $view->generateBanButton();
+			$controls_right = UIComponents::getFilledButton(
+					'Save changes',
+					'save');
+
+			$view->display($action_update, $controls_left, $controls_right);
 		}
 	}
 ?>

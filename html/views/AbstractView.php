@@ -98,7 +98,7 @@
 
 				$dropdown_items = UIComponents::getDropdownItem('Profile', 'person', 'profile.php');
 
-				if ($this->session->isAdmin()) {
+				if ($this->session->isMod()) {
 					$dropdown_items .= UIComponents::getDropdownItem('Users', 'group', 'users.php');
 				}
 

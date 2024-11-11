@@ -7,8 +7,16 @@
 	color: dodgerblue !important;
 }
 
+.colored-green {
+	color: green !important;
+}
+
 .colored-red {
 	color: red !important;
+}
+
+.colored-grey {
+	color: #999 !important;
 }
 
 .menu {
