@@ -55,6 +55,7 @@
 						$user = $mapper->read($user_id);
 
 						if ($user) {
+							$user->reputation += $user::REPUTATION_DELTAS['ban'];
 							$user->setPrivilege(0);
 							$mapper->update($user);
 							$this->session->pushNotification(

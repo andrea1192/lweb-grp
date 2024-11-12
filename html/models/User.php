@@ -3,6 +3,10 @@
 	require_once('models/AbstractModel.php');
 
 	class User extends AbstractModel {
+		public const REPUTATION_DELTAS = [
+			'ban' => -10
+		];
+
 		public $username;
 		public $password;
 		public $name;
