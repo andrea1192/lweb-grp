@@ -259,6 +259,8 @@
 		}
 
 		public function generateDisplay() {
+			$overlay = $this->generateStatus();
+
 			$message = <<<EOF
 			<div>
 				<div class="small">Message from {$this->reaction->author}:</div>
@@ -274,6 +276,7 @@
 
 			return <<<EOF
 			<div class="answers">
+				{$overlay}
 				<div class="answer">
 					<div class="flex column">
 						{$message}
@@ -319,6 +322,7 @@
 		}
 
 		public function generateAdminForm() {
+			$overlay = $this->generateStatus();
 			$send = $this->generateURL('close_report');
 			$rep_accept = '+'.$this->reaction::REPUTATION_DELTAS['accepted'];
 			$rep_reject = ''.$this->reaction::REPUTATION_DELTAS['rejected'];
@@ -345,6 +349,7 @@
 
 			return <<<EOF
 			<div class="answers">
+				{$overlay}
 				<form class="answer" method="post" action="{$send}">
 					<div class="flex column">
 						{$components::getHiddenInput('type', 'report')}
@@ -366,6 +371,32 @@
 				</form>
 			</div>
 			EOF;
+		}
+
+		protected function generateStatus() {
+			$label = '';
+
+			switch ($this->reaction->status) {
+				default:
+				case 'open':
+					$label = 'Pending review';
+					$icon = 'pending_actions';
+					break;
+				case 'accepted':
+					$label = 'Accepted';
+					$icon = 'thumb_up';
+					break;
+				case 'rejected':
+					$label = 'Rejected';
+					$icon = 'thumb_down';
+					break;
+				case 'closed':
+					$label = 'Closed';
+					$icon = 'cancel';
+					break;
+			}
+
+			return UIComponents::getOverlay($label, $icon, cls: 'right status');
 		}
 	}
 

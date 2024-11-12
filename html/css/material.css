@@ -123,6 +123,12 @@
 	background-color: white;
 }
 
+.overlay.right {
+	top: 24px;
+	left: revert;
+	right: 2px;
+}
+
 /* Bottone su anchor: conduce ad altra vista */
 a.button {
 	text-decoration: none;

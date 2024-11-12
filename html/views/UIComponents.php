@@ -12,10 +12,13 @@
 		public static function getOverlay($label, $icon, $cls = '') {
 			$icon = static::getIcon($icon);
 
+			if (!empty($label))
+				$label = "<span class=\"label\">{$label}</span>";
+
 			return <<<EOF
 			<div class="overlay {$cls}">
 				{$icon}
-				<span class="label">{$label}</span>
+				{$label}
 			</div>
 			EOF;
 		}

@@ -325,6 +325,9 @@
 					break;
 			}
 
+			if ($_SERVER['SCRIPT_NAME'] == '/post.php')
+				$label = '';
+
 			return UIComponents::getOverlay($label, $icon, cls: 'status');
 		}
 

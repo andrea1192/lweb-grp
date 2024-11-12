@@ -48,7 +48,7 @@
 }
 
 /* Icona di overlay (es. stato di approvazione di una scheda) */
-.overlay >.icon {
+.overlay:has(>.label) >.icon {
 	margin-right: 4px;
 }
 
