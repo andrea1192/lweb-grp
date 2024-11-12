@@ -126,7 +126,8 @@
 			$URL = "post.php?action=compose&type={$this->tab}&movie={$this->movie->id}";
 			$URL = htmlspecialchars($URL, ENT_QUOTES | ENT_SUBSTITUTE | ENT_XHTML);
 
-			if ($this->session->isAllowed())
+			if ($this->session->isAllowed()
+					&& ($this->tab != 'extra' || $this->session->isMod()))
 				print(UIComponents::getFAB('New post', 'add', $URL));
 		}
 

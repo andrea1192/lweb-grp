@@ -355,7 +355,8 @@
 
 		public function display() {
 
-			if ($this->session->getReputation() >= $this->post->reputation)
+			if (($this->session->getReputation() >= $this->post->reputation)
+					|| $this->session->isMod())
 				parent::displayReference();
 			else
 				parent::displayReference(active: false, content: 'You don\'t have enough reputation to read this post.');
