@@ -9,6 +9,10 @@
 		public function route() {
 			$user_id = static::sanitize($_GET['id'] ?? '');
 
+			// Livello di privilegio richiesto per tutte le azioni: 2 (mod)
+			if (!$this->session->isMod())
+				header('Location: index.php');
+
 			switch ($_REQUEST['action'] ?? '') {
 
 				default:
@@ -38,7 +42,7 @@
 									'Changes saved.');
 						} else {
 							static::abort(
-									'Invalid user.');
+									"User \"{$user->username}\" not found.");
 						}
 					}
 
@@ -54,10 +58,10 @@
 							$user->setPrivilege(0);
 							$mapper->update($user);
 							$this->session->pushNotification(
-									"User {$user->username} banned.");
+									"User \"{$user->username}\" banned.");
 						} else {
 							static::abort(
-									'Invalid user.');
+									"User \"{$user->username}\" not found.");
 						}
 					}
 
@@ -73,10 +77,10 @@
 							$user->setPrivilege(1);
 							$mapper->update($user);
 							$this->session->pushNotification(
-									"User {$user->username} unbanned.");
+									"User \"{$user->username}\" unbanned.");
 						} else {
 							static::abort(
-									'Invalid user.');
+									"User \"{$user->username}\" not found.");
 						}
 					}
 
