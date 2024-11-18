@@ -10,6 +10,51 @@
 		}
 	}
 
+	class SetupView extends DialogView {
+
+		public function printTitle() {
+			print("Setup - grp");
+		}
+
+		protected function generateMainMenu() {
+			return '';
+		}
+
+		protected function generateUserMenu() {
+			return 'grp install script';
+		}
+
+		public function printDialog() {
+			require_once('connection.php');
+
+			$action = '';
+
+			$components = '\views\UIComponents';
+
+			echo <<<EOF
+			<form id="login" class="dialog flex column" action="{$action}" method="post">
+				<div>{$components::getIcon('database')}</div>
+				<h1>Setup</h1>
+				<div id="fields" class="flex column">
+					<span class="prompt">Data extracted from <em>connection.php</em></span>
+					{$components::getTextInput('Database host', 'db_host', DB_HOST, enabled: false)}
+					{$components::getTextInput('Database name', 'db_name', DB_NAME, enabled: false)}
+					{$components::getTextInput('Username', 'db_user', DB_USER, enabled: false)}
+					{$components::getTextInput('Password', 'db_pass', DB_PASS, enabled: false)}
+				</div>
+				<div id="controls" class="flex">
+					<div class="flex left">
+						{$components::getTextButton('Restore', 'settings_backup_restore', cls: 'colored-red')}
+					</div>
+					<div class="flex right">
+						{$components::getFilledButton('Install', 'database_upload')}
+					</div>
+				</div>
+			</form>
+			EOF;
+		}
+	}
+
 	class SigninView extends DialogView {
 
 		public function printTitle() {

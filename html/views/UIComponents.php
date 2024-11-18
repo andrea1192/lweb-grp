@@ -201,7 +201,7 @@
 			EOF;
 		}
 
-		public static function getPasswordInput($label, $name, $value = '', $cls = '', $errors = []) {
+		public static function getPasswordInput($label, $name, $value = '', $enabled = true, $cls = '', $errors = []) {
 
 			if (!empty($errors) && array_key_exists($name, $errors)) {
 				$supp = "<span class=\"supp\">{$errors[$name]}</span>";
@@ -212,17 +212,19 @@
 				$icon = '';
 			}
 
+			$disabled = (!$enabled) ? 'disabled="disabled"' : '';
+
 			return <<<EOF
 			<label>
 				<span class="label">{$label}</span>
-				<input type="password" class="{$cls}" name="{$name}" value="{$value}" />
+				<input type="password" class="{$cls}" name="{$name}" value="{$value}" {$disabled} />
 				{$icon}
 				{$supp}
 			</label>
 			EOF;
 		}
 
-		public static function getTextInput($label, $name, $value = '', $cls = '', $errors = []) {
+		public static function getTextInput($label, $name, $value = '', $enabled = true, $cls = '', $errors = []) {
 
 			if (!empty($errors) && array_key_exists($name, $errors)) {
 				$supp = "<span class=\"supp\">{$errors[$name]}</span>";
@@ -233,17 +235,19 @@
 				$icon = '';
 			}
 
+			$disabled = (!$enabled) ? 'disabled="disabled"' : '';
+
 			return <<<EOF
 			<label>
 				<span class="label">{$label}</span>
-				<input type="text" class="{$cls}" name="{$name}" value="{$value}" />
+				<input type="text" class="{$cls}" name="{$name}" value="{$value}" {$disabled} />
 				{$icon}
 				{$supp}
 			</label>
 			EOF;
 		}
 
-		public static function getTextArea($label, $name, $value = '', $cls = '', $errors = []) {
+		public static function getTextArea($label, $name, $value = '', $enabled = true, $cls = '', $errors = []) {
 
 			if (!empty($errors) && array_key_exists($name, $errors)) {
 				$supp = "<span class=\"supp\">{$errors[$name]}</span>";
@@ -254,10 +258,12 @@
 				$icon = '';
 			}
 
+			$disabled = (!$enabled) ? 'disabled="disabled"' : '';
+
 			return <<<EOF
 			<label>
 				<span class="label">{$label}</span>
-				<textarea class="{$cls}" name="{$name}" rows="5" cols="80">{$value}</textarea>
+				<textarea class="{$cls}" name="{$name}" rows="5" cols="80" {$disabled}>{$value}</textarea>
 				{$icon}
 				{$supp}
 			</label>

@@ -66,7 +66,7 @@
 		}
 
 
-		private function generateMainMenu() {
+		protected function generateMainMenu() {
 			return <<<EOF
 			<ul class="menu">
 				<li><a href="movies.php?action=list_movies">Movies</a></li>
@@ -75,7 +75,7 @@
 			EOF;
 		}
 
-		private function generateUserMenu() {
+		protected function generateUserMenu() {
 
 			if ($this->session->isLoggedIn()) {
 				$initials = $this->session->getUsername()[0];
@@ -120,13 +120,13 @@
 			}
 		}
 
-		protected function printHeader() {
+		public function printHeader() {
 			$main_menu = $this->generateMainMenu();
 			$user_menu = $this->generateUserMenu();
 
 			echo <<< EOF
 			<div id="header">
-				<div class="flex wrapper">
+				<div class="flex cross-center wrapper">
 					<div class="flex left">
 						<div id="logo">grp</div>
 						{$main_menu}
@@ -139,7 +139,7 @@
 			EOF;
 		}
 
-		protected function printFooter() {
+		public function printFooter() {
 			$snackbar = ($this->session->holdsNotification()) ?
 					UIComponents::getSnackbar($this->session->popNotification()) : '';
 

@@ -447,3 +447,10 @@ label >textarea.invalid {
 	border-color: red;
 	padding-right: 56px;
 }
+
+/* Regole per campi disabilitati */
+
+label >input[disabled] {
+	border: 1px solid #CCC9;
+	background-color: #CCC2;
+}
