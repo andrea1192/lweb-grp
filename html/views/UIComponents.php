@@ -296,5 +296,16 @@
 			<option value="{$value}">{$label}</option>
 			EOF;
 		}
+
+		public static function getCheckbox($label, $name, $checked = false) {
+			$checked = $checked ? 'checked="checked"' : '';
+
+			return <<<EOF
+			<label>
+				<input type="checkbox" name="{$name}" {$checked} />
+				{$label}
+			</label>
+			EOF;
+		}
 	}
 ?>

@@ -28,8 +28,36 @@
 			require_once('connection.php');
 
 			$action = '';
+			$users_table = '';
 
 			$components = '\views\UIComponents';
+
+			foreach (BUILTIN_USERS as $details) {
+				$user = new \models\User($details);
+
+				$users_table .= <<<EOF
+				<tr>
+					<td>{$user->username}</td>
+					<td>{$user->password}</td>
+					<td>{$user->getUserType()}</td>
+				</tr>
+				EOF;
+			}
+
+			$optionals = <<<EOF
+				<div class="flex column">
+					{$components::getCheckbox('Also copy sample content', 'setup_sample', checked: true)}
+					{$components::getCheckbox('Also set up built-in users:', 'setup_users', checked: true)}
+					<table>
+						<tr>
+							<th>Username</th>
+							<th>Password</th>
+							<th>Privileges</th>
+						<tr>
+						{$users_table}
+					</table>
+				</div>
+			EOF;
 
 			echo <<<EOF
 			<form id="login" class="dialog flex column" action="{$action}" method="post">
@@ -41,6 +69,7 @@
 					{$components::getTextInput('Database name', 'db_name', DB_NAME, enabled: false)}
 					{$components::getTextInput('Username', 'db_user', DB_USER, enabled: false)}
 					{$components::getTextInput('Password', 'db_pass', DB_PASS, enabled: false)}
+					{$optionals}
 				</div>
 				<div id="controls" class="flex">
 					<div class="flex left">

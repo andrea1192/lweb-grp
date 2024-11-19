@@ -369,7 +369,7 @@ label >span.label:has(+textarea.filled) {
 	background-color: #FFF0;
 }
 
-label >input,
+label >input:not([type='checkbox']),
 label >select,
 label >textarea {
 	width: 100%;
@@ -453,4 +453,20 @@ label >textarea.invalid {
 label >input[disabled] {
 	border: 1px solid #CCC9;
 	background-color: #CCC2;
+}
+
+table {
+	margin-left: 28px;
+	border-collapse: collapse;
+	font-size: 0.9rem;
+}
+
+th {
+	text-align: left;
+	font-weight: 500;
+}
+
+th, td {
+	border: 1px solid #CCC;
+	padding: 8px;
 }
