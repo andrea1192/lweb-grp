@@ -3,6 +3,7 @@
 	define('DB_USER', 'mariadb_user');
 	define('DB_PASS', 'mariadb_password');
 	define('DB_NAME', 'test_db');
+	define('USERS_TABLE', 'Users');
 
 	define('BUILTIN_USERS', [
 		[

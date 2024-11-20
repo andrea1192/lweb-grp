@@ -17,8 +17,11 @@
 		public $privilege;
 
 		public function __construct($state) {
-			parent::__construct($state);
 
+			if (!empty($state['password']))
+				$state['password'] = password_hash($state['password'], PASSWORD_DEFAULT);
+
+			parent::__construct($state);
 			$this->username = $this->validateString('username');
 			$this->password = $this->validateString('password');
 			$this->name = $this->validateString('name', required: false);

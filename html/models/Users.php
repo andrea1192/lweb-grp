@@ -6,6 +6,7 @@
 
 	class Database {
 		protected $connection;
+		protected const DB_NAME = DB_NAME;
 
 		public function __construct() {
 			$this->connection = new \mysqli(
@@ -14,6 +15,11 @@
 					DB_PASS,
 					DB_NAME
 			);
+		}
+
+		public function init() {
+			$db = static::DB_NAME;
+			$this->query("CREATE DATABASE IF NOT EXISTS $db");
 		}
 
 		public function query($query, $parameters = null) {
@@ -33,13 +39,40 @@
 	}
 
 	class Users extends Database implements IRepository {
+		protected const DB_TABLE = USERS_TABLE;
+
+		public function init() {
+			$table = static::DB_TABLE;
+
+			parent::init();
+			$this->query(<<<EOF
+					CREATE TABLE IF NOT EXISTS $table (
+					username	VARCHAR(160)	PRIMARY KEY,
+					password	VARCHAR(160)	NOT NULL,
+					name		VARCHAR(160),
+					address		VARCHAR(160),
+					mail_pri	VARCHAR(160),
+					mail_sec	VARCHAR(160),
+					reputation	INTEGER			NOT NULL DEFAULT 1,
+					privilege	INTEGER			NOT NULL DEFAULT 1,
+					CONSTRAINT priv_levels CHECK (privilege BETWEEN 0 AND 3)
+					)
+					EOF
+			);
+		}
+
+		public function restore() {
+			$table = static::DB_TABLE;
+			$this->query("TRUNCATE $table");
+		}
 
 		public function getUserByUsername($username) {
 			return $this->read($username);
 		}
 
 		public function read($id) {
-			$query = 'SELECT * FROM Users WHERE username = ?';
+			$table = static::DB_TABLE;
+			$query = "SELECT * FROM $table WHERE username = ?";
 			$match = $this->query($query, [$id]);
 
 			if ($match)
@@ -47,7 +80,8 @@
 		}
 
 		public function readAll() {
-			$query = 'SELECT * FROM Users';
+			$table = static::DB_TABLE;
+			$query = "SELECT * FROM $table";
 			$matches = $this->query($query);
 
 			foreach ($matches as $match) {
@@ -58,18 +92,23 @@
 		}
 
 		public function create($type, $state) {
+			$table = static::DB_TABLE;
 			$user = new \models\User($state);
+			$state = $user->getState();
 
 			$values = array_values($state);
 			$parameters = implode(',', array_keys($state));
 			$placeholders = implode(',', array_fill(0, count($state), '?'));
 
-			$query = "INSERT INTO Users ($parameters) VALUES ({$placeholders})";
+			$query = "INSERT INTO $table ($parameters) VALUES ({$placeholders})";
 
 			$this->query($query, $values);
+
+			return $user;
 		}
 
 		public function update($object) {
+			$table = static::DB_TABLE;
 			$username = $object->username;
 
 			$current = $this->read($username);
@@ -85,9 +124,11 @@
 			$parameters = array_map(fn($elem) => ($elem.'=?'), $parameters);
 			$parameters = implode(',', $parameters);
 
-			$query = "UPDATE Users SET $parameters WHERE username = ?";
+			$query = "UPDATE $table SET $parameters WHERE username = ?";
 
 			$this->query($query, $values);
+
+			return $current;
 		}
 	}
 ?>

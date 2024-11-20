@@ -58,17 +58,13 @@
 
 						$state['username'] = static::sanitize($_POST['username']);
 						$state['password'] = static::sanitize($_POST['password']);
-
-						if (!empty($state['password']))
-							$state['password'] = password_hash($state['password'], PASSWORD_DEFAULT);
-
 						$state['name'] = static::sanitize($_POST['name']);
 						$state['address'] = static::sanitize($_POST['address']);
 						$state['mail_pri'] = static::sanitize($_POST['mail_pri']);
 						$state['mail_sec'] = static::sanitize($_POST['mail_sec']);
 
 						try {
-							$mapper->create('user', $state);
+							$user = $mapper->create('user', $state);
 
 						} catch (\models\InvalidDataException $e) {
 							static::abort(
