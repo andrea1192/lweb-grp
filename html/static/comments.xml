@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<comments
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:noNamespaceSchemaLocation="comments.xsd">
+<comments xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="comments.xsd">
 
 	<comment id="c1" status="active" request="req1" author="foo" date="2020-01-01T00:00:00">
 		<rating>ko</rating>

@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<movies
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:noNamespaceSchemaLocation="movies.xsd">
+<movies xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="movies.xsd">
 
 	<movie id="m1">
 		<title>The Martian</title>

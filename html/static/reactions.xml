@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<reactions
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:noNamespaceSchemaLocation="reactions.xsd">
+<reactions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="reactions.xsd">
 
-	<like post="r1" author="foo" type="like" />
-	<like post="r1" author="bar" type="dislike" />
-	<usefulness post="q1" author="foo" rating="2" />
-	<agreement post="q1" author="foo" rating="4" />
-	<agreement post="q1" author="bar" rating="5" />
-	<spoilage post="s1" author="foo" rating="9" />
+	<like post="r1" author="foo" type="like"/>
+	<like post="r1" author="bar" type="dislike"/>
+	<usefulness post="q1" author="foo" rating="2"/>
+	<agreement post="q1" author="foo" rating="4"/>
+	<agreement post="q1" author="bar" rating="5"/>
+	<spoilage post="s1" author="foo" rating="9"/>
 	
 </reactions>

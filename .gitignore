@@ -4,4 +4,10 @@
 
 # Secrets
 .env
+
+# Others
 test.php
+archived/
+mockups/
+notes/
+sample/

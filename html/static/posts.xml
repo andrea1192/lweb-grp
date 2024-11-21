@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<posts
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:noNamespaceSchemaLocation="posts.xsd">
+<posts xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="posts.xsd">
 
 	<review id="r1" status="active" movie="m2" author="foo" date="2020-01-01T00:00:00">
 		<rating>10</rating>

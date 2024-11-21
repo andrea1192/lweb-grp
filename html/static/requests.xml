@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<requests
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:noNamespaceSchemaLocation="requests.xsd">
+<requests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="requests.xsd">
 
 	<request id="req1" status="rejected" author="foo">
 		<title>The Secret Life of Walter Mitty</title>
