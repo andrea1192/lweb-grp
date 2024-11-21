@@ -39,9 +39,9 @@
 	}
 
 	class Users extends Database implements IRepository {
-		protected const DB_TABLE = USERS_TABLE;
+		protected const DB_TABLE = TAB_USERS;
 
-		public function init() {
+		public function init($source = null) {
 			$table = static::DB_TABLE;
 
 			parent::init();
@@ -59,6 +59,24 @@
 					)
 					EOF
 			);
+
+			if ($source) {
+				$existing_users = [];
+
+				foreach ($source as $details) {
+					try {
+						$this->create('user', $details);
+
+					} catch (\mysqli_sql_exception $e) {
+						$existing_users[] = $details['username'];
+					}
+				}
+
+				if (!empty($existing_users)) {
+					$msg = " Couldn't overwrite existing users: ".implode(', ', $existing_users);
+					throw new \Exception($msg);
+				}
+			}
 		}
 
 		public function restore() {

@@ -1,11 +1,15 @@
 <?php namespace models;
 
+	require_once('connection.php');
 	require_once('models/Repository.php');
 	require_once('models/AbstractMapper.php');
 
+	define('XMLNS_DEF', 'http://www.w3.org/2000/xmlns/');
+	define('XSI_DEF', 'http://www.w3.org/2001/XMLSchema-instance');
+
 	abstract class XMLDocument implements IRepository {
-		protected const SCHEMAS_ROOT = 'schemas/';
-		protected const DOCUMENT_ROOT = 'static/';
+		protected const SCHEMAS_ROOT = DIR_SCHEMAS;
+		protected const DOCUMENT_ROOT = DIR_STATIC;
 		protected const DOCUMENT_NAME = '';
 
 		protected $document;
@@ -84,21 +88,67 @@
 		}
 
 		public function __construct() {
-			$this->loadDocument();
+			if (is_file(static::getDocumentPath()))
+				$this->loadDocument();
 		}
 
-		protected function loadDocument() {
+		public function init($source = null) {
+
+			if (!is_dir(static::DOCUMENT_ROOT))
+				mkdir(static::DOCUMENT_ROOT);
+
+			if (!$source) {
+				static::createDocument();
+
+			} else {
+				$doc = $source.static::DOCUMENT_NAME.'.xml';
+
+				if (!is_file($doc))
+					throw new \Exception("Couldn't find $doc");
+
+				static::loadDocument($doc);
+				static::saveDocument();
+			}
+		}
+
+		public function restore() {
+			if (is_file(static::getDocumentPath()))
+				unlink(static::getDocumentPath());
+
+			static::createDocument();
+		}
+
+		protected function createDocument() {
+			$sch_path = static::getSchemaPath();
+
 			$this->document = new \DOMDocument('1.0', 'UTF-8');
 
-			$this->document->load(static::getDocumentPath());
-			$this->document->schemaValidate(static::getSchemaPath());
+			$root = $this->document->createElement(static::DOCUMENT_NAME);
+			$root->setAttributeNS(XMLNS_DEF, 'xmlns:xsi', XSI_DEF);
+			$root->setAttributeNS(XSI_DEF, 'noNamespaceSchemaLocation', $sch_path);
+			$this->document->appendChild($root);
+
+			$this->saveDocument();
+		}
+
+		protected function loadDocument($doc_path = null, $sch_path = null) {
+			$doc_path = $doc_path ?? static::getDocumentPath();
+			$sch_path = $sch_path ?? static::getSchemaPath();
+
+			$this->document = new \DOMDocument('1.0', 'UTF-8');
+
+			$this->document->load($doc_path);
+			$this->document->schemaValidate($sch_path);
 
 			$this->xpath = new \DOMXPath($this->document);
 		}
 
-		protected function saveDocument() {
-			$this->document->schemaValidate(static::getSchemaPath());
-			$this->document->save(static::getDocumentPath());
+		protected function saveDocument($doc_path = null, $sch_path = null) {
+			$doc_path = $doc_path ?? static::getDocumentPath();
+			$sch_path = $sch_path ?? static::getSchemaPath();
+
+			$this->document->schemaValidate($sch_path);
+			$this->document->save($doc_path);
 		}
 
 		public function getDocument() {
