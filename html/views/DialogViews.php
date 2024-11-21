@@ -27,7 +27,8 @@
 		public function printDialog() {
 			require_once('connection.php');
 
-			$action = '';
+			$action_install = 'install.php?action=install';
+			$action_restore = 'install.php?action=restore';
 			$users_table = '';
 
 			$components = '\views\UIComponents';
@@ -37,8 +38,8 @@
 
 				$users_table .= <<<EOF
 				<tr>
-					<td>{$user->username}</td>
-					<td>{$user->password}</td>
+					<td>{$details['username']}</td>
+					<td>{$details['password']}</td>
 					<td>{$user->getUserType()}</td>
 				</tr>
 				EOF;
@@ -60,7 +61,7 @@
 			EOF;
 
 			echo <<<EOF
-			<form id="login" class="dialog flex column" action="{$action}" method="post">
+			<form id="login" class="dialog flex column" action="{$action_install}" method="post">
 				<div>{$components::getIcon('database')}</div>
 				<h1>Setup</h1>
 				<div id="fields" class="flex column">
@@ -73,7 +74,7 @@
 				</div>
 				<div id="controls" class="flex">
 					<div class="flex left">
-						{$components::getTextButton('Restore', 'settings_backup_restore', cls: 'colored-red')}
+						{$components::getTextButton('Restore', 'settings_backup_restore', $action_restore, cls: 'colored-red')}
 					</div>
 					<div class="flex right">
 						{$components::getFilledButton('Install', 'database_upload')}
