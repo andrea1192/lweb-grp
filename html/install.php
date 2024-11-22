@@ -12,7 +12,6 @@
 
 		public function route() {
 			require_once('connection.php');
-			$message = '';
 
 			switch ($_REQUEST['action'] ?? '') {
 
@@ -43,9 +42,22 @@
 						static::abort("Install failed. {$e->getMessage()}");
 					}
 
-					$message = "Install completed successfully.";
+					// Inizializza le cartelle di poster (locandine) e backdrop (sfondi)
+					if (isset($_POST['setup_sample'])) {
+						$sample_bdrops = str_replace(DIR_STATIC, DIR_SAMPLE, DIR_BACKDROPS);
+						$sample_posters = str_replace(DIR_STATIC, DIR_SAMPLE, DIR_POSTERS);
 
-					$this->session->pushNotification($message);
+						static::copy_media($sample_bdrops, DIR_BACKDROPS);
+						static::copy_media($sample_posters, DIR_POSTERS);
+
+					} else {
+						if (!is_dir(DIR_BACKDROPS))
+							mkdir(DIR_BACKDROPS);
+						if (!is_dir(DIR_POSTERS))
+							mkdir(DIR_POSTERS);
+					}
+
+					$this->session->pushNotification("Install completed successfully.");
 					header("Location: {$_SERVER['HTTP_REFERER']}");
 					break;
 
@@ -69,11 +81,53 @@
 						static::abort("Restore failed. {$e->getMessage()}");
 					}
 
-					$message = "Restore completed successfully.";
+					// Ripristina le cartelle di poster (locandine) e backdrop (sfondi)
+					if (is_dir(DIR_BACKDROPS) || is_dir(DIR_POSTERS)) {
+						static::remove_media(DIR_BACKDROPS);
+						static::remove_media(DIR_POSTERS);
+					}
 
-					$this->session->pushNotification($message);
+					$this->session->pushNotification("Restore completed successfully.");
 					header("Location: {$_SERVER['HTTP_REFERER']}");
 					break;
+			}
+		}
+
+		private static function copy_media($src, $dst) {
+
+			if (!is_dir($src))
+				return;
+
+			if (!is_dir($dst))
+				mkdir($dst);
+
+			if ($files = scandir($src)) {
+				$files = array_diff($files, ['.','..']);
+
+				foreach ($files as $file) {
+					$src_path = $src.$file;
+					$dst_path = $dst.$file;
+
+					if (!is_dir($src_path))
+						copy($src_path, $dst_path);
+				}
+			}
+		}
+
+		private static function remove_media($tgt) {
+
+			if (!is_dir($tgt))
+				return;
+
+			if ($files = scandir($tgt)) {
+				$files = array_diff($files, ['.','..']);
+
+				foreach ($files as $file) {
+					$path = $tgt.$file;
+
+					if (!is_dir($path))
+						unlink($path);
+				}
 			}
 		}
 	}
