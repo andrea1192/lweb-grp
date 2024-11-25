@@ -1,22 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<comments xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="comments.xsd">
-
-	<comment id="c1" status="active" request="req1" author="foo" date="2020-01-01T00:00:00">
-		<rating>ko</rating>
-		<title>Comment 1</title>
-		<text>A lot of the details are missing</text>
-	</comment>
-
-	<comment id="c2" status="active" request="req1" author="foo" date="2020-01-01T00:00:00">
-		<rating>okma</rating>
-		<title>Comment 2</title>
-		<text>It needs work, but the movie is good</text>
-	</comment>
-
-	<comment id="c3" status="active" request="req3" author="foo" date="2020-01-01T00:00:00">
-		<rating>ok</rating>
-		<title>Comment 3</title>
-		<text>Perfect</text>
-	</comment>
-
-</comments>
+<comments xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="schemas/comments.xsd"/>

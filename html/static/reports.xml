@@ -1,15 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<reports xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="reports.xsd">
-
-	<report post="s1" author="baz" date="2020-01-01T00:00:00" status="closed">
-		<response>No violations found</response>
-	</report>
-	<report post="r2" author="bar" date="2020-01-01T00:00:00" status="accepted">
-		<message>Spam</message>
-		<response>Post removed</response>
-	</report>
-	<report post="q2" author="bar" date="2020-01-01T00:00:00" status="open">
-		<message>Really?</message>
-	</report>
-	
-</reports>
+<reports xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="schemas/reports.xsd"/>

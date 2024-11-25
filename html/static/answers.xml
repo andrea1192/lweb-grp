@@ -1,12 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<answers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="answers.xsd">
-
-	<answer id="a1" status="active" post="q1" author="baz" date="2020-01-01T00:00:00">
-		<text>It's a good adaptation, I recommend it</text>
-	</answer>
-
-	<answer id="a2" status="active" post="q2" author="baz" date="2020-01-01T00:00:00">
-		<text>It is quite realistic, the author did a lot of research</text>
-	</answer>
-	
-</answers>
+<answers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="schemas/answers.xsd"/>
