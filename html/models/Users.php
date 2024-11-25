@@ -94,7 +94,7 @@
 			$match = $this->query($query, [$id]);
 
 			if ($match)
-				return new User($match);
+				return new User($match, hashed: true);
 		}
 
 		public function readAll() {
@@ -103,7 +103,7 @@
 			$matches = $this->query($query);
 
 			foreach ($matches as $match) {
-				$users[] = new User($match);
+				$users[] = new User($match, hashed: true);
 			}
 
 			return $users;

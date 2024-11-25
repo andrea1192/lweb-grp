@@ -16,9 +16,9 @@
 		public $reputation;
 		public $privilege;
 
-		public function __construct($state) {
+		public function __construct($state, $hashed = false) {
 
-			if (!empty($state['password']))
+			if (!empty($state['password']) && !$hashed)
 				$state['password'] = password_hash($state['password'], PASSWORD_DEFAULT);
 
 			parent::__construct($state);
