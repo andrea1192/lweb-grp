@@ -201,15 +201,24 @@
 			EOF;
 		}
 
-		public static function getPasswordInput($label, $name, $value = '', $enabled = true, $cls = '', $errors = []) {
+		public static function getPasswordInput(
+				$label,
+				$name,
+				$value = '',
+				$supp = '',
+				$icon = '',
+				$enabled = true,
+				$cls = '',
+				$errors = []
+			) {
 
 			if (!empty($errors) && array_key_exists($name, $errors)) {
 				$supp = "<span class=\"supp\">{$errors[$name]}</span>";
 				$icon = static::getIcon('error');
 				$cls .= 'invalid';
 			} else {
-				$supp = '';
-				$icon = '';
+				$supp = (!empty($supp)) ? "<span class=\"supp\">$supp</span>" : '';
+				$icon = (!empty($icon)) ? static::getIcon($icon) : '';
 			}
 
 			$disabled = (!$enabled) ? 'disabled="disabled"' : '';
@@ -224,15 +233,24 @@
 			EOF;
 		}
 
-		public static function getTextInput($label, $name, $value = '', $enabled = true, $cls = '', $errors = []) {
+		public static function getTextInput(
+				$label,
+				$name,
+				$value = '',
+				$supp = '',
+				$icon = '',
+				$enabled = true,
+				$cls = '',
+				$errors = []
+			) {
 
 			if (!empty($errors) && array_key_exists($name, $errors)) {
 				$supp = "<span class=\"supp\">{$errors[$name]}</span>";
 				$icon = static::getIcon('error');
 				$cls .= 'invalid';
 			} else {
-				$supp = '';
-				$icon = '';
+				$supp = (!empty($supp)) ? "<span class=\"supp\">$supp</span>" : '';
+				$icon = (!empty($icon)) ? static::getIcon($icon) : '';
 			}
 
 			$disabled = (!$enabled) ? 'disabled="disabled"' : '';
@@ -247,15 +265,24 @@
 			EOF;
 		}
 
-		public static function getTextArea($label, $name, $value = '', $enabled = true, $cls = '', $errors = []) {
+		public static function getTextArea(
+				$label,
+				$name,
+				$value = '',
+				$supp = '',
+				$icon = '',
+				$enabled = true,
+				$cls = '',
+				$errors = []
+			) {
 
 			if (!empty($errors) && array_key_exists($name, $errors)) {
 				$supp = "<span class=\"supp\">{$errors[$name]}</span>";
 				$icon = static::getIcon('error');
 				$cls .= 'invalid';
 			} else {
-				$supp = '';
-				$icon = '';
+				$supp = (!empty($supp)) ? "<span class=\"supp\">$supp</span>" : '';
+				$icon = (!empty($icon)) ? static::getIcon($icon) : '';
 			}
 
 			$disabled = (!$enabled) ? 'disabled="disabled"' : '';
@@ -270,12 +297,26 @@
 			EOF;
 		}
 
-		public static function getFilledTextInput($label, $name, $value = '', $cls = '', $errors = []) {
-			return static::getTextInput($label, $name, $value, "filled {$cls}", $errors);
+		public static function getFilledTextInput(
+				$label,
+				$name,
+				$value = '',
+				$cls = '',
+				$errors = []
+			) {
+			return static::getTextInput(
+					$label, $name, value: $value, cls: "filled {$cls}", errors: $errors);
 		}
 
-		public static function getFilledTextArea($label, $name, $value = '', $cls = '', $errors = []) {
-			return static::getTextArea($label, $name, $value, "filled {$cls}", $errors);
+		public static function getFilledTextArea(
+				$label,
+				$name,
+				$value = '',
+				$cls = '',
+				$errors = []
+			) {
+			return static::getTextArea(
+					$label, $name, value: $value, cls: "filled {$cls}", errors: $errors);
 		}
 
 		public static function getSelect($label, $name, $options) {
@@ -297,12 +338,13 @@
 			EOF;
 		}
 
-		public static function getCheckbox($label, $name, $checked = false) {
+		public static function getCheckbox($label, $name, $checked = false, $enabled = true) {
 			$checked = $checked ? 'checked="checked"' : '';
+			$disabled = (!$enabled) ? 'disabled="disabled"' : '';
 
 			return <<<EOF
 			<label>
-				<input type="checkbox" name="{$name}" {$checked} />
+				<input type="checkbox" name="{$name}" {$checked} {$disabled} />
 				{$label}
 			</label>
 			EOF;

@@ -47,8 +47,19 @@
 
 			$optionals = <<<EOF
 				<div class="flex column">
-					{$components::getCheckbox('Also copy sample content', 'setup_sample', checked: true)}
-					{$components::getCheckbox('Also set up built-in users:', 'setup_users', checked: true)}
+					{$components::getCheckbox(
+							'Set up database tables',
+							'setup_tables',
+							checked: true,
+							enabled: false)}
+					{$components::getCheckbox(
+							'Set up sample content',
+							'setup_sample',
+							checked: true)}
+					{$components::getCheckbox(
+							'Set up built-in users:',
+							'setup_users',
+							checked: true)}
 					<table>
 						<tr>
 							<th>Username</th>
@@ -66,10 +77,29 @@
 				<h1>Setup</h1>
 				<div id="fields" class="flex column">
 					<span class="prompt">Data extracted from <em>connection.php</em></span>
-					{$components::getTextInput('Database host', 'db_host', DB_HOST, enabled: false)}
-					{$components::getTextInput('Database name', 'db_name', DB_NAME, enabled: false)}
-					{$components::getTextInput('Username', 'db_user', DB_USER, enabled: false)}
-					{$components::getTextInput('Password', 'db_pass', DB_PASS, enabled: false)}
+					{$components::getTextInput(
+							'Database host',
+							'db_host',
+							DB_HOST,
+							supp: 'Hostname or IP address',
+							enabled: false)}
+					{$components::getTextInput(
+							'Database name',
+							'db_name',
+							DB_NAME,
+							supp: 'This database must already exist',
+							enabled: false)}
+					{$components::getTextInput(
+							'Username',
+							'db_user',
+							DB_USER,
+							supp: 'This user must have CREATE privileges on the database',
+							enabled: false)}
+					{$components::getTextInput(
+							'Password',
+							'db_pass',
+							DB_PASS,
+							enabled: false)}
 					{$optionals}
 				</div>
 				<div id="controls" class="flex">

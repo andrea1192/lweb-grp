@@ -412,10 +412,7 @@ label >textarea.filled:focus {
 	outline: none;
 }
 
-/* Regole per campi contenenti dati non validi */
-
-label:has(>input.invalid),
-label:has(>textarea.invalid) {
+label:has(>.supp) {
 	margin-bottom: 1.2rem;
 }
 
@@ -425,7 +422,6 @@ label >span.supp {
 	left: 16px;
 	translate: 0 100%;
 	font-size: 0.7rem;
-	color: red;
 }
 
 label >span.icon {
@@ -434,11 +430,12 @@ label >span.icon {
 	right: 16px;
 	translate: 0 50%;
 	font-size: 24px;
-	color: red;
 }
 
-label >span.label:has(+input.invalid),
-label >span.label:has(+textarea.invalid) {
+/* Regole per campi contenenti dati non validi */
+
+label:has(>input.invalid),
+label:has(>textarea.invalid) {
 	color: red;
 }
 
