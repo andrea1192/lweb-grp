@@ -52,13 +52,26 @@
 				return new \models\Users();
 			});
 
-			$this->loadSession();
+			$this->session = ServiceLocator::resolve('session');
+
+			if ($_SERVER['SCRIPT_NAME'] != '/install.php')
+				$this->checkDatabase();
+
 			$this->route();
 		}
 
-		protected function loadSession() {
+		private function checkDatabase() {
 
-			$this->session = ServiceLocator::resolve('session');
+			try {
+				ServiceLocator::resolve('users');
+
+			} catch (\mysqli_sql_exception $e) {
+				$message = "Couldn't connect to the database. Please check your credentials.";
+
+				$this->session->pushNotification($message);
+				header('Location: install.php');
+				die();
+			}
 		}
 	}
 ?>

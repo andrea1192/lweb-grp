@@ -98,7 +98,7 @@
 				mkdir(static::DOCUMENT_ROOT);
 
 			if (!$source) {
-				static::createDocument();
+				$this->createDocument();
 
 			} else {
 				$doc = $source.static::DOCUMENT_NAME.'.xml';
@@ -106,8 +106,8 @@
 				if (!is_file($doc))
 					throw new \Exception("Couldn't find $doc");
 
-				static::loadDocument($doc);
-				static::saveDocument();
+				$this->loadDocument($doc);
+				$this->saveDocument();
 			}
 		}
 

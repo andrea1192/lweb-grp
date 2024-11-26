@@ -17,11 +17,6 @@
 			);
 		}
 
-		public function init() {
-			$db = static::DB_NAME;
-			$this->query("CREATE DATABASE IF NOT EXISTS $db");
-		}
-
 		public function query($query, $parameters = null) {
 			$stmt = $this->connection->prepare($query);
 			$stmt->execute($parameters);
@@ -44,7 +39,6 @@
 		public function init($source = null) {
 			$table = static::DB_TABLE;
 
-			parent::init();
 			$this->query(<<<EOF
 					CREATE TABLE IF NOT EXISTS $table (
 					username	VARCHAR(160)	PRIMARY KEY,
