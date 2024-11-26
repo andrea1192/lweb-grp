@@ -49,7 +49,7 @@
 					mail_sec	VARCHAR(160),
 					reputation	INTEGER			NOT NULL DEFAULT 1,
 					privilege	INTEGER			NOT NULL DEFAULT 1,
-					CONSTRAINT priv_levels CHECK (privilege BETWEEN 0 AND 3)
+					CONSTRAINT priv_levels CHECK (privilege BETWEEN -1 AND 3)
 					)
 					EOF
 			);
