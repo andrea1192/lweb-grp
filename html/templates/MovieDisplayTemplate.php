@@ -1,5 +1,7 @@
 <?php namespace views;
 
+	\ob_start('\views\AbstractView::validateHTML');
+
 	static::printPrologue();
 ?>
 
@@ -36,3 +38,5 @@
 	</body>
 
 </html>
+
+<?php \ob_end_flush() ?>

@@ -125,6 +125,7 @@
 			$user_menu = $this->generateUserMenu();
 
 			echo <<< EOF
+			<div id="top"></div>
 			<div id="header">
 				<div class="flex cross-center wrapper">
 					<div class="flex left">
@@ -145,8 +146,57 @@
 
 			echo <<<EOF
 			{$snackbar}
-			<div id="footer" class="bottom"><div class="wrapper">Lorem ipsum dolor</div></div>
+			<div id="footer" class="bottom">
+				<div class="wrapper flex cross-center">
+					<div>Lorem ipsum dolor</div>
+					<a id="btt" class="right" href="#top">Back to top</a>
+				</div>
+			</div>
 			EOF;
+		}
+
+		public static function validateHTML($buffer) {
+
+			$document = new \DOMDocument();
+			$document->preserveWhiteSpace = false;
+			$document->formatOutput = true;
+			$document->loadXML($buffer);
+
+			$doctype = $document->doctype->publicId;
+			$button = '';
+
+			if ($document->validate()) {
+				$label = "VALID";
+				$supp = "This document has been validated according to the DOCTYPE: {$doctype}";
+
+				$tooltip = UIComponents::getTooltip($supp);
+				$button = UIComponents::getTextButton(
+						$label,
+						'check_circle',
+						cls: 'colored-green',
+						content: $tooltip
+				);
+
+			} else {
+				$label = "ERRORS";
+				$supp = "This document cannot be validated according to the DOCTYPE: {$doctype}";
+
+				$tooltip = UIComponents::getTooltip($supp);
+				$button = UIComponents::getTextButton(
+						$label,
+						'error',
+						cls: 'colored-red',
+						content: $tooltip
+				);
+			}
+
+			$validation = $document->createDocumentFragment();
+			$validation->appendXML($button);
+
+			$footer = $document->getElementById('footer');
+			$footer->firstChild->prepend($validation);
+
+			return $document->saveXML();
 		}
 
 		protected function getMapper($mapper) {
