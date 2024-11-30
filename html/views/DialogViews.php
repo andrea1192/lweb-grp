@@ -29,8 +29,10 @@
 
 			$action_install = 'install.php?action=install';
 			$action_restore = 'install.php?action=restore';
-			$users_table = '';
+			$tooltip_install = 'Carry out selected actions';
+			$tooltip_restore = 'Empty database tables and XML files';
 
+			$users_table = '';
 			$components = '\views\UIComponents';
 
 			foreach (BUILTIN_USERS as $details) {
@@ -65,7 +67,7 @@
 							<th>Username</th>
 							<th>Password</th>
 							<th>Privileges</th>
-						<tr>
+						</tr>
 						{$users_table}
 					</table>
 				</div>
@@ -104,10 +106,20 @@
 				</div>
 				<div id="controls" class="flex">
 					<div class="flex left">
-						{$components::getTextButton('Restore', 'settings_backup_restore', $action_restore, cls: 'colored-red')}
+						{$components::getTextButton(
+								'Restore',
+								'settings_backup_restore',
+								$action_restore,
+								cls: 'colored-red',
+								content: $components::getTooltip($tooltip_restore)
+						)}
 					</div>
 					<div class="flex right">
-						{$components::getFilledButton('Install', 'database_upload')}
+						{$components::getFilledButton(
+								'Install',
+								'database_upload',
+								content: $components::getTooltip($tooltip_install)
+						)}
 					</div>
 				</div>
 			</form>
