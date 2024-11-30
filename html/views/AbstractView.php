@@ -141,6 +141,8 @@
 		}
 
 		public function printFooter() {
+			require_once('connection.php');
+			$credits = CREDITS;
 			$snackbar = ($this->session->holdsNotification()) ?
 					UIComponents::getSnackbar($this->session->popNotification()) : '';
 
@@ -148,7 +150,8 @@
 			{$snackbar}
 			<div id="footer" class="bottom">
 				<div class="wrapper flex cross-center">
-					<div>Lorem ipsum dolor</div>
+					<div id="validation"></div>
+					<div id="credits">{$credits}</div>
 					<a id="btt" class="right" href="#top">Back to top</a>
 				</div>
 			</div>
@@ -156,35 +159,50 @@
 		}
 
 		public static function validateHTML($buffer) {
+			$button = '';
 
 			$document = new \DOMDocument();
 			$document->preserveWhiteSpace = false;
 			$document->formatOutput = true;
-			$document->loadXML($buffer);
+			$success = $document->loadXML($buffer);
+
+			if (!$success) {
+				$tooltip = UIComponents::getTooltip(
+						"The document couldn't be validated according to its DOCTYPE"
+				);
+				$button = UIComponents::getTextButton(
+						'ERRORS',
+						'error',
+						enabled: false,
+						cls: 'colored-red',
+						content: $tooltip
+				);
+
+				return str_replace('<div id="validation"></div>', $button, $buffer);
+			}
 
 			$doctype = $document->doctype->publicId;
-			$button = '';
 
 			if ($document->validate()) {
-				$label = "VALID";
-				$supp = "This document has been validated according to the DOCTYPE: {$doctype}";
-
-				$tooltip = UIComponents::getTooltip($supp);
+				$tooltip = UIComponents::getTooltip(
+						"This document is <strong>valid</strong> according to its DOCTYPE: {$doctype}"
+				);
 				$button = UIComponents::getTextButton(
-						$label,
+						'VALID',
 						'check_circle',
+						enabled: false,
 						cls: 'colored-green',
 						content: $tooltip
 				);
 
 			} else {
-				$label = "ERRORS";
-				$supp = "This document cannot be validated according to the DOCTYPE: {$doctype}";
-
-				$tooltip = UIComponents::getTooltip($supp);
+				$tooltip = UIComponents::getTooltip(
+						"This document is <strong>invalid</strong> according to its DOCTYPE: {$doctype}"
+				);
 				$button = UIComponents::getTextButton(
-						$label,
+						'ERRORS',
 						'error',
+						enabled: false,
 						cls: 'colored-red',
 						content: $tooltip
 				);
@@ -193,10 +211,18 @@
 			$validation = $document->createDocumentFragment();
 			$validation->appendXML($button);
 
-			$footer = $document->getElementById('footer');
-			$footer->firstChild->prepend($validation);
+			$footer = $document->getElementById('validation')->replaceWith($validation);
 
-			return $document->saveXML();
+			return static::getXML($document);
+		}
+
+		private static function getXML($document) {
+			$xml = str_replace(
+					"    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n",
+					'',
+					$document->saveXML());
+
+			return $xml;
 		}
 
 		protected function getMapper($mapper) {
