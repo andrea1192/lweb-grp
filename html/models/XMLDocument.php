@@ -86,8 +86,10 @@
 		}
 
 		public function __construct() {
-			if (is_file(static::getDocumentPath()))
-				$this->loadDocument();
+			$document = static::DOCUMENT_NAME.'.xml';
+
+			if (!$this->loadDocument() && ($_SERVER['SCRIPT_NAME'] != '/install.php'))
+				throw new \Exception("Couldn't load {$document}.");
 		}
 
 		public function init($source = null) {
@@ -133,12 +135,16 @@
 			$doc_path = $doc_path ?? static::getDocumentPath();
 			$sch_path = $sch_path ?? static::getSchemaPath();
 
-			$this->document = new \DOMDocument('1.0', 'UTF-8');
+			if (!is_file($doc_path))
+				return false;
 
-			$this->document->load($doc_path);
-			$this->document->schemaValidate($sch_path);
+			$this->document = new \DOMDocument('1.0', 'UTF-8');
+			$lo = $this->document->load($doc_path);
+			$vo = $this->document->schemaValidate($sch_path);
 
 			$this->xpath = new \DOMXPath($this->document);
+
+			return ($lo && $vo);
 		}
 
 		protected function saveDocument($doc_path = null, $sch_path = null) {
@@ -146,7 +152,8 @@
 			$sch_path = $sch_path ?? static::getSchemaPath();
 
 			$this->document->schemaValidate($sch_path);
-			$this->document->save($doc_path);
+
+			return $this->document->save($doc_path);
 		}
 
 		public function getDocument() {
