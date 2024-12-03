@@ -127,7 +127,7 @@
 			<div id="header">
 				<div class="flex cross-center wrapper">
 					<div class="flex left">
-						<div id="logo">grp</div>
+						<a id="logo" href="index.php">grp</a>
 						{$main_menu}
 					</div>
 					<div class="flex right">

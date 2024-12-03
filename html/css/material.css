@@ -295,6 +295,7 @@ button:not(:disabled) {
 	padding: 16px;
 	color: #FFF;
 	background-color: #322F35CC;
+	z-index: 100;
 
 	animation:
 		200ms 0s forwards slide-in,

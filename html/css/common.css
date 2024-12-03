@@ -110,6 +110,8 @@ body {
 	margin-right: 25px;
 	font-size: 1.6rem;
 	font-weight: 300;
+	text-decoration: none;
+	color: inherit;
 }
 
 #header .left .menu {
