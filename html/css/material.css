@@ -299,11 +299,10 @@ button:not(:disabled) {
 	animation:
 		200ms 0s forwards slide-in,
 		200ms 8s forwards disappear;
+}
 
-	/*animation-name: slide-in, disappear;
-	animation-fill-mode: forwards;
-	animation-delay: 0s, 8s;
-	animation-duration: 200ms;*/
+.snackbar a {
+	color: inherit;
 }
 
 @keyframes slide-in {

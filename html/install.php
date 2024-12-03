@@ -51,7 +51,10 @@
 							mkdir(DIR_POSTERS);
 					}
 
-					$this->session->pushNotification("Install completed successfully.");
+					$message = "Install completed successfully.";
+					$message .= " <a href=\"index.php\">Go to site &gt;&gt;&gt;</a>";
+
+					$this->session->pushNotification($message);
 					header("Location: {$_SERVER['HTTP_REFERER']}");
 					break;
 
