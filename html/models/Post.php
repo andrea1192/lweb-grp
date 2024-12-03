@@ -1,8 +1,5 @@
 <?php namespace models;
 
-	require_once('models/AbstractModel.php');
-	require_once('models/Reactions.php');
-
 	abstract class Post extends AbstractModel {
 		public $id;
 		public $status = 'active';

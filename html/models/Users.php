@@ -1,8 +1,6 @@
 <?php namespace models;
 
 	require_once('connection.php');
-	require_once('models/Repository.php');
-	require_once('models/User.php');
 
 	class Database {
 		protected $connection;

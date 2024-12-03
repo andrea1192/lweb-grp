@@ -1,8 +1,5 @@
 <?php namespace models;
 
-	require_once('models/XMLDocument.php');
-	require_once('models/Reaction.php');
-
 	class Reactions extends \models\XMLDocument {
 		protected const DOCUMENT_NAME = 'reactions';
 

@@ -1,10 +1,5 @@
 <?php namespace views;
 
-	require_once('models/Movies.php');
-	require_once('views/AbstractView.php');
-	require_once('views/Movie.php');
-	require_once('views/Post.php');
-
 	class MovieView extends AbstractView {
 		public const TABS = [
 			'movie' => [

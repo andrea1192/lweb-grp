@@ -1,8 +1,5 @@
 <?php namespace models;
 
-	require_once('models/AbstractModel.php');
-	require_once('models/Posts.php');
-
 	abstract class AbstractMovie extends AbstractModel {
 		public const ID_PREFIX = 'm';
 

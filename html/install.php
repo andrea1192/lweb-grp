@@ -1,12 +1,6 @@
 <?php namespace controllers;
 
 	require_once('AbstractController.php');
-	require_once('views/DialogViews.php');
-
-	require_once('models/Movies.php');
-	require_once('models/Posts.php');
-	require_once('models/Reactions.php');
-
 
 	class SetupController extends AbstractController {
 

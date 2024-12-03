@@ -24,6 +24,10 @@
 
 		public function __construct() {
 
+			spl_autoload_register(function ($class) {
+				require('autoloader.php');
+			});
+
 			ServiceLocator::register('session', function() {
 				return new Session();
 			});

@@ -1,12 +1,5 @@
 <?php namespace views;
 
-	require_once('models/Movies.php');
-	require_once('views/AbstractView.php');
-	require_once('views/Movie.php');
-	require_once('views/Post.php');
-	require_once('views/Reaction.php');
-	require_once('views/User.php');
-
 	abstract class AbstractCollectionView extends AbstractView {
 		public $title;
 		public $items;

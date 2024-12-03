@@ -1,8 +1,5 @@
 <?php namespace models;
 
-	require_once('models/XMLDocument.php');
-	require_once('models/Post.php');
-
 	class Posts extends \models\XMLDocument {
 		protected const DOCUMENT_NAME = 'posts';
 

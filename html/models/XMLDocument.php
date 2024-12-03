@@ -1,8 +1,6 @@
 <?php namespace models;
 
 	require_once('connection.php');
-	require_once('models/Repository.php');
-	require_once('models/AbstractMapper.php');
 
 	define('XMLNS_DEF', 'http://www.w3.org/2000/xmlns/');
 	define('XSI_DEF', 'http://www.w3.org/2001/XMLSchema-instance');

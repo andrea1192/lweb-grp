@@ -1,7 +1,5 @@
 <?php namespace views;
 
-	require_once('views/UIComponents.php');
-
 	abstract class AbstractView {
 		protected $session;
 

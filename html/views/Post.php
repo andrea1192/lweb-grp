@@ -1,6 +1,4 @@
 <?php namespace views;
-
-	require_once('views/Reaction.php');
 	
 	class Post extends AbstractView {
 		protected const POST_TYPE = '';

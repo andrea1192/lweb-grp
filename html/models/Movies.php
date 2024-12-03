@@ -1,8 +1,5 @@
 <?php namespace models;
 
-	require_once('models/XMLDocument.php');
-	require_once('models/Movie.php');
-
 	abstract class AbstractMovies extends \models\XMLDocument {
 		public const POSTERS_PATH = DIR_POSTERS;
 		public const BACKDROPS_PATH = DIR_BACKDROPS;

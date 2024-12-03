@@ -1,8 +1,5 @@
 <?php namespace views;
 
-	require_once('views/AbstractView.php');
-	require_once('views/User.php');
-
 	abstract class DialogView extends AbstractView {
 
 		public function render() {

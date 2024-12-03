@@ -1,7 +1,5 @@
 <?php namespace models;
 
-	require_once('models/AbstractModel.php');
-
 	abstract class Reaction extends AbstractModel {
 		public $post;
 		public $author;

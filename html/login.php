@@ -1,7 +1,6 @@
 <?php namespace controllers;
 
 	require_once('AbstractController.php');
-	require_once('views/DialogViews.php');
 
 	class LoginController extends AbstractController {
 

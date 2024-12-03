@@ -1,7 +1,5 @@
 <?php namespace controllers;
 
-	require_once('models/Users.php');
-
 	class Session {
 		private $user;
 
