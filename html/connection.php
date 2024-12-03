@@ -46,4 +46,6 @@
 			'privilege' => 1
 		]
 	]);
+
+	define('CREDITS', 'Andrea Ippoliti - matricola 1496769');
 ?>
