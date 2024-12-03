@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,200..400,0,0');
 
 .material-symbols-outlined {
 	color: inherit;
@@ -19,6 +19,18 @@
 
 .icon.md-48 {
 	font-size: 48px;
+}
+
+.icon.md-72 {
+	font-size: 72px;
+}
+
+.icon.md-xlight {
+	font-weight: 200;
+}
+
+.icon.md-light {
+	font-weight: 300;
 }
 
 .icon.margin {
@@ -58,7 +70,6 @@
 	top: 50%;
 	left: 50%;
 	translate: -50% -50%;
-	font-size: 48px;
 }
 
 /* Icona risposta selezionata */

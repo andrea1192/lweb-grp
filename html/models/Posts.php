@@ -78,19 +78,7 @@
 	}
 
 
-	class PostList extends \IteratorIterator implements \Countable {
-		private $count;
-
-		public function __construct($iterator) {
-			parent::__construct($iterator);
-
-			$this->count = $iterator->count();
-		}
-
-		public function count(): int {
-
-			return $this->count;
-		}
+	class PostList extends ElementList {
 
 		public function current(): \models\Post {
 			$element = parent::current();

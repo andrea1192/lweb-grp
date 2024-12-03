@@ -210,8 +210,14 @@
 				$poster = "style=\"background-image: url('{$poster}')\"";
 				$placeholder = '';
 			} else {
+
+				if ($_SERVER['SCRIPT_NAME'] != '/post.php')
+					$cls = 'placeholder md-72 md-xlight';
+				else
+					$cls = 'placeholder md-24 md-light';
+
 				$poster = '';
-				$placeholder = UIComponents::getIcon('movie', 'placeholder');
+				$placeholder = UIComponents::getIcon('movie', cls: $cls);
 			}
 
 			return <<<EOF

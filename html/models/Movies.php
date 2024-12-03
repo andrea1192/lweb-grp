@@ -74,7 +74,7 @@
 		}
 	}
 
-	class MovieList extends \IteratorIterator {
+	class MovieList extends ElementList {
 
 		public function current(): \models\Movie {
 			$state = MovieMapper::createStateFromElement(parent::current());
@@ -82,7 +82,7 @@
 		}
 	}
 
-	class RequestList extends \IteratorIterator {
+	class RequestList extends ElementList {
 
 		public function current(): \models\Request {
 			$state = RequestMapper::createStateFromElement(parent::current());

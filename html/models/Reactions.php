@@ -142,7 +142,7 @@
 		}
 	}
 
-	class ReactionList extends \IteratorIterator {
+	class ReactionList extends ElementList {
 
 		public function current(): \models\Reaction {
 			$element = parent::current();

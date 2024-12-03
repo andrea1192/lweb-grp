@@ -8,14 +8,30 @@
 			print("{$this->title} - grp");
 		}
 
+		public static function printEmptyMessage() {
+			$icon = UIComponents::getIcon('sentiment_dissatisfied', cls: 'md-72 md-xlight');
+
+			print <<<EOF
+			<div class="flex column cross-center colored-grey">
+				$icon
+				<span>Nothing to show</span>
+			</div>
+			EOF;
+		}
+
 		public function printActionButton() {}
 	}
 
 	abstract class AbstractListView extends AbstractCollectionView {
 
 		public function printList() {
-
 			print("<h1>{$this->title}</h1>");
+
+			if (!count($this->items)) {
+				static::printEmptyMessage();
+				return;
+			}
+
 			print('<div>');
 
 			foreach ($this->items as $item) {
@@ -34,8 +50,13 @@
 	abstract class AbstractGridView extends AbstractCollectionView {
 
 		public function printGrid() {
-
 			print("<h1>{$this->title}</h1>");
+
+			if (!count($this->items)) {
+				static::printEmptyMessage();
+				return;
+			}
+
 			print('<div class="flex grid">');
 
 			foreach ($this->items as $item) {
@@ -93,8 +114,13 @@
 		}
 
 		public function printList() {
-
 			print("<h1>{$this->title}</h1>");
+
+			if (!count($this->items)) {
+				static::printEmptyMessage();
+				return;
+			}
+
 			print('<div>');
 
 			foreach ($this->items as $item) {
@@ -124,6 +150,12 @@
 
 		public function printList() {
 			print("<h1>{$this->title}</h1>");
+
+			if (!count($this->items)) {
+				static::printEmptyMessage();
+				return;
+			}
+
 			print('<div>');
 
 			foreach ($this->items as $user) {

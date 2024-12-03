@@ -83,6 +83,7 @@
 			require_once 'models/Users.php';
 			break;
 		case 'models\XMLDocument':
+		case 'models\ElementList':
 			require_once 'models/XMLDocument.php';
 
 		// Views

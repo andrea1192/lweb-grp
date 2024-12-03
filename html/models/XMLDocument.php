@@ -258,4 +258,20 @@
 			return $prefix.++$largest;
 		}
 	}
+
+
+	class ElementList extends \IteratorIterator implements \Countable {
+		protected $count;
+
+		public function __construct($iterator) {
+			parent::__construct($iterator);
+
+			$this->count = $iterator->count();
+		}
+
+		public function count(): int {
+
+			return $this->count;
+		}
+	}
 ?>
