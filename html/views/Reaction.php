@@ -186,7 +186,11 @@
 				$reaction_buttons = '';
 
 			if ($active && !$selected && $this->session->isMod())
-				$select_button = UIComponents::getTextButton('Select answer', 'check_circle', $this->generateURL('select_answer'));
+				$select_button = UIComponents::getTextButton(
+						'Select answer',
+						'check_circle',
+						$this->generateURL('select_answer')
+				);
 			else
 				$select_button = '';
 

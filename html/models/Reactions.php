@@ -87,7 +87,8 @@
 
 		public function getFeaturedAnswer($post_id) {
 			$answer_id =
-					\controllers\ServiceLocator::resolve('posts')->getPostById($post_id)->featuredAnswer;
+					\controllers\ServiceLocator::resolve('posts')
+					->getPostById($post_id)->featuredAnswer;
 
 			if ($answer_id)
 				return $this->getAnswerById($answer_id);

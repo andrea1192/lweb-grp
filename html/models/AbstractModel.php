@@ -58,7 +58,12 @@
 			}
 		}
 
-		protected function validateNumeric($property, $required = true, $min = PHP_INT_MIN, $max = PHP_INT_MAX) {
+		protected function validateNumeric(
+				$property,
+				$required = true,
+				$min = PHP_INT_MIN,
+				$max = PHP_INT_MAX
+			) {
 
 			if (empty($this->__source[$property])) {
 
@@ -82,7 +87,10 @@
 		}
 
 
-		protected function validateString($property, $required = true) {
+		protected function validateString(
+				$property,
+				$required = true
+			) {
 
 			if (empty($this->__source[$property])) {
 

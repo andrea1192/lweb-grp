@@ -4,9 +4,6 @@
 		protected const DOCUMENT_NAME = 'posts';
 
 		public static function getMapperForItem($subject) {
-			// if (!$subject)
-			// 	return '\models\DeletedPosts';
-
 			$class = get_class($subject);
 
 			if ($class == 'DOMElement')

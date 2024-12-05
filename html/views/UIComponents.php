@@ -23,7 +23,15 @@
 			EOF;
 		}
 
-		private static function generateButton($type, $label, $icon, $action, $enabled, $cls, $content) {
+		private static function generateButton(
+				$type,
+				$label,
+				$icon,
+				$action,
+				$enabled,
+				$cls,
+				$content
+			) {
 
 			if (!empty($icon))
 				$icon = static::getIcon($icon);
@@ -50,7 +58,14 @@
 			EOF;
 		}
 
-		private static function generateActionButton($type, $label, $icon, $href, $cls, $content) {
+		private static function generateActionButton(
+				$type,
+				$label,
+				$icon,
+				$href,
+				$cls,
+				$content
+			) {
 
 			if (!empty($icon))
 				$icon = static::getIcon($icon);
@@ -78,9 +93,11 @@
 				$content = '') {
 
 			if (empty($href) || !$enabled)
-				return static::generateButton($type, $label, $icon, $action, $enabled, $cls, $content);
+				return static::generateButton(
+						$type, $label, $icon, $action, $enabled, $cls, $content);
 			else
-				return static::generateActionButton($type, $label, $icon, $href, $cls, $content);
+				return static::generateActionButton(
+						$type, $label, $icon, $href, $cls, $content);
 		}
 
 		public static function getTextButton(
@@ -91,7 +108,8 @@
 				$enabled = true,
 				$cls = '',
 				$content = '') {
-			return static::getButton('text', $label, $icon, $href, $action, $enabled, $cls, $content);
+			return static::getButton(
+					'text', $label, $icon, $href, $action, $enabled, $cls, $content);
 		}
 
 		public static function getOutlinedButton(
@@ -102,7 +120,8 @@
 				$enabled = true,
 				$cls = '',
 				$content = '') {
-			return static::getButton('outlined', $label, $icon, $href, $action, $enabled, $cls, $content);
+			return static::getButton(
+					'outlined', $label, $icon, $href, $action, $enabled, $cls, $content);
 		}
 
 		public static function getTonalButton(
@@ -113,7 +132,8 @@
 				$enabled = true,
 				$cls = '',
 				$content = '') {
-			return static::getButton('tonal', $label, $icon, $href, $action, $enabled, $cls, $content);
+			return static::getButton(
+					'tonal', $label, $icon, $href, $action, $enabled, $cls, $content);
 		}
 
 		public static function getFilledButton(
@@ -124,7 +144,8 @@
 				$enabled = true,
 				$cls = '',
 				$content = '') {
-			return static::getButton('filled', $label, $icon, $href, $action, $enabled, $cls, $content);
+			return static::getButton(
+					'filled', $label, $icon, $href, $action, $enabled, $cls, $content);
 		}
 
 		public static function getFAB(
@@ -135,10 +156,15 @@
 				$enabled = true,
 				$cls = '',
 				$content = '') {
-			return static::getButton('fab', $label, $icon, $href, $action, $enabled, $cls, $content);
+			return static::getButton(
+					'fab', $label, $icon, $href, $action, $enabled, $cls, $content);
 		}
 
-		public static function getResetButton($label = 'Reset', $cls = 'colored-blue', $type = 'text') {
+		public static function getResetButton(
+				$label = 'Reset',
+				$cls = 'colored-blue',
+				$type = 'text'
+			) {
 			$icon = static::getIcon('refresh');
 			$label = "<span class=\"label\">{$label}</span>";
 
@@ -150,7 +176,11 @@
 			EOF;
 		}
 
-		public static function getSubmitButton($label = 'Submit', $cls = '', $type = 'filled') {
+		public static function getSubmitButton(
+			$label = 'Submit',
+			$cls = '',
+			$type = 'filled'
+		) {
 			return <<<EOF
 			<input type="submit" class="button {$type} {$cls}" value="{$label}" />
 			EOF;

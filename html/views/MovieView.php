@@ -26,19 +26,24 @@
 				case 'movie':
 					$this->tabs = $tabs['movie'];
 					$this->tab = (!empty($tab)) ? $tab : 'question';
-					$this->movie = $this->getMapper('movies')->getMovieById($movie_id);
-					$this->posts = $this->getMapper('posts')->getPostsByMovie($movie_id, $this->tab);
+					$this->movie =
+							$this->getMapper('movies')->getMovieById($movie_id);
+					$this->posts =
+							$this->getMapper('posts')->getPostsByMovie($movie_id, $this->tab);
 					break;
 				case 'request':
 					$this->tabs = $tabs['request'];
 					$this->tab = (!empty($tab)) ? $tab : 'comment';
-					$this->movie = $this->getMapper('requests')->getRequestById($movie_id);
-					$this->posts = $this->getMapper('comments')->getCommentsByRequest($movie_id);
+					$this->movie =
+							$this->getMapper('requests')->getRequestById($movie_id);
+					$this->posts =
+							$this->getMapper('comments')->getCommentsByRequest($movie_id);
 					break;
 			}
 
 			if (empty($this->movie)) {
-				$this->session->pushNotification("Movie #{$movie_id} not found in the archive. Sorry about that.");
+				$this->session->pushNotification(
+						"Movie #{$movie_id} not found in the archive. Sorry about that.");
 				header('Location: index.php');
 				die();
 			}

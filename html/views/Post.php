@@ -48,7 +48,9 @@
 
 		public function displayReference($active = true, $content = '', $reactions = '') {
 			$rating = $this->generateRating();
-			$status = ($this->post->status == 'active') ? '' : UIComponents::getIcon('delete', cls: 'translate');
+
+			$deleted_icon = UIComponents::getIcon('delete', cls: 'translate');
+			$status = ($this->post->status == 'active') ? '' : $deleted_icon;
 
 			if ($active) {
 				$dropdown_menu = $this->generateDropdownMenu();
@@ -109,15 +111,40 @@
 			echo <<<EOF
 			<form class="post" method="post" action="{$action}">
 				<div class="flex column">
-					{$components::getHiddenInput('type', $this->getPostType())}
-					{$components::getHiddenInput('id', $this->post->id)}
-					{$components::getHiddenInput('status', $this->post->status)}
+					{$components::getHiddenInput(
+							'type',
+							$this->getPostType()
+					)}
+					{$components::getHiddenInput(
+							'id',
+							$this->post->id
+					)}
+					{$components::getHiddenInput(
+							'status',
+							$this->post->status
+					)}
 					{$reference_field}
-					{$components::getHiddenInput('author', $this->post->author)}
-					{$components::getHiddenInput('date', $this->post->date)}
-					{$components::getTextInput('Title', 'title', $this->post->title, errors: $errors)}
+					{$components::getHiddenInput(
+							'author',
+							$this->post->author
+					)}
+					{$components::getHiddenInput(
+							'date',
+							$this->post->date
+					)}
+					{$components::getTextInput(
+							'Title',
+							'title',
+							$this->post->title,
+							errors: $errors
+					)}
 					{$special_fields}
-					{$components::getTextArea('Text', 'text', $this->post->text, errors: $errors)}
+					{$components::getTextArea(
+							'Text',
+							'text',
+							$this->post->text,
+							errors: $errors
+					)}
 					<div class="flex footer">
 						<div class="flex left">
 							{$save_buttons}
@@ -172,15 +199,27 @@
 				return '';
 
 			if ($this->session->isAuthor($this->post) || $this->session->isAdmin()) {
-				$items .= UIComponents::getDropdownItem('Edit', 'edit', $this->generateURL('edit'));
+				$items .= UIComponents::getDropdownItem(
+					'Edit',
+					'edit',
+					$this->generateURL('edit')
+				);
 			}
 
 			if ($this->session->isAuthor($this->post) || $this->session->isMod()) {
-				$items .= UIComponents::getDropdownItem('Delete', 'delete', $this->generateURL('delete'));
+				$items .= UIComponents::getDropdownItem(
+					'Delete',
+					'delete',
+					$this->generateURL('delete')
+				);
 			}
 
 			if (!$this->session->isAuthor($this->post)) {
-				$items .= UIComponents::getDropdownItem('Report', 'report', $this->generateURL('report'));
+				$items .= UIComponents::getDropdownItem(
+					'Report',
+					'report',
+					$this->generateURL('report')
+				);
 			}
 
 			if ($items == '')
@@ -224,7 +263,12 @@
 		}
 
 		protected function generateSpecialFields() {
-			return UIComponents::getTextInput('Rating', 'rating', $this->post->rating ?? '', errors: $this->errors);
+			return UIComponents::getTextInput(
+					'Rating',
+					'rating',
+					$this->post->rating ?? '',
+					errors: $this->errors
+			);
 		}
 	}
 
@@ -275,7 +319,10 @@
 		protected const POST_TYPE = 'question';
 
 		public function displayFeatured() {
-			parent::displayReference(active: false, reactions: $this->generateAnswers(featuredOnly: true));
+			parent::displayReference(
+				active: false,
+				reactions: $this->generateAnswers(featuredOnly: true)
+			);
 		}
 
 		public function display() {
@@ -286,10 +333,19 @@
 			$html = '';
 
 			if ($this->session->isMod() && !$this->post->featured)
-				$html .= UIComponents::getTextButton('Elevate question', 'verified', $this->generateURL('elevate'));
+				$html .= UIComponents::getTextButton(
+					'Elevate question',
+					'verified',
+					$this->generateURL('elevate')
+				);
 
 			if ($this->session->isAllowed())
-				$html .= UIComponents::getOutlinedButton('Answer', 'comment', $this->generateURL('answer'), cls: 'colored-blue');
+				$html .= UIComponents::getOutlinedButton(
+					'Answer',
+					'comment',
+					$this->generateURL('answer'),
+					cls: 'colored-blue'
+				);
 
 			return $html;
 		}
@@ -329,8 +385,14 @@
 			if (!$this->post)
 				return '';
 
-			$fields .= UIComponents::getHiddenInput('featured', $this->post->featured ? 'true' : 'false');
-			$fields .= UIComponents::getHiddenInput('featuredAnswer', $this->post->featuredAnswer);
+			$fields .= UIComponents::getHiddenInput(
+				'featured',
+				$this->post->featured ? 'true' : 'false'
+			);
+			$fields .= UIComponents::getHiddenInput(
+				'featuredAnswer',
+				$this->post->featuredAnswer
+			);
 
 			return $fields;
 		}
@@ -344,7 +406,14 @@
 			if ($_SERVER['SCRIPT_NAME'] == '/post.php')
 				parent::displayReference(content: $this->post->text);
 			else
-				parent::displayReference(active: false, content: UIComponents::getFilledButton('Read spoiler', 'visibility', $this->generateURL()));
+				parent::displayReference(
+					active: false,
+					content: UIComponents::getFilledButton(
+							'Read spoiler',
+							'visibility',
+							$this->generateURL()
+					)
+				);
 		}
 	}
 
@@ -357,11 +426,19 @@
 					|| $this->session->isMod())
 				parent::displayReference();
 			else
-				parent::displayReference(active: false, content: 'You don\'t have enough reputation to read this post.');
+				parent::displayReference(
+					active: false,
+					content: 'You don\'t have enough reputation to read this post.'
+				);
 		}
 
 		protected function generateSpecialFields() {
-			return UIComponents::getTextInput('Reputation', 'reputation', $this->post->reputation ?? '', errors: $this->errors);
+			return UIComponents::getTextInput(
+					'Reputation',
+					'reputation',
+					$this->post->reputation ?? '',
+					errors: $this->errors
+			);
 		}
 	}
 ?>

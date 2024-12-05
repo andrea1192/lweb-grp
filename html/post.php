@@ -46,11 +46,16 @@
 						$state['date'] = static::sanitize($_POST['date'] ?? '');
 						$state['text'] = static::sanitize($_POST['text']);
 
-						$state['title'] = static::sanitize($_POST['title'] ?? '');
-						$state['rating'] = static::sanitize($_POST['rating'] ?? '');
-						$state['featured'] = (static::sanitize($_POST['featured'] ?? '') == 'true');
-						$state['featuredAnswer'] = static::sanitize($_POST['featuredAnswer'] ?? '');
-						$state['reputation'] = static::sanitize($_POST['reputation'] ?? '');
+						$state['title'] = 
+								static::sanitize($_POST['title'] ?? '');
+						$state['rating'] = 
+								static::sanitize($_POST['rating'] ?? '');
+						$state['featured'] = 
+								(static::sanitize($_POST['featured'] ?? '') == 'true');
+						$state['featuredAnswer'] = 
+								static::sanitize($_POST['featuredAnswer'] ?? '');
+						$state['reputation'] = 
+								static::sanitize($_POST['reputation'] ?? '');
 
 						switch ($post_type) {
 							default:
@@ -69,7 +74,8 @@
 
 							case 'answer':
 								$state['post'] = static::sanitize($_POST['post']);
-								$redir = "movie.php?id={$repo->read($state['post'])->movie}&type=question";
+								$movie_ref = $repo->read($state['post'])->movie;
+								$redir = "movie.php?id={$movie_ref}&type=question";
 								break;
 						}
 

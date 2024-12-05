@@ -75,12 +75,18 @@
 			$poster = $this->generatePoster();
 			$action_buttons = $this->generateActionButtons();
 
-			$movie_title = (!empty($this->movie->title)) ? $this->movie->title : $placeholder;
-			$movie_year = (!empty($this->movie->year)) ? $this->movie->year : $placeholder;
-			$movie_duration = (!empty($this->movie->duration)) ? $this->movie->duration : $placeholder;
-			$movie_summary = (!empty($this->movie->summary)) ? $this->movie->summary : $placeholder;
-			$movie_director = (!empty($this->movie->director)) ? $this->movie->director : $placeholder;
-			$movie_writer = (!empty($this->movie->writer)) ? $this->movie->writer : $placeholder;
+			$movie_title =
+					(!empty($this->movie->title)) ? $this->movie->title : $placeholder;
+			$movie_year =
+					(!empty($this->movie->year)) ? $this->movie->year : $placeholder;
+			$movie_duration =
+					(!empty($this->movie->duration)) ? $this->movie->duration : $placeholder;
+			$movie_summary =
+					(!empty($this->movie->summary)) ? $this->movie->summary : $placeholder;
+			$movie_director =
+					(!empty($this->movie->director)) ? $this->movie->director : $placeholder;
+			$movie_writer =
+					(!empty($this->movie->writer)) ? $this->movie->writer : $placeholder;
 
 			echo <<<EOF
 			<div id="backdrop" {$backdrop}>
@@ -131,15 +137,45 @@
 						<div id="description" class="flex fields">
 							{$components::getHiddenInput('id', $this->movie->id)}
 							{$special_fields}
-							{$components::getFilledTextInput('Title', 'title', $this->movie->title, errors: $errors)}
+							{$components::getFilledTextInput(
+									'Title',
+									'title',
+									$this->movie->title,
+									errors: $errors
+							)}
 							<div class="flex fields" style="width: 40%">
-								{$components::getFilledTextInput('Year', 'year', $this->movie->year, errors: $errors)}
-								{$components::getFilledTextInput('Duration', 'duration', $this->movie->duration, errors: $errors)}
+								{$components::getFilledTextInput(
+										'Year',
+										'year',
+										$this->movie->year,
+										errors: $errors
+								)}
+								{$components::getFilledTextInput(
+										'Duration',
+										'duration',
+										$this->movie->duration,
+										errors: $errors
+								)}
 							</div>
-							{$components::getFilledTextArea('Summary', 'summary', $this->movie->summary, errors: $errors)}
+							{$components::getFilledTextArea(
+									'Summary',
+									'summary',
+									$this->movie->summary,
+									errors: $errors
+							)}
 							<div class="flex fields column" style="width: 40%">
-								{$components::getFilledTextInput('Director', 'director', $this->movie->director, errors: $errors)}
-								{$components::getFilledTextInput('Writer', 'writer', $this->movie->writer, errors: $errors)}
+								{$components::getFilledTextInput(
+										'Director',
+										'director',
+										$this->movie->director,
+										errors: $errors
+								)}
+								{$components::getFilledTextInput(
+										'Writer',
+										'writer',
+										$this->movie->writer,
+										errors: $errors
+								)}
 							</div>
 							{$save_buttons}
 						</div>
@@ -170,15 +206,39 @@
 						</div>
 						<div id="description" class="flex fields">
 							{$special_fields}
-							{$components::getFilledTextInput('Title', 'title', errors: $errors)}
+							{$components::getFilledTextInput(
+									'Title',
+									'title',
+									errors: $errors
+							)}
 							<div class="flex fields" style="width: 40%">
-								{$components::getFilledTextInput('Year', 'year', errors: $errors)}
-								{$components::getFilledTextInput('Duration', 'duration', errors: $errors)}
+								{$components::getFilledTextInput(
+										'Year',
+										'year',
+										errors: $errors
+								)}
+								{$components::getFilledTextInput(
+										'Duration',
+										'duration',
+										errors: $errors
+								)}
 							</div>
-							{$components::getFilledTextArea('Summary', 'summary', errors: $errors)}
+							{$components::getFilledTextArea(
+									'Summary',
+									'summary',
+									errors: $errors
+							)}
 							<div class="flex fields column" style="width: 40%">
-								{$components::getFilledTextInput('Director', 'director', errors: $errors)}
-								{$components::getFilledTextInput('Writer', 'writer', errors: $errors)}
+								{$components::getFilledTextInput(
+										'Director',
+										'director',
+										errors: $errors
+								)}
+								{$components::getFilledTextInput(
+										'Writer',
+										'writer',
+										errors: $errors
+								)}
 							</div>
 							{$save_buttons}
 						</div>
@@ -236,7 +296,8 @@
 			$left = '';
 			$right = '';
 
-			if (!property_exists($this->movie, 'status') || ($this->movie->status == 'submitted')) {
+			if (!property_exists($this->movie, 'status')
+					|| ($this->movie->status == 'submitted')) {
 
 				if ($this->session->isAdmin()) {
 					$right .= UIComponents::getOutlinedButton(
@@ -352,14 +413,16 @@
 			$left = '';
 			$right = '';
 
-			if (!property_exists($this->movie, 'status') || ($this->movie->status == 'submitted')) {
+			if (!property_exists($this->movie, 'status')
+					|| ($this->movie->status == 'submitted')) {
 
 				if ($this->session->isMod()) {
 					$left .= UIComponents::getTonalButton(
 							'Review this content',
 							'edit',
 							$this->generateURL('edit'),
-							content: UIComponents::getTooltip('Edit this request and choose whether to accept or reject it')
+							content: UIComponents::getTooltip(
+									'Edit this request and choose whether to accept or reject it')
 					);
 
 					$right .= UIComponents::getOutlinedButton(
@@ -399,7 +462,8 @@
 						'Submit request',
 						'send',
 						action: 'create',
-						content: UIComponents::getTooltip('Submit this request to the staff for approval')
+						content: UIComponents::getTooltip(
+								'Submit this request to the staff for approval')
 				);
 
 			} elseif ($this->movie->status == 'submitted' && $this->session->isMod()) {
@@ -407,19 +471,22 @@
 						'Save and accept request',
 						'check',
 						action: 'accept',
-						content: UIComponents::getTooltip('Save changes and accept this request for inclusion in Movies')
+						content: UIComponents::getTooltip(
+								'Save changes and accept this request for inclusion in Movies')
 				);
 				$left .= UIComponents::getOutlinedButton(
 						'Reject request',
 						'close',
 						action: 'reject',
-						content: UIComponents::getTooltip('Reject this request')
+						content: UIComponents::getTooltip(
+								'Reject this request')
 				);
 				$right .= UIComponents::getOutlinedButton(
 						'Save only',
 						'save',
 						action: 'update',
-						content: UIComponents::getTooltip('Save changes without accepting the request')
+						content: UIComponents::getTooltip(
+								'Save changes without accepting the request')
 				);
 			}
 

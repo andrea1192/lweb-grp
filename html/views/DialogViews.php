@@ -146,7 +146,12 @@
 				</div>
 				<div id="controls" class="flex">
 					<div class="flex left">
-						{$components::getTextButton('Create account', '', $signup, cls:'colored-blue')}
+						{$components::getTextButton(
+								'Create account',
+								'',
+								$signup,
+								cls:'colored-blue'
+						)}
 					</div>
 					<div class="flex right">
 						{$components::getFilledButton('Sign in', '')}
@@ -261,9 +266,21 @@
 				<div>{$components::getIcon('password')}</div>
 				<h1>Change password</h1>
 				<div id="fields" class="flex column">
-					{$components::getPasswordInput('Current password', 'password', errors: $errors)}
-					{$components::getPasswordInput('New password', 'password_new', errors: $errors)}
-					{$components::getPasswordInput('Confirm new password', 'password_confirm', errors: $errors)}
+					{$components::getPasswordInput(
+							'Current password',
+							'password',
+							errors: $errors
+					)}
+					{$components::getPasswordInput(
+							'New password',
+							'password_new',
+							errors: $errors
+					)}
+					{$components::getPasswordInput(
+							'Confirm new password',
+							'password_confirm',
+							errors: $errors
+					)}
 				</div>
 				<div id="controls" class="flex">
 					<div class="flex left">

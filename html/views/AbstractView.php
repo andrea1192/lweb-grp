@@ -94,17 +94,32 @@
 				</div>
 				EOF;
 
-				$dropdown_items = UIComponents::getDropdownItem('Profile', 'person', 'profile.php');
-
+				$dropdown_items = UIComponents::getDropdownItem(
+						'Profile',
+						'person',
+						'profile.php'
+				);
 				if ($this->session->isMod()) {
-					$dropdown_items .= UIComponents::getDropdownItem('Users', 'group', 'users.php');
+					$dropdown_items .= UIComponents::getDropdownItem(
+							'Users',
+							'group',
+							'users.php'
+					);
 				}
-
-				$dropdown_items .= UIComponents::getDropdownItem('Reports', 'report', 'reports.php');
-
-				$dropdown_items .= UIComponents::getDropdownItem('Sign out', 'logout', 'login.php?action=signout');
-
-				$dropdown_menu = UIComponents::getDropdownMenu($dropdown_items, $dropdown_header);
+				$dropdown_items .= UIComponents::getDropdownItem(
+						'Reports',
+						'report',
+						'reports.php'
+				);
+				$dropdown_items .= UIComponents::getDropdownItem(
+						'Sign out',
+						'logout',
+						'login.php?action=signout'
+				);
+				$dropdown_menu = UIComponents::getDropdownMenu(
+						$dropdown_items,
+						$dropdown_header
+				);
 
 				return <<<EOF
 				<button class="button outlined account">
@@ -114,7 +129,12 @@
 				EOF;
 			} else {
 
-				return UIComponents::getOutlinedButton('Sign in', 'login', 'login.php', cls: 'colored-blue');
+				return UIComponents::getOutlinedButton(
+						'Sign in',
+						'login',
+						'login.php',
+						cls: 'colored-blue'
+				);
 			}
 		}
 
