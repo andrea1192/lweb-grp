@@ -21,6 +21,7 @@
 					header("Location: {$_SERVER['HTTP_REFERER']}");
 					break;
 
+				// Verifica la validità di username e password ed aggiorna la sessione
 				case 'verify':
 					if (isset($_POST)) {
 						$username = static::sanitize($_POST['username']);
@@ -51,6 +52,7 @@
 					$view->render();
 					break;
 
+				// Porta a termine la creazione di un nuovo account utente
 				case 'save':
 					if (isset($_POST)) {
 						$mapper = ServiceLocator::resolve('users');

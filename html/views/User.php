@@ -1,5 +1,6 @@
 <?php namespace views;
 
+	/* Visualizzazione di un oggetto di tipo \models\User */
 	class User extends AbstractView {
 		protected $user;
 		protected $errors;
@@ -11,6 +12,7 @@
 			$this->errors = ($this->session->holdsErrors()) ? $this->session->popErrors() : [];
 		}
 
+		/* Genera un URL per l'azione richiesta, se ammessa sull'oggetto di riferimento */
 		public function generateURL($action = 'display') {
 			$URL = 'users.php';
 
@@ -32,10 +34,15 @@
 			return htmlspecialchars($URL, ENT_QUOTES | ENT_SUBSTITUTE | ENT_XHTML);
 		}
 
+		/* Visualizza la selezione di dettagli dell'utente generata dal metodo generateSummary() */
 		public function displaySummary() {
 			echo $this->generateSummary();
 		}
 
+		/* Visualizza la selezione di dettagli dell'utente generata dal metodo generateSummary(),
+		* insieme ad un pulsante primario per per il ban ed uno secondario per raggiungere una
+		* pagina con ulteriori dettagli
+		*/
 		public function displayListItem() {
 			$action_edit = $this->generateURL('edit');
 
@@ -59,6 +66,7 @@
 			EOF;
 		}
 
+		/* Form di modifica dei dettagli dell'utente */
 		public function display($action = '',
 				$controls_left = '',
 				$controls_right = '',
@@ -101,6 +109,7 @@
 			EOF;
 		}
 
+		/* Genera il pulsante di ban/unban dell'utente, abilitato a seconda dei privilegi */
 		public function generateBanButton() {
 			$action_ban = $this->generateURL('ban');
 			$action_unban = $this->generateURL('unban');
@@ -128,6 +137,7 @@
 			}
 		}
 
+		/* Genera il codice per visualizzare username, tipologia e reputazione dell'utente */
 		protected function generateSummary() {
 			$initial = $this->user->username[0];
 

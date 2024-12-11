@@ -24,6 +24,8 @@
 					$view->render();
 					break;
 
+				// Porta a termine la modifica dei dati di un utente da parte di un amministratore
+				// Per i dati dell'utente corrente, l'azione è *save* in profile.php
 				case 'update':
 					if (isset($_POST)) {
 						$mapper = ServiceLocator::resolve('users');
@@ -47,6 +49,7 @@
 					header("Location: {$_SERVER['HTTP_REFERER']}");
 					break;
 
+				// Porta a termine il ban di un utente (modificando il suo livello di privilegio)
 				case 'ban':
 					if (isset($_POST)) {
 						$mapper = ServiceLocator::resolve('users');
@@ -67,6 +70,7 @@
 					header("Location: {$_SERVER['HTTP_REFERER']}");
 					break;
 
+				// Porta a termine l'unban di un utente (modificando il suo livello di privilegio)
 				case 'unban':
 					if (isset($_POST)) {
 						$mapper = ServiceLocator::resolve('users');

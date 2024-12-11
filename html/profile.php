@@ -18,6 +18,8 @@
 					$view->render();
 					break;
 
+				// Porta a termine la modifica dei dati dell'utente corrente
+				// Per le modifiche iniziate da amministratori, l'azione è *update* in users.php
 				case 'save':
 					if (isset($_POST)) {
 						$password = static::sanitize($_POST['confirm_password']);

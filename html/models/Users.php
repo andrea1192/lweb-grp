@@ -1,7 +1,8 @@
 <?php namespace models;
 
-	require_once('connection.php');
+	require_once('connection.php'); // credenziali di connessione al db
 
+	/* Classe base per un repository di tipo database SQL */
 	class Database {
 		protected $connection;
 		protected const DB_NAME = DB_NAME;
@@ -15,6 +16,7 @@
 			);
 		}
 
+		/* Esegue una query sul database, restituendo un array associativo con i risultati */
 		public function query($query, $parameters = null) {
 			$stmt = $this->connection->prepare($query);
 			$stmt->execute($parameters);
@@ -31,9 +33,11 @@
 		}
 	}
 
+	/* Rappresenta un repository tipo tabella di database SQL */
 	class Users extends Database implements IRepository {
 		protected const DB_TABLE = TAB_USERS;
 
+		/* Inizializza il repository, da zero od utilizzando i dati in $source */
 		public function init($source = null) {
 			$table = static::DB_TABLE;
 
@@ -71,6 +75,7 @@
 			}
 		}
 
+		/* Ripristina il repository */
 		public function restore() {
 			$table = static::DB_TABLE;
 			$this->query("TRUNCATE $table");
@@ -80,6 +85,7 @@
 			return $this->read($username);
 		}
 
+		/* Recupera l'elemento identificato da $id dal repository */
 		public function read($id) {
 			$table = static::DB_TABLE;
 			$query = "SELECT * FROM $table WHERE username = ?";
@@ -89,6 +95,7 @@
 				return new User($match, hashed: true);
 		}
 
+		/* Recupera tutti gli elementi contenuti nel repository */
 		public function readAll() {
 			$table = static::DB_TABLE;
 			$query = "SELECT * FROM $table";
@@ -101,6 +108,7 @@
 			return $users;
 		}
 
+		/* Crea un nuovo elemento di tipo $type, usando $state, e lo aggiunge al repository */
 		public function create($type, $state) {
 			$table = static::DB_TABLE;
 			$user = new \models\User($state);
@@ -117,6 +125,7 @@
 			return $user;
 		}
 
+		/* Crea un nuovo elemento di tipo $type, usando $state, e lo aggiunge al repository */
 		public function update($object) {
 			$table = static::DB_TABLE;
 			$username = $object->username;

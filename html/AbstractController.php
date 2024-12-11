@@ -3,13 +3,23 @@
 	require_once('session.php');
 	require_once('services.php');
 
+	/* Classe base per un controller, inteso come oggetto deputato alla gestione della richiesta
+	* dell'utente e all'istanziazione della vista (view) corretta
+	*/
 	abstract class AbstractController {
 		protected $session;
 
+		/* Sanitizza l'input sostituendo caratteri con le rispettive entità ove necessario */
 		protected static function sanitize($input) {
 			return htmlspecialchars($input, ENT_QUOTES | ENT_SUBSTITUTE | ENT_XHTML);
 		}
 
+		/* Annulla l'operazione corrente e reindirizza l'utente alla pagina precedente.
+		*
+		* Opzionalmente memorizza nella sessione corrente un messaggio d'errore ($message) e/o una
+		* lista di campi che presentano dati non validi ($errors), in modo che questi possano
+		* essere presentati all'utente dalla vista che verrà invocata.
+		*/
 		protected static function abort($message = null, $errors = null) {
 			$session = ServiceLocator::resolve('session');
 
@@ -56,6 +66,7 @@
 				return new \models\Users();
 			});
 
+			// Risolve una sessione in modo che venga chiamato session_start() (prima di output)
 			$this->session = ServiceLocator::resolve('session');
 
 			if ($_SERVER['SCRIPT_NAME'] != '/install.php') {
@@ -63,9 +74,11 @@
 				$this->checkRepository();
 			}
 
+			// Determina l'azione da intraprendere (definito da sottoclassi di AbstractController)
 			$this->route();
 		}
 
+		/* Verifica la disponibilità del database */
 		private function checkDatabase() {
 
 			try {
@@ -80,6 +93,7 @@
 			}
 		}
 
+		/* Verifica la disponibilità del repository di file XML */
 		private function checkRepository() {
 			require_once('connection.php');
 

@@ -1,5 +1,8 @@
 <?php namespace views;
 
+	/* Classe base per una vista, intesa come oggetto deputato alla visualizzazione di uno o più
+	* modelli (model) compatibili, ovvero elementi del dominio di interesse
+	*/
 	abstract class AbstractView {
 		protected $session;
 
@@ -7,6 +10,7 @@
 			$this->session = \controllers\ServiceLocator::resolve('session');
 		}
 
+		/* Costruisce una vista a partire da un tipo di oggetto (vd. AbstractModel::getType()) */
 		public static function build($type, $model, $ref) {
 
 			switch ($type) {
@@ -41,6 +45,7 @@
 			}
 		}
 
+		/* Costruisce una vista a partire da un modello di oggetto */
 		public static function matchModel($model, $ref = null) {
 			$class = get_class($model);
 			$parents = class_parents($model);
@@ -59,11 +64,13 @@
 			}
 		}
 
+		/* Stampa il prologo XML */
 		protected static function printPrologue() {
 			echo '<?xml version="1.0" encoding="UTF-8"?>';
 		}
 
 
+		/* Genera il menu principale, con i collegamenti alle macro-aree del sito */
 		protected function generateMainMenu() {
 			return <<<EOF
 			<ul class="menu">
@@ -73,6 +80,7 @@
 			EOF;
 		}
 
+		/* Genera il menu utente, con i suoi dettagli ed i collegamenti alle pagine personali */
 		protected function generateUserMenu() {
 
 			if ($this->session->isLoggedIn()) {
@@ -138,6 +146,7 @@
 			}
 		}
 
+		/* Stampa l'header del sito, con menu principale e menu utente */
 		public function printHeader() {
 			$main_menu = $this->generateMainMenu();
 			$user_menu = $this->generateUserMenu();
@@ -158,6 +167,7 @@
 			EOF;
 		}
 
+		/* Stampa il footer del sito, con pulsante di validazione ed informazioni sull'autore */
 		public function printFooter() {
 			require_once('connection.php');
 			$credits = CREDITS;
@@ -176,6 +186,10 @@
 			EOF;
 		}
 
+		/* Valida il codice HTML della pagina corrente e vi inietta il pulsante con l'esito. Questo
+		* metodo è caricato come callback da ob_start() in cima ad ogni template, e chiamato
+		* automaticamente quando l'output buffer viene svuotato da ob_flush_end().
+		*/
 		public static function validateHTML($buffer) {
 			$button = '';
 
@@ -234,6 +248,8 @@
 			return static::getXML($document);
 		}
 
+		/* Restituisce il codice dell'oggetto di tipo DOMDocument che riceve, dopo averlo ripulito
+		* da tag inseriti automaticamente. */
 		private static function getXML($document) {
 			$xml = str_replace(
 					"    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n",
@@ -243,6 +259,7 @@
 			return $xml;
 		}
 
+		/* Scorciatoia per \controllers\ServiceLocator::resolve() */
 		protected function getMapper($mapper) {
 			return \controllers\ServiceLocator::resolve($mapper);
 		}

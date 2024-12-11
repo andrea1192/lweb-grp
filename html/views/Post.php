@@ -1,5 +1,6 @@
 <?php namespace views;
 	
+	/* Visualizzazione di un oggetto di tipo \models\Post */
 	class Post extends AbstractView {
 		protected const POST_TYPE = '';
 		protected $post;
@@ -22,6 +23,7 @@
 				$this->errors = $this->session->popErrors();
 		}
 
+		/* Genera un URL per l'azione richiesta, se ammessa sull'oggetto di riferimento */
 		public function generateURL($action = 'display') {
 			$URL = "post.php?type={$this->getPostType()}";
 
@@ -46,6 +48,12 @@
 			return htmlspecialchars($URL, ENT_QUOTES | ENT_SUBSTITUTE | ENT_XHTML);
 		}
 
+		/* Visualizza l'oggetto di riferimento, opzionalmente cambiandone una o più parti.
+		*
+		*	$active determina se visualizzare o meno i pulsanti di inserimento delle reazioni
+		*	$content permette di cambiare il contenuto del post
+		*	$reactions permette di cambiare le reazioni al post
+		*/
 		public function displayReference($active = true, $content = '', $reactions = '') {
 			$rating = $this->generateRating();
 
@@ -94,11 +102,12 @@
 			EOF;
 		}
 
+		/* Visualizza l'oggetto di riferimento, senza cambiamenti, mediante displayReference() */
 		public function display() {
-
 			static::displayReference();
 		}
 
+		/* Form di modifica del post */
 		public function edit() {
 			$action = $this->generateURL('update');
 			$reference_field = $this->generateReferenceField();
@@ -158,6 +167,7 @@
 			EOF;
 		}
 
+		/* Form di primo inserimento del post */
 		public function compose() {
 			$action = $this->generateURL('create');
 			$reference_field = $this->generateReferenceField();
@@ -188,10 +198,12 @@
 			EOF;
 		}
 
+		/* [Non applicabile per classe base \models\Post] */
 		protected function generateRating() {
 			return '';
 		}
 
+		/* Genera il menu con i pulsanti per modificare/cancellare/segnalare il post */
 		protected function generateDropdownMenu() {
 			$items = '';
 
@@ -230,14 +242,23 @@
 			return UIComponents::getOverflowMenu($dropdown);
 		}
 
+		/* Genera un campo nascosto con il film di riferimento. Utilizzato da edit() e compose();
+		* fa in modo che i form di inserimento e modifica contengano tutti i dati di cui il
+		* controller ha bisogno per portare a termine l'operazione.
+		*/
 		protected function generateReferenceField() {
 			return UIComponents::getHiddenInput('movie', $this->ref);
 		}
 
+		/* Genera campi specifici dell'oggetto di riferimento. Utilizzato da edit() e compose();
+		* facendo override di questo metodo, è possibile inserirvi campi applicabili a sottoclassi
+		* di \models\Post senza duplicare il codice di questi due metodi.
+		*/
 		protected function generateSpecialFields() {
 			return '';
 		}
 
+		/* Genera il pulsante di salvataggio */
 		protected function generateSaveButtons() {
 			if (!$this->post)
 				return UIComponents::getFilledButton('Submit', 'send');
@@ -245,6 +266,7 @@
 				return UIComponents::getFilledButton('Save changes', 'save');
 		}
 
+		/* [Non applicabile per classe base \models\Post] */
 		protected function generateActionButtons() {
 			return '';
 		}
@@ -252,6 +274,7 @@
 
 	class RatedPost extends Post {
 
+		/* Genera l'indicatore del rating del post (es. voto di una recensione) */
 		protected function generateRating() {
 			$rating = $this->post->rating;
 
@@ -262,6 +285,7 @@
 			EOF;
 		}
 
+		/* Genera il campo per inserire il rating del post (es. voto di una recensione) */
 		protected function generateSpecialFields() {
 			return UIComponents::getTextInput(
 					'Rating',
@@ -275,6 +299,7 @@
 	class Comment extends RatedPost {
 		protected const POST_TYPE = 'comment';
 
+		/* Genera l'indicatore del rating del post. Override per \models\Comment. */
 		protected function generateRating() {
 			$icon = '';
 
@@ -293,10 +318,12 @@
 			EOF;
 		}
 
+		/* Genera un campo con la richiesta di riferimento. Override per \models\Comment. */
 		protected function generateReferenceField() {
 			return UIComponents::getHiddenInput('request', $this->ref);
 		}
 
+		/* Genera campi specifici dell'oggetto di riferimento. Override per \models\Comment. */
 		protected function generateSpecialFields() {
 			$ratings = [
 				'ok' => 'ok: This content should be accepted',
@@ -318,6 +345,9 @@
 	class Question extends Post {
 		protected const POST_TYPE = 'question';
 
+		/* Visualizza l'oggetto di riferimento come post in rilievo, non consentendo l'inserimento
+		* di nuove reazioni e mostrandone solo una selezione.
+		*/
 		public function displayFeatured() {
 			parent::displayReference(
 				active: false,
@@ -325,10 +355,12 @@
 			);
 		}
 
+		/* Visualizza l'oggetto di riferimento, inserendovi le relative risposte */
 		public function display() {
 			parent::displayReference(reactions: $this->generateAnswers());
 		}
 
+		/* Genera i pulsanti per elevare una domanda o inserire una risposta */
 		protected function generateActionButtons() {
 			$html = '';
 
@@ -350,6 +382,7 @@
 			return $html;
 		}
 
+		/* Genera il codice per visualizzare le risposte, opzionalmente solo quelle selezionate */
 		protected function generateAnswers($featuredOnly = false) {
 			$html = '';
 
@@ -379,6 +412,7 @@
 			EOF;
 		}
 
+		/* Genera campi specifici dell'oggetto di riferimento. Override per \models\Question. */
 		protected function generateSpecialFields() {
 			$fields = '';
 
@@ -401,8 +435,10 @@
 	class Spoiler extends RatedPost {
 		protected const POST_TYPE = 'spoiler';
 
+		/* Visualizza l'oggetto di riferimento o un pulsante per accedervi, a seconda del
+		* controller che ha inizializzato la vista.
+		*/
 		public function display() {
-
 			if ($_SERVER['SCRIPT_NAME'] == '/post.php')
 				parent::displayReference(content: $this->post->text);
 			else
@@ -420,8 +456,10 @@
 	class Extra extends Post {
 		protected const POST_TYPE = 'extra';
 
+		/* Visualizza l'oggetto di riferimento o un messaggio di errore, a seconda che l'utente
+		* corrente abbia o meno la reputazione o i privilegi richiesti.
+		*/
 		public function display() {
-
 			if (($this->session->getReputation() >= $this->post->reputation)
 					|| $this->session->isMod())
 				parent::displayReference();
@@ -432,6 +470,7 @@
 				);
 		}
 
+		/* Genera campi specifici dell'oggetto di riferimento. Override per \models\Extra. */
 		protected function generateSpecialFields() {
 			return UIComponents::getTextInput(
 					'Reputation',

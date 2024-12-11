@@ -51,7 +51,7 @@
 						$state['status'] = static::sanitize($_POST['status'] ?? 'submitted');
 						$state['author'] = static::sanitize($_POST['author'] ?? '');
 
-						// Porta a termine l'operazione corretta
+						// Porta a termine l'operazione corretta (create/update)
 						try {
 							if ($action == 'create') {
 								$object = $repo->create($movie_type, $state);
@@ -199,7 +199,7 @@
 					$requests = ServiceLocator::resolve('requests');
 					$request = $requests->read($request_id);
 
-					$request->setStatus('deleted');
+					$request->setStatus('deleted'); // soft-delete
 					$requests->update($request);
 
 					header('Location: movies.php?action=list_requests');

@@ -1,5 +1,6 @@
 <?php namespace views;
 	
+	/* Visualizzazione di un oggetto di tipo \models\Movie */
 	class Movie extends AbstractView {
 		protected $movie;
 		protected $errors;
@@ -13,6 +14,7 @@
 				$this->errors = $this->session->popErrors();
 		}
 
+		/* Genera un URL per l'azione richiesta, se ammessa sull'oggetto di riferimento */
 		public function generateURL($action = 'display') {
 			$URL = 'movie.php';
 
@@ -35,6 +37,9 @@
 			return htmlspecialchars($URL, ENT_QUOTES | ENT_SUBSTITUTE | ENT_XHTML);
 		}
 
+		/* Visualizza una selezione dei dettagli dell'oggetto di riferimento. Questa vista è
+		* utilizzata dalla pagina di dettaglio di un post per mostrare a quale film è riferito.
+		*/
 		public function displayReference() {
 			$backdrop = $this->generateBackdrop();
 			$poster = $this->generatePoster();
@@ -54,6 +59,9 @@
 			EOF;
 		}
 
+		/* Visualizza una selezione dei dettagli dell'oggetto di riferimento. Questa vista è
+		* utilizzata dalla griglia dei film in archivio per mostrare locandina e titolo dei film.
+		*/
 		public function displayCard() {
 			$href = $this->generateURL();
 			$poster = $this->generatePoster();
@@ -68,6 +76,9 @@
 			EOF;
 		}
 
+		/* Visualizza tutti i dettagli disponibili per l'oggetto di riferimento. Questa vista è
+		* utilizzata dalla relativa pagina di dettaglio.
+		*/
 		public function display() {
 			$placeholder = 'N/A';
 
@@ -75,6 +86,8 @@
 			$poster = $this->generatePoster();
 			$action_buttons = $this->generateActionButtons();
 
+			// NOTA: \views\Request non fa override di questo metodo
+			// Se necessario, rimpiazza con un placeholder dettagli opzionali per questa vista
 			$movie_title =
 					(!empty($this->movie->title)) ? $this->movie->title : $placeholder;
 			$movie_year =
@@ -115,6 +128,7 @@
 			EOF;
 		}
 
+		/* Form di modifica dei dettagli */
 		public function edit() {
 			$action = $this->generateURL();
 			$backdrop = $this->generateBackdrop();
@@ -185,6 +199,7 @@
 			EOF;
 		}
 
+		/* Form di primo inserimento dei dettagli */
 		public function compose() {
 			$action = $this->generateURL();
 			$backdrop = $this->generateBackdrop();
@@ -248,6 +263,7 @@
 			EOF;
 		}
 
+		/* Genera codice per visualizzare lo sfondo, se presente */
 		protected function generateBackdrop() {
 			$dir = $this->getMapper('movies')::BACKDROPS_PATH;
 			$ext = $this->getMapper('movies')::MEDIA_EXT;
@@ -258,6 +274,7 @@
 			return "style=\"background-image: url('{$backdrop}')\"";
 		}
 
+		/* Genera codice per visualizzare la locandina, se presente */
 		protected function generatePoster() {
 			$dir = $this->getMapper('movies')::POSTERS_PATH;
 			$ext = $this->getMapper('movies')::MEDIA_EXT;
@@ -288,10 +305,12 @@
 			EOF;
 		}
 
+		/* [Non applicabile per \models\Movie] */
 		protected function generateStatus() {
 			return '';
 		}
 
+		/* Genera il pulsante di modifica */
 		protected function generateActionButtons() {
 			$left = '';
 			$right = '';
@@ -322,6 +341,7 @@
 			EOF;
 		}
 
+		/* Genera i pulsanti per il caricamento di locandine e sfondi */
 		protected function generateFiles() {
 			$accept = $this->getMapper('movies')::MEDIA_TYPE;
 
@@ -340,10 +360,15 @@
 			EOF;
 		}
 
+		/* Genera campi specifici dell'oggetto di riferimento. Utilizzato da edit() e compose():
+		* facendo override di questo metodo, è possibile inserirvi campi applicabili a sottoclassi
+		* di \models\Movie senza duplicare il codice di questi due metodi.
+		*/
 		protected function generateSpecialFields() {
 			return UIComponents::getHiddenInput('type', 'movie');
 		}
 
+		/* Genera il pulsante di salvataggio */
 		protected function generateSaveButtons() {
 			$left = '';
 			$right = '';
@@ -364,8 +389,10 @@
 		}
 	}
 
+	/* Visualizzazione di un oggetto di tipo \models\Request */
 	class Request extends Movie {
 
+		/* Genera codice per visualizzare lo status della richiesta */
 		protected function generateStatus() {
 			$label = '';
 
@@ -398,6 +425,7 @@
 			return UIComponents::getOverlay($label, $icon, cls: 'status');
 		}
 
+		/* Genera campi specifici dell'oggetto di riferimento. Override per \models\Request. */
 		protected function generateSpecialFields() {
 			$fields = UIComponents::getHiddenInput('type', 'request');
 
@@ -409,6 +437,7 @@
 			return $fields;
 		}
 
+		/* Genera i pulsanti di modifica/cancellazione e di revisione della richiesta */
 		protected function generateActionButtons() {
 			$left = '';
 			$right = '';
@@ -453,6 +482,7 @@
 			EOF;
 		}
 
+		/* Genera il pulsante di salvataggio e quelli per accettare/respingere la richiesta */
 		protected function generateSaveButtons() {
 			$left = '';
 			$right = '';

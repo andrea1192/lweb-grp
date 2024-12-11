@@ -10,8 +10,11 @@
 			if (!$this->session->isLoggedIn())
 				header('Location: index.php');
 
+			// Azione di default: display (visualizza lista)
 			$view = new \views\ReportsView();
 			$view->render();
+
+			// Per altre azioni relative alle segnalazioni, vd. post.php (send_report/close_report)
 		}
 	}
 

@@ -1,5 +1,6 @@
 <?php namespace views;
 
+	/* Classe base per viste di tipo dialogo, che consentono un'operazione specifica */
 	abstract class DialogView extends AbstractView {
 
 		public function render() {
@@ -7,16 +8,19 @@
 		}
 	}
 
+	/* Script di installazione */
 	class SetupView extends DialogView {
 
 		public function printTitle() {
 			print("Setup - grp");
 		}
 
+		/* Override del menu principale per rimuovere le sezioni, non ancora popolate */
 		protected function generateMainMenu() {
 			return '';
 		}
 
+		/* Override del menu utente per rimuovere pulsante di login, non ancora funzionante */
 		protected function generateUserMenu() {
 			return 'grp install script';
 		}
@@ -124,6 +128,7 @@
 		}
 	}
 
+	/* Form di login */
 	class SigninView extends DialogView {
 
 		public function printTitle() {
@@ -162,6 +167,7 @@
 		}
 	}
 
+	/* Form di registrazione */
 	class SignupView extends DialogView {
 
 		public function printTitle() {
@@ -205,6 +211,7 @@
 		}
 	}
 
+	/* Form di modifica dei propri dati. Per la conferma è richiesta la password corrente. */
 	class ProfileView extends DialogView {
 		public $user;
 
@@ -249,6 +256,7 @@
 		}
 	}
 
+	/* Form di modifica della password. Per la conferma è richiesta la password corrente. */
 	class PasswordChangeView extends ProfileView {
 
 		public function printTitle() {
@@ -295,6 +303,7 @@
 		}
 	}
 
+	/* Dialogo di cancellazione dell'account. Per la conferma è richiesta la password corrente. */
 	class AccountDeleteView extends ProfileView {
 
 		public function printTitle() {
@@ -338,6 +347,7 @@
 		}
 	}
 
+	/* Form di modifica dei dati di un altro utente */
 	class UserEditView extends DialogView {
 		public $user;
 

@@ -5,7 +5,7 @@
 	class SetupController extends AbstractController {
 
 		public function route() {
-			require_once('connection.php');
+			require_once('connection.php'); // costanti con i percorsi da utilizzare
 
 			switch ($_REQUEST['action'] ?? '') {
 
@@ -90,6 +90,7 @@
 			}
 		}
 
+		/* Copia tutti i file presenti nella directory $src nella directory $dst */
 		private static function copy_media($src, $dst) {
 
 			if (!is_dir($src))
@@ -111,6 +112,7 @@
 			}
 		}
 
+		/* Rimuove (unlink) tutti i file presenti nella directory $tgt */
 		private static function remove_media($tgt) {
 
 			if (!is_dir($tgt))

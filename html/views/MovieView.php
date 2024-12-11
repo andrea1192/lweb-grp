@@ -1,5 +1,8 @@
 <?php namespace views;
 
+	/* Visualizzazione della scheda di un film o di una richiesta, con una parte dei relativi post
+	* a seconda della sottopagina selezionata
+	*/
 	class MovieView extends AbstractView {
 		public const TABS = [
 			'movie' => [
@@ -57,11 +60,13 @@
 
 		}
 
+		/* Stampa i dettagli principali, delegando ad un opportuno oggetto Movie/Request */
 		public function printOverview() {
 			$view = \views\Movie::matchModel($this->movie);
 			$view->display();
 		}
 
+		/* Stampa le sottopagine disponibili, con le diverse tipologie di post */
 		private function printTabs() {
 			$base_URL = $_SERVER['SCRIPT_NAME'];
 
@@ -80,6 +85,7 @@
 			}
 		}
 
+		/* Stampa i post */
 		public function printPosts() {
 			$components = 'views\UIComponents';
 
@@ -118,6 +124,7 @@
 			}
 		}
 
+		/* Stampa il bottone con l'azione principale (composizione di un post di questo tipo) */
 		public function printActionButton() {
 
 			if (property_exists($this->movie, 'status') && ($this->movie->status != 'submitted'))
@@ -144,6 +151,7 @@
 		}
 	}
 
+	/* Form di modifica della scheda di un film o di una richiesta */
 	class MovieEditView extends AbstractEditView {
 
 		public function __construct($movie_id) {
@@ -170,6 +178,7 @@
 		}
 	}
 
+	/* Form di composizione di una nuova richiesta */
 	class MovieComposeView extends AbstractEditView {
 
 		public function __construct() {

@@ -4,6 +4,11 @@
 		protected $reaction;
 		protected $ref;
 
+		/* Genera pulsanti per inserire reazioni a partire dall'array associativo che riceve, che
+		* associa ogni tipo di reazione ammessa per il post in questione ad un oggetto che contiene
+		* le statistiche sulle reazioni di quel tipo già inserite. Ciascun pulsante conterrà un
+		* conteggio o una media delle valutazioni espresse.
+		*/
 		public static function generateReactionButtons($reactions) {
 			$buttons = '';
 
@@ -141,6 +146,7 @@
 			$this->ref = $ref ?? $reaction->post;
 		}
 
+		/* Genera un URL per l'azione richiesta, se ammessa sull'oggetto di riferimento */
 		public function generateURL($action = 'display', $reaction_type = 'like') {
 			if ($this->reaction)
 				$post_id = $this->reaction->post;
@@ -174,6 +180,10 @@
 
 	class Answer extends Reaction {
 
+		/* Genera il codice per visualizzare una risposta. Non visualizza direttamente l'output, ma
+		* è utilizzato dal metodo Question::display() che fa uso di Question::generateAnswers() per
+		* iterare sulle risposte e di Post::displayReference() per la visualizzazione.
+		*/
 		public function generateDisplay($active = true, $selected = false) {
 			$selected_class = $selected ?
 					'selected' : '';
@@ -219,6 +229,7 @@
 			EOF;
 		}
 
+		/* Genera il form di inserimento di una risposta */
 		public function generateInsertForm() {
 			$action = $this->generateURL('create');
 			$text = UIComponents::getTextArea('Text', 'text');
@@ -250,8 +261,16 @@
 
 	class Report extends Reaction {
 
+		/* Genera il codice per visualizzare una segnalazione in modo opportuno.
+		*
+		* 	segnalazioni aperte: ai mod è presentato un form, agli utenti il contenuto attuale
+		*	segnalazioni chiuse: indipendentemente dal livello di privilegio, è presentato il
+		*			contenuto attuale della segnalazione
+		*
+		* Non visualizza direttamente l'output, ma è utilizzato dal metodo ReportsView::printList()
+		* che fa uso di Post::displayReference().
+		*/
 		public function generate() {
-
 			if ($this->reaction->status == 'open') {
 				return ($this->session->isMod()) ?
 						$this->generateAdminForm() :
@@ -262,6 +281,7 @@
 			}
 		}
 
+		/* Genera il codice per visualizzare il contenuto attuale della segnalazione */
 		public function generateDisplay() {
 			$overlay = $this->generateStatus();
 
@@ -297,6 +317,7 @@
 			EOF;
 		}
 
+		/* Genera il form di inserimento di una segnalazione */
 		public function generateInsertForm() {
 			$send = $this->generateURL('send_report');
 			$message = UIComponents::getTextArea('Message', 'message');
@@ -325,6 +346,7 @@
 			EOF;
 		}
 
+		/* Genera il form di gestione di una segnalazione */
 		public function generateAdminForm() {
 			$overlay = $this->generateStatus();
 			$send = $this->generateURL('close_report');
@@ -377,6 +399,7 @@
 			EOF;
 		}
 
+		/* Genera codice per visualizzare lo status della segnalazione */
 		protected function generateStatus() {
 			$label = '';
 

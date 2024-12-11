@@ -1,5 +1,6 @@
 <?php namespace views;
 
+	/* Classe base per visualizzare collezioni di oggetti */
 	abstract class AbstractCollectionView extends AbstractView {
 		public $title;
 		public $items;
@@ -8,6 +9,7 @@
 			print("{$this->title} - grp");
 		}
 
+		/* Stampa un messaggio che informa l'utente quando la collezione di riferimento è vuota */
 		public static function printEmptyMessage() {
 			$icon = UIComponents::getIcon('sentiment_dissatisfied', cls: 'md-72 md-xlight');
 
@@ -19,9 +21,11 @@
 			EOF;
 		}
 
+		/* Stampa il bottone con l'azione principale (nessuna, di default) */
 		public function printActionButton() {}
 	}
 
+	/* Visualizzazione di tipo lista (sequenza verticale con normal flow) */
 	abstract class AbstractListView extends AbstractCollectionView {
 
 		public function printList() {
@@ -47,6 +51,7 @@
 		}
 	}
 
+	/* Visualizzazione di tipo griglia (sequenza orizzontale con flex-wrap) */
 	abstract class AbstractGridView extends AbstractCollectionView {
 
 		public function printGrid() {
@@ -72,6 +77,7 @@
 		}
 	}
 
+	/* Griglia delle schede/richieste in archivio */
 	class MoviesView extends AbstractGridView {
 
 		public function __construct($item_type) {
@@ -89,6 +95,7 @@
 			}
 		}
 
+		/* Stampa il bottone con l'azione principale (composizione di una nuova richiesta) */
 		public function printActionButton() {
 
 			if ($this->session->isAllowed())
@@ -96,6 +103,9 @@
 		}
 	}
 
+	/* Lista dei report inviati. Cambia in base al privilegio dell'utente corrente: moderatori ed
+	* amministratori vedono tutti i report, mentre gli utenti regolari solo quelli inviati da loro.
+	*/
 	class ReportsView extends AbstractListView {
 
 		public function __construct() {
@@ -137,6 +147,7 @@
 		}
 	}
 
+	/* Lista degli utenti registrati */
 	class UsersView extends AbstractListView {
 
 		public function __construct() {

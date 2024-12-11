@@ -1,15 +1,18 @@
 <?php namespace views;
 
+	/* Classe base per la composizione, visualizzazione o modifica di un post */
 	abstract class AbstractPostView extends AbstractView {
 		public $post;
 		public $movie;
 
+		/* Visualizza alcuni dettagli della scheda di riferimento */
 		public function printMovieReference() {
 			$view = \views\Movie::matchModel($this->movie);
 			$view->displayReference();
 		}
 	}
 
+	/* Visualizzazione dettagliata di un post */
 	class PostView extends AbstractPostView {
 
 		public function __construct($post_id) {
@@ -53,6 +56,7 @@
 		}
 	}
 
+	/* Form di modifica di un post */
 	class PostEditView extends PostView {
 
 		public function printForm() {
@@ -70,6 +74,7 @@
 		}
 	}
 
+	/* Form di composizione di un nuovo post */
 	class PostComposeView extends AbstractPostView {
 		public $post_type;
 
@@ -103,6 +108,9 @@
 		}
 	}
 
+	/* Form di composizione di una reazione estesa (es. risposta a domanda o segnalazione di post).
+	* A differenza delle altre specializzazioni di PostView, riferimento è a post invece di scheda.
+	*/
 	class ReactionCreateView extends PostView {
 		public $reaction_type;
 

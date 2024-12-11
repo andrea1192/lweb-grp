@@ -1,5 +1,8 @@
 <?php namespace models;
 
+	/* Classe base per un modello, inteso come oggetto che rappresenta un elemento specifico del
+	* dominio di interesse (film, post, reazione...) con le sue proprietà caratterizzanti
+	*/
 	abstract class AbstractModel {
 		protected $__errors;
 		protected $__source;
@@ -8,6 +11,9 @@
 			$this->__source = $state;
 		}
 
+		/* Restituisce lo stato dell'oggetto sottoforma di array associativo contenente i valori di
+		* tutte le sue proprietà non nulle
+		*/
 		public function getState() {
 			$state = array_filter(
 					get_object_vars($this),
@@ -19,6 +25,12 @@
 			return $state;
 		}
 
+		/* Restituisce il tipo di oggetto rappresentato da $subject:
+		*
+		*	se istanza di DOMElement, il tipo è costituito dal nome dell'elemento (nodeName);
+		*	se istanza di altra classe, il tipo è costituito dal nome della classe (get_class());
+		*	se ID alfanumerico di un oggetto, il tipo è determinato dal prefisso.
+		*/
 		public static function getType($subject) {
 
 			if (is_object($subject)) {
@@ -58,6 +70,7 @@
 			}
 		}
 
+		/* Valida la proprietà $property come attributo numerico */
 		protected function validateNumeric(
 				$property,
 				$required = true,
@@ -86,7 +99,7 @@
 			return $this->__source[$property];
 		}
 
-
+		/* Valida la proprietà $property come attributo testuale */
 		protected function validateString(
 				$property,
 				$required = true
@@ -103,11 +116,13 @@
 			return $this->__source[$property];
 		}
 
+		/* Genera un'eccezione se i metodi di validazione utilizzati hanno trovato errori */
 		protected function checkValidation() {
 			if (!empty($this->__errors))
 				throw new InvalidDataException('Validation errors!', $this->__errors);
 		}
 
+		/* Restituisce una istanza di tipo $type costruita utilizzando lo stato $state */
 		public static function build($type, $state) {
 
 			switch ($type) {
@@ -144,6 +159,9 @@
 	}
 
 
+	/* Estensione di Exception che include eventuali messaggi di errore generati dai metodi di
+	* validazione degli input
+	*/
 	class InvalidDataException extends \Exception {
 		private $__errors;
 

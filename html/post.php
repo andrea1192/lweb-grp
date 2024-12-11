@@ -79,7 +79,7 @@
 								break;
 						}
 
-						// Porta a termine l'operazione corretta
+						// Porta a termine l'operazione corretta (create/update)
 						try {
 							if ($action == 'create') {
 								$object = $repo->create($post_type, $state);
@@ -112,7 +112,7 @@
 					$repo = ServiceLocator::resolve('posts');
 					$post = $repo->read($post_id);
 
-					$post->setStatus('deleted');
+					$post->setStatus('deleted'); // soft-delete
 					$repo->update($post);
 
 					switch ($post_type) {
@@ -218,7 +218,7 @@
 					$state['message'] = static::sanitize($_POST['message']);
 					$state['response'] = static::sanitize($_POST['response']);
 
-					// Porta a termine l'operazione corretta
+					// Porta a termine l'operazione corretta (send/close)
 					if ($action == 'send_report') {
 						$report = $repo->create('report', $state);
 						$redir = "movie.php?id={$repo->read($report->post)->movie}";

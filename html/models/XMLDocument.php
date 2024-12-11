@@ -5,6 +5,7 @@
 	define('XMLNS_DEF', 'http://www.w3.org/2000/xmlns/');
 	define('XSI_DEF', 'http://www.w3.org/2001/XMLSchema-instance');
 
+	/* Classe base per un repository di tipo XML (file XML) */
 	abstract class XMLDocument implements IRepository {
 		protected const SCHEMAS_ROOT = DIR_SCHEMAS;
 		protected const DOCUMENT_ROOT = DIR_STATIC;
@@ -13,14 +14,20 @@
 		protected $document;
 		protected $xpath;
 
+		/* Restituisce il percorso dello schema che definisce la grammatica del file XML */
 		private static function getSchemaPath() {
 			return static::SCHEMAS_ROOT.static::DOCUMENT_NAME.'.xsd';
 		}
 
+		/* Restituisce il percorso del file XML */
 		private static function getDocumentPath() {
 			return static::DOCUMENT_ROOT.static::DOCUMENT_NAME.'.xml';
 		}
 
+		/* Restituisce l'istanza repository di riferimento per gli oggetti di tipo $type, quella
+		* che ne implementa le funzionalità di creazione, recupero, aggiornamento e cancellazione
+		* su disco (CRUD) definite da IRepository
+		*/
 		public static function getRepo($type) {
 			$sl = '\\controllers\\ServiceLocator';
 
@@ -50,6 +57,10 @@
 			}
 		}
 
+		/* Restituisce la classe mapper di riferimento per gli oggetti di tipo $type, deputata ad
+		* estrarre dati dagli elementi recuperati dal disco o ad immettervene di nuovi perchè
+		* vengano preservati dopo una modifica
+		*/
 		public static function getMapper($type) {
 			$ns = '\\models\\';
 
@@ -92,6 +103,7 @@
 				throw new \Exception("Couldn't load {$document}.");
 		}
 
+		/* Inizializza il repository, da zero od utilizzando i dati in $source */
 		public function init($source = null) {
 
 			if (!is_dir(static::DOCUMENT_ROOT))
@@ -111,6 +123,7 @@
 			}
 		}
 
+		/* Ripristina il repository */
 		public function restore() {
 			if (is_file(static::getDocumentPath()))
 				unlink(static::getDocumentPath());
@@ -118,6 +131,7 @@
 			static::createDocument();
 		}
 
+		/* Inizializza il repository da zero. Utilizzato da init(). */
 		protected function createDocument() {
 			$sch_path = static::getSchemaPath();
 
@@ -131,6 +145,7 @@
 			$this->saveDocument();
 		}
 
+		/* Carica il repository dal disco */
 		protected function loadDocument($doc_path = null, $sch_path = null) {
 			$doc_path = $doc_path ?? static::getDocumentPath();
 			$sch_path = $sch_path ?? static::getSchemaPath();
@@ -147,6 +162,7 @@
 			return ($lo && $vo);
 		}
 
+		/* Salva il repository su disco */
 		protected function saveDocument($doc_path = null, $sch_path = null) {
 			$doc_path = $doc_path ?? static::getDocumentPath();
 			$sch_path = $sch_path ?? static::getSchemaPath();
@@ -160,6 +176,11 @@
 			return $this->document;
 		}
 
+		// ================================================================================
+		// INTERFACCIA AD ALTO LIVELLO
+		// ================================================================================
+
+		/* Crea un nuovo elemento di tipo $type, usando $state, e lo aggiunge al repository */
 		public function create($type, $state) {
 			$repo = static::getRepo($type);
 			$mapper = static::getMapper($type);
@@ -176,6 +197,7 @@
 			return $object;
 		}
 
+		/* Recupera l'elemento identificato da $id dal repository */
 		public function read($id) {
 			$type = \models\AbstractModel::getType($id);
 			$repo = static::getRepo($type);
@@ -189,6 +211,7 @@
 			}
 		}
 
+		/* Recupera la reazione identificata da $post, $author, $type dal repository */
 		public function readReaction($post, $author, $type) {
 			$repo = static::getRepo($type);
 			$mapper = static::getMapper($type);
@@ -201,6 +224,9 @@
 			}
 		}
 
+		/* Aggiorna le proprietà dell'elemento $object nel repository, che deve contenere un
+		* elemento con proprietà $id corrispondente (vd. replaceElement())
+		*/
 		public function update($object) {
 			$type = \models\AbstractModel::getType($object);
 			$repo = static::getRepo($type);
@@ -213,24 +239,30 @@
 			return $object;
 		}
 
+		/* Rimozione non implementata in quanto controller implementa soft-delete */
 		// public function delete($object) {}
 
-		// ========== Low-level interface ==========
+		// ================================================================================
+		// INTERFACCIA A BASSO LIVELLO
+		// ================================================================================
 
 		protected function getElement($id) {
 			return $this->document->getElementById($id);
 		}
 
+		/* Rimpiazza un elemento nel repository corrente, identificandolo con la proprietà $id */
 		protected function replaceElement($element) {
 			$this->document->getElementById($element->id)->replaceWith($element);
 			$this->saveDocument();
 		}
 
+		/* Aggiunge un elemento al repository corrente */
 		protected function appendElement($node) {
 			$this->document->documentElement->append($node);
 			$this->saveDocument();
 		}
 
+		/* Rimuove un elemento dal repository corrente */
 		protected function deleteElement($id) {
 			$element = $this->document->getElementById($id);
 			$element->parentNode->removeChild($element);
@@ -238,6 +270,7 @@
 			$this->saveDocument();
 		}
 
+		/* Genera un ID appropriato per un elemento di tipo $type */
 		protected function generateID($type) {
 			$mapper = static::getMapper($type);
 			$root = $mapper::DOCUMENT_NAME;
