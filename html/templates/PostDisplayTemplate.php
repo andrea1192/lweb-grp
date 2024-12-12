@@ -2,6 +2,7 @@
 
 	\ob_start('\views\AbstractView::validateHTML');
 
+	static::sendHeaders();
 	static::printPrologue();
 ?>
 

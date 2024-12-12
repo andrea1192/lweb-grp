@@ -64,6 +64,14 @@
 			}
 		}
 
+		protected static function sendHeaders() {
+			// Indica al client che il corpo contiene un documento XHTML
+			header('Content-Type: application/xhtml+xml');
+
+			// Chiede al client di indicare il referrer solo quando segue link interni al sito
+			header('Referrer-Policy: same-origin');
+		}
+
 		/* Stampa il prologo XML */
 		protected static function printPrologue() {
 			echo '<?xml version="1.0" encoding="UTF-8"?>';
