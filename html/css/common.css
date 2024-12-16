@@ -63,7 +63,7 @@
 }
 
 .blur {
-	backdrop-filter: contrast(50%) blur(100px);
+	backdrop-filter: contrast(50%) saturate(125%) blur(100px);
 }
 
 .centered {
@@ -192,6 +192,12 @@ body {
 	color: #AAA;
 }
 
+samp {
+	border: 1px solid #CCC;
+	padding: 2px;
+	background-color: #EEE;
+}
+
 /* ==== Parti vista MovieView ============================================== */
 
 #backdrop {
@@ -256,8 +262,16 @@ body {
 	font-size: 1.8rem;
 }
 
+#description .detail {
+	align-items: end;
+}
+
 #description .detail >div:first-child {
 	flex: 0 0 100px;
+	font-weight: 300;
+	font-size: 0.8rem;
+	text-transform: uppercase;
+	cursor: default;
 }
 
 #backdrop +#content {
