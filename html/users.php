@@ -27,23 +27,23 @@
 				// Porta a termine la modifica dei dati di un utente da parte di un amministratore
 				// Per i dati dell'utente corrente, l'azione è *save* in profile.php
 				case 'update':
-					if (isset($_POST)) {
-						$mapper = ServiceLocator::resolve('users');
-						$user = $mapper->read($user_id);
+					static::checkPOST();
 
-						if ($user) {
-							$user->name = static::sanitize($_POST['name']);
-							$user->address = static::sanitize($_POST['address']);
-							$user->mail_pri = static::sanitize($_POST['mail_pri']);
-							$user->mail_sec = static::sanitize($_POST['mail_sec']);
+					$mapper = ServiceLocator::resolve('users');
+					$user = $mapper->read($user_id);
 
-							$mapper->update($user);
-							$this->session->pushNotification(
-									'Changes saved.');
-						} else {
-							static::abort(
-									"User \"{$user->username}\" not found.");
-						}
+					if ($user) {
+						$user->name = static::sanitize($_POST['name']);
+						$user->address = static::sanitize($_POST['address']);
+						$user->mail_pri = static::sanitize($_POST['mail_pri']);
+						$user->mail_sec = static::sanitize($_POST['mail_sec']);
+
+						$mapper->update($user);
+						$this->session->pushNotification(
+								'Changes saved.');
+					} else {
+						static::abort(
+								"User \"{$user->username}\" not found.");
 					}
 
 					header("Location: {$_SERVER['HTTP_REFERER']}");
@@ -51,20 +51,18 @@
 
 				// Porta a termine il ban di un utente (modificando il suo livello di privilegio)
 				case 'ban':
-					if (isset($_POST)) {
-						$mapper = ServiceLocator::resolve('users');
-						$user = $mapper->read($user_id);
+					$mapper = ServiceLocator::resolve('users');
+					$user = $mapper->read($user_id);
 
-						if ($user) {
-							$user->reputation += $user::REPUTATION_DELTAS['ban'];
-							$user->setPrivilege(0);
-							$mapper->update($user);
-							$this->session->pushNotification(
-									"User \"{$user->username}\" banned.");
-						} else {
-							static::abort(
-									"User \"{$user->username}\" not found.");
-						}
+					if ($user) {
+						$user->reputation += $user::REPUTATION_DELTAS['ban'];
+						$user->setPrivilege(0);
+						$mapper->update($user);
+						$this->session->pushNotification(
+								"User \"{$user->username}\" banned.");
+					} else {
+						static::abort(
+								"User \"{$user->username}\" not found.");
 					}
 
 					header("Location: {$_SERVER['HTTP_REFERER']}");
@@ -72,19 +70,17 @@
 
 				// Porta a termine l'unban di un utente (modificando il suo livello di privilegio)
 				case 'unban':
-					if (isset($_POST)) {
-						$mapper = ServiceLocator::resolve('users');
-						$user = $mapper->read($user_id);
+					$mapper = ServiceLocator::resolve('users');
+					$user = $mapper->read($user_id);
 
-						if ($user) {
-							$user->setPrivilege(1);
-							$mapper->update($user);
-							$this->session->pushNotification(
-									"User \"{$user->username}\" unbanned.");
-						} else {
-							static::abort(
-									"User \"{$user->username}\" not found.");
-						}
+					if ($user) {
+						$user->setPrivilege(1);
+						$mapper->update($user);
+						$this->session->pushNotification(
+								"User \"{$user->username}\" unbanned.");
+					} else {
+						static::abort(
+								"User \"{$user->username}\" not found.");
 					}
 
 					header("Location: {$_SERVER['HTTP_REFERER']}");

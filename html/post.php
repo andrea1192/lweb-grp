@@ -37,62 +37,63 @@
 					if (!$this->session->isAllowed())
 						header('Location: index.php');
 
-					if (isset($_POST)) {
-						$repo = ServiceLocator::resolve('posts');
+					// Controlla che la richiesta utilizzi il metodo HTTP POST
+					static::checkPOST();
 
-						$state['id'] = $post_id;
-						$state['status'] = static::sanitize($_POST['status'] ?? 'active');
-						$state['author'] = static::sanitize($_POST['author'] ?? '');
-						$state['date'] = static::sanitize($_POST['date'] ?? '');
-						$state['text'] = static::sanitize($_POST['text']);
+					$repo = ServiceLocator::resolve('posts');
 
-						$state['title'] = 
-								static::sanitize($_POST['title'] ?? '');
-						$state['rating'] = 
-								static::sanitize($_POST['rating'] ?? '');
-						$state['featured'] = 
-								(static::sanitize($_POST['featured'] ?? '') == 'true');
-						$state['featuredAnswer'] = 
-								static::sanitize($_POST['featuredAnswer'] ?? '');
-						$state['reputation'] = 
-								static::sanitize($_POST['reputation'] ?? '');
+					$state['id'] = $post_id;
+					$state['status'] = static::sanitize($_POST['status'] ?? 'active');
+					$state['author'] = static::sanitize($_POST['author'] ?? '');
+					$state['date'] = static::sanitize($_POST['date'] ?? '');
+					$state['text'] = static::sanitize($_POST['text']);
 
-						switch ($post_type) {
-							default:
-							case 'review':
-							case 'question':
-							case 'spoiler':
-							case 'extra':
-								$state['movie'] = static::sanitize($_POST['movie']);
-								$redir = "movie.php?id={$state['movie']}&type={$post_type}";
-								break;
+					$state['title'] =
+							static::sanitize($_POST['title'] ?? '');
+					$state['rating'] =
+							static::sanitize($_POST['rating'] ?? '');
+					$state['featured'] =
+							(static::sanitize($_POST['featured'] ?? '') == 'true');
+					$state['featuredAnswer'] =
+							static::sanitize($_POST['featuredAnswer'] ?? '');
+					$state['reputation'] =
+							static::sanitize($_POST['reputation'] ?? '');
 
-							case 'comment':
-								$state['request'] = static::sanitize($_POST['request']);
-								$redir = "movie.php?id={$state['request']}&type={$post_type}";
-								break;
+					switch ($post_type) {
+						default:
+						case 'review':
+						case 'question':
+						case 'spoiler':
+						case 'extra':
+							$state['movie'] = static::sanitize($_POST['movie']);
+							$redir = "movie.php?id={$state['movie']}&type={$post_type}";
+							break;
 
-							case 'answer':
-								$state['post'] = static::sanitize($_POST['post']);
-								$movie_ref = $repo->read($state['post'])->movie;
-								$redir = "movie.php?id={$movie_ref}&type=question";
-								break;
+						case 'comment':
+							$state['request'] = static::sanitize($_POST['request']);
+							$redir = "movie.php?id={$state['request']}&type={$post_type}";
+							break;
+
+						case 'answer':
+							$state['post'] = static::sanitize($_POST['post']);
+							$movie_ref = $repo->read($state['post'])->movie;
+							$redir = "movie.php?id={$movie_ref}&type=question";
+							break;
+					}
+
+					// Porta a termine l'operazione corretta (create/update)
+					try {
+						if ($action == 'create') {
+							$object = $repo->create($post_type, $state);
+						} else {
+							$object = \models\AbstractModel::build($post_type, $state);
+							$repo->update($object);
 						}
-
-						// Porta a termine l'operazione corretta (create/update)
-						try {
-							if ($action == 'create') {
-								$object = $repo->create($post_type, $state);
-							} else {
-								$object = \models\AbstractModel::build($post_type, $state);
-								$repo->update($object);
-							}
-						} catch (\Exception $e) {
-							static::abort(
-									'Couldn\'t complete operation. Invalid or missing data.',
-									$e->getErrors()
-							);
-						}
+					} catch (\Exception $e) {
+						static::abort(
+								'Couldn\'t complete operation. Invalid or missing data.',
+								$e->getErrors()
+						);
 					}
 
 					// Aggiorna e reindirizza l'utente

@@ -37,54 +37,55 @@
 					if ($action == 'update' && !$this->session->isMod())
 						header('Location: index.php');
 
-					if (isset($_POST)) {
-						$repo = ServiceLocator::resolve('movies');
+					// Controlla che la richiesta utilizzi il metodo HTTP POST
+					static::checkPOST();
 
-						$state['id'] = $movie_id;
-						$state['title'] = static::sanitize($_POST['title']);
-						$state['year'] = static::sanitize($_POST['year']);
-						$state['duration'] = static::sanitize($_POST['duration']);
-						$state['summary'] = static::sanitize($_POST['summary']);
-						$state['director'] = static::sanitize($_POST['director']);
-						$state['writer'] = static::sanitize($_POST['writer']);
+					$repo = ServiceLocator::resolve('movies');
 
-						$state['status'] = static::sanitize($_POST['status'] ?? 'submitted');
-						$state['author'] = static::sanitize($_POST['author'] ?? '');
+					$state['id'] = $movie_id;
+					$state['title'] = static::sanitize($_POST['title']);
+					$state['year'] = static::sanitize($_POST['year']);
+					$state['duration'] = static::sanitize($_POST['duration']);
+					$state['summary'] = static::sanitize($_POST['summary']);
+					$state['director'] = static::sanitize($_POST['director']);
+					$state['writer'] = static::sanitize($_POST['writer']);
 
-						// Porta a termine l'operazione corretta (create/update)
-						try {
-							if ($action == 'create') {
-								$object = $repo->create($movie_type, $state);
-							} else {
-								$object = \models\AbstractModel::build($movie_type, $state);
-								$repo->update($object);
-							}
-						} catch (\Exception $e) {
-							static::abort(
-									'Couldn\'t complete operation. Invalid or missing data.',
-									$e->getErrors()
-							);
+					$state['status'] = static::sanitize($_POST['status'] ?? 'submitted');
+					$state['author'] = static::sanitize($_POST['author'] ?? '');
+
+					// Porta a termine l'operazione corretta (create/update)
+					try {
+						if ($action == 'create') {
+							$object = $repo->create($movie_type, $state);
+						} else {
+							$object = \models\AbstractModel::build($movie_type, $state);
+							$repo->update($object);
 						}
+					} catch (\Exception $e) {
+						static::abort(
+								'Couldn\'t complete operation. Invalid or missing data.',
+								$e->getErrors()
+						);
+					}
 
-						// Gestisce il caricamento di poster (locandine) o backdrop (sfondi)
-						if (($_FILES['poster']['size'] !== 0)
-									&& ($_FILES['poster']['type'] === $repo::MEDIA_TYPE)) {
+					// Gestisce il caricamento di poster (locandine) o backdrop (sfondi)
+					if (($_FILES['poster']['size'] !== 0)
+								&& ($_FILES['poster']['type'] === $repo::MEDIA_TYPE)) {
 
-							$ext = $repo::MEDIA_EXT;
-							$dir = $repo::POSTERS_PATH;
-							$name = $dir.$object->id.$ext;
+						$ext = $repo::MEDIA_EXT;
+						$dir = $repo::POSTERS_PATH;
+						$name = $dir.$object->id.$ext;
 
-							move_uploaded_file($_FILES['poster']['tmp_name'], $name);
-						}
-						if (($_FILES['backdrop']['size'] !== 0)
-									&& ($_FILES['backdrop']['type'] === $repo::MEDIA_TYPE)) {
+						move_uploaded_file($_FILES['poster']['tmp_name'], $name);
+					}
+					if (($_FILES['backdrop']['size'] !== 0)
+								&& ($_FILES['backdrop']['type'] === $repo::MEDIA_TYPE)) {
 
-							$ext = $repo::MEDIA_EXT;
-							$dir = $repo::BACKDROPS_PATH;
-							$name = $dir.$object->id.$ext;
+						$ext = $repo::MEDIA_EXT;
+						$dir = $repo::BACKDROPS_PATH;
+						$name = $dir.$object->id.$ext;
 
-							move_uploaded_file($_FILES['backdrop']['tmp_name'], $name);
-						}
+						move_uploaded_file($_FILES['backdrop']['tmp_name'], $name);
 					}
 
 					// Aggiorna e reindirizza l'utente

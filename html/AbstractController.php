@@ -9,6 +9,11 @@
 	abstract class AbstractController {
 		protected $session;
 
+		protected static function checkPOST() {
+			if (strtoupper($_SERVER['REQUEST_METHOD']) != 'POST')
+				static::abort('Something went wrong: missing data');
+		}
+
 		/* Sanitizza l'input sostituendo caratteri con le rispettive entità ove necessario */
 		protected static function sanitize($input) {
 			return htmlspecialchars($input, ENT_QUOTES | ENT_SUBSTITUTE | ENT_XHTML);
