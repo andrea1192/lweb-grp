@@ -8,6 +8,9 @@
 
 		public function __construct() {
 			$this->session = \controllers\ServiceLocator::resolve('session');
+
+			// Imposta il fuso orario per le funzioni date*
+			date_default_timezone_set('Europe/Rome');
 		}
 
 		/* Costruisce una vista a partire da un tipo di oggetto (vd. AbstractModel::getType()) */
