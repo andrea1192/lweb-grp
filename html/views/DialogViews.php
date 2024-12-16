@@ -258,6 +258,13 @@
 
 	/* Form di modifica della password. Per la conferma è richiesta la password corrente. */
 	class PasswordChangeView extends ProfileView {
+		public $password;
+
+		public function __construct($password = null) {
+			parent::__construct();
+
+			$this->password = $password;
+		}
 
 		public function printTitle() {
 			print("Change password: {$this->user->username} - grp");
@@ -269,16 +276,24 @@
 			$components = '\views\UIComponents';
 			$errors = ($this->session->holdsErrors()) ? $this->session->popErrors() : [];
 
+			if (empty($this->password))
+				$current_password_field = UIComponents::getPasswordInput(
+						'Current password',
+						'password',
+						errors: $errors
+				);
+			else
+				$current_password_field = UIComponents::getHiddenInput(
+						'password',
+						value: $this->password
+				);
+
 			echo <<<EOF
 			<form id="login" class="dialog flex column" action="{$action}" method="post">
 				<div>{$components::getIcon('password')}</div>
 				<h1>Change password</h1>
 				<div id="fields" class="flex column">
-					{$components::getPasswordInput(
-							'Current password',
-							'password',
-							errors: $errors
-					)}
+					{$current_password_field}
 					{$components::getPasswordInput(
 							'New password',
 							'password_new',
@@ -363,16 +378,59 @@
 
 		public function printDialog() {
 			$view = new User($this->user);
-			$action_update = $view->generateURL('update');
-			$action_ban = $view->generateURL('ban');
+			$action = $view->generateURL('update');
 			$components = '\views\UIComponents';
 
-			$controls_left = $view->generateBanButton();
+			$controls_left = $view->generateResetButton();
 			$controls_right = UIComponents::getFilledButton(
 					'Save changes',
-					'save');
+					'save'
+			);
 
-			$view->display($action_update, $controls_left, $controls_right);
+			$view->display($action, $controls_left, $controls_right);
+		}
+	}
+
+	/* Visualizzazione del link di reset della password appena generato */
+	class PasswordResetView extends UserEditView {
+		public $reset_URL;
+
+		public function __construct($user, $reset_URL) {
+			parent::__construct($user);
+
+			$this->reset_URL = $reset_URL;
+		}
+
+		public function printTitle() {
+			print("Password reset: {$this->user->username} - grp");
+		}
+
+		public function printDialog() {
+			$components = '\views\UIComponents';
+
+			echo <<<EOF
+				<div class="dialog flex column">
+					<div>{$components::getIcon('password')}</div>
+					<h1>Password reset</h1>
+
+					<div>The password has been reset for user <em>{$this->user->username}</em>.
+					With this link they will be able to sign in and set a new password for their
+					account:</div>
+					<samp>$this->reset_URL</samp>
+					<small>The link <strong>will only be displayed once</strong></small>
+
+					<div id="controls" class="flex">
+					<div class="flex right">
+						{$components::getTextButton(
+								'OK',
+								'',
+								href: htmlspecialchars($_SERVER['HTTP_REFERER']),
+								cls: 'colored-blue'
+						)}
+					</div>
+				</div>
+				</div>
+				EOF;
 		}
 	}
 ?>

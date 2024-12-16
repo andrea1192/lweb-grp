@@ -87,6 +87,34 @@
 
 					header('Location: index.php');
 					break;
+
+				// Porta a termine il reset della password utilizzando un link fornito da un admin
+				case 'reset_password':
+					$username = static::sanitize($_GET['id']);
+					$password = static::sanitize($_GET['pw']);
+
+					$mapper = ServiceLocator::resolve('users');
+					$user = $mapper->getUserByUsername($username);
+
+						if ($user && password_verify($password, $user->password)) {
+							$prompt = "Welcome back, {$user->username}! Please set your new password.";
+
+							// Effettua l'accesso per l'utente
+							$this->session->setUser($user->username);
+
+							// Chiede di impostare una nuova password
+							if (!$this->session->holdsNotification())
+								$this->session->pushNotification($prompt);
+
+							// Visualizza il relativo form
+							$view = new \views\PasswordChangeView($password);
+							$view->render();
+
+						} else {
+							static::abort('Invalid password reset link.');
+						}
+
+					break;
 			}
 		}
 	}

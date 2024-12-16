@@ -69,5 +69,21 @@
 			return $this->username == $object->author;
 		}
 
+		/* Genera una password temporanea per l'utente, la imposta come password corrente e la
+		* restituisce al chiamante, in modo che possa utilizzarla per generare un link con il quale
+		* l'utente possa cambiarla
+		*/
+		public function resetPassword() {
+			$password = '';
+			$length = 16;
+			$alpha = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+			for ($i = 0; $i < $length; $i++)
+				$password .= $alpha[random_int(0, strlen($alpha)-1)];
+
+			$this->password = password_hash($password, PASSWORD_DEFAULT);
+
+			return $password;
+		}
 	}
 ?>

@@ -27,6 +27,7 @@
 				case 'update':
 				case 'ban':
 				case 'unban':
+				case 'reset_password':
 					$URL .= "&action={$action}";
 					break;
 			}
@@ -114,26 +115,63 @@
 			$action_ban = $this->generateURL('ban');
 			$action_unban = $this->generateURL('unban');
 
-			$tooltip = UIComponents::getTooltip('You don\'t have sufficient privileges to ban this user.');
+			$tooltip = UIComponents::getTooltip(
+					'You don\'t have sufficient privileges to ban this user.');
 
 			if ($this->user->privilege <= 0) {
 				return UIComponents::getTextButton('Unban',
 						'lock_open',
 						href: $action_unban,
-						cls: 'colored-green');
-
+						cls: 'colored-green'
+				);
 			} elseif ($this->user->privilege < $this->session->getUser()->privilege) {
-				return UIComponents::getTextButton('Ban',
+				return UIComponents::getTextButton(
+						'Ban',
 						'lock',
 						href: $action_ban,
-						cls: 'colored-red');
-
+						cls: 'colored-red'
+				);
 			} else {
-				return UIComponents::getTextButton('Ban',
-							'lock',
-							enabled: false,
-							cls: 'colored-grey',
-							content: $tooltip);
+				return UIComponents::getTextButton(
+						'Ban',
+						'lock',
+						enabled: false,
+						cls: 'colored-grey',
+						content: $tooltip
+				);
+			}
+		}
+
+		/* Genera il pulsante di reset della password dell'utente, abilitato secondo i privilegi */
+		public function generateResetButton() {
+			$action = $this->generateURL('reset_password');
+			$current_user = $this->session->getUser();
+
+			$tooltip_authorized = UIComponents::getTooltip(
+				'Reset the password for this user.'
+			);
+
+			$tooltip_unauthorized = UIComponents::getTooltip(
+					'You can\'t reset another administrator\'s password.'
+			);
+
+			if (($this->user->privilege < $current_user->privilege)
+					|| ($this->user->username == $current_user->username)){
+				return UIComponents::getTextButton(
+						'Reset password',
+						'password',
+						href: $action,
+						cls: 'colored-red',
+						content: $tooltip_authorized
+				);
+			} else {
+				return UIComponents::getTextButton(
+						'Reset password',
+						'password',
+						enabled: false,
+						cls: 'colored-grey',
+						content: $tooltip_unauthorized
+				);
 			}
 		}
 

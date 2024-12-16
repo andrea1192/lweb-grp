@@ -105,6 +105,7 @@
 		case 'views\PasswordChangeView':
 		case 'views\AccountDeleteView':
 		case 'views\UserEditView':
+		case 'views\PasswordResetView':
 			require_once 'views/DialogViews.php';
 			break;
 		case 'views\Movie':

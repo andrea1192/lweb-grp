@@ -28,7 +28,10 @@
 			if ($errors)
 				$session->pushErrors($errors);
 
-			header("Location: {$_SERVER['HTTP_REFERER']}");
+			// Rimanda alla pagina precedente o, se non disponibile, alla home page
+			$redir = $_SERVER['HTTP_REFERER'] ?? 'index.php';
+
+			header("Location: $redir");
 			die();
 		}
 

@@ -89,6 +89,34 @@
 
 					header("Location: {$_SERVER['HTTP_REFERER']}");
 					break;
+
+				// Porta a termine il reset della password di un utente
+				case 'reset_password':
+					$mapper = ServiceLocator::resolve('users');
+					$user = $mapper->read($user_id);
+
+					if ($user) {
+						// Genera una password temporanea per l'utente
+						$tmp_pw = $user->resetPassword();
+						$mapper->update($user);
+
+						// Genera un link di reset con la password temporanea
+						$reset_url = "{$_SERVER['HTTP_HOST']}/login.php?action=reset_password";
+						$reset_url .= "&id={$user_id}";
+						$reset_url .= "&pw={$tmp_pw}";
+						$reset_url = htmlspecialchars($reset_url);
+
+						$message = "Password reset for user \"{$user->username}\".";
+						$this->session->pushNotification($message);
+
+						// Visualizza il link di reset in modo che possa essere condiviso
+						$view = new \views\PasswordResetView($user_id, $reset_url);
+						$view->render();
+					} else {
+						static::abort("User \"{$user->username}\" not found.");
+					}
+
+					break;
 			}
 		}
 	}
