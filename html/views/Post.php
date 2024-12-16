@@ -60,6 +60,13 @@
 			$deleted_icon = UIComponents::getIcon('delete', cls: 'translate');
 			$status = ($this->post->status == 'active') ? '' : $deleted_icon;
 
+			$author = $this->getMapper('users')->read($this->post->author);
+			$author_view = new User($author);
+			$author_summary = <<<EOF
+					{$author->username}<div class="tooltip rich header">{$author_view->generateSummary()}</div>
+					EOF;
+			$date = date('d-m-Y H:i', strtotime($this->post->date));
+
 			if ($active) {
 				$dropdown_menu = $this->generateDropdownMenu();
 				$reaction_buttons = Reaction::generateReactionButtons($this->post->reactions);
@@ -80,8 +87,8 @@
 					<div class="details">
 						<h1>{$this->post->title}{$status}</h1>
 						<div class="flex small">
-							<span class="author">{$this->post->author}</span>
-							<span class="date">{$this->post->date}</span>
+							<div class="author">{$author_summary}</div>
+							<div class="date">{$date}</div>
 						</div>
 					</div>
 					{$dropdown_menu}

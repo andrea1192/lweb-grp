@@ -178,7 +178,16 @@ body {
 	font-weight: 500;
 }
 
-.header .flex.small >span:not(:last-child)::after {
+.author {
+	position: relative;
+	cursor: default;
+}
+
+.author:hover >.tooltip.rich {
+	visibility: visible;
+}
+
+.header .flex.small >*:not(:last-child)::after {
 	content: '\00b7';
 	margin: 0 4px;
 }

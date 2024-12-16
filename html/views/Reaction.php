@@ -190,6 +190,13 @@
 			$selected_icon =  $selected ?
 					UIComponents::getIcon('check_circle', 'selected_answer') : '';
 
+			$author = $this->getMapper('users')->read($this->reaction->author);
+			$author_view = new User($author);
+			$author_summary = <<<EOF
+					{$author->username}<div class="tooltip rich header">{$author_view->generateSummary()}</div>
+					EOF;
+			$date = date('d-m-Y H:i', strtotime($this->reaction->date));
+
 			if ($active)
 				$reaction_buttons = static::generateReactionButtons($this->reaction->reactions);
 			else
@@ -209,8 +216,8 @@
 				{$selected_icon}
 				<div class="header">
 					<div class="flex small">
-						<span class="author">{$this->reaction->author}</span>
-						<span class="date">{$this->reaction->date}</span>
+						<div class="author">{$author_summary}</div>
+						<div class="date">{$date}</div>
 					</div>
 					<div class="right"></div>
 				</div>

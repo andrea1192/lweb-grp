@@ -176,7 +176,7 @@
 		}
 
 		/* Genera il codice per visualizzare username, tipologia e reputazione dell'utente */
-		protected function generateSummary() {
+		public function generateSummary() {
 			$initial = $this->user->username[0];
 
 			return <<<EOF
