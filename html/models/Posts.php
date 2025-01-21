@@ -3,28 +3,6 @@
 	class Posts extends \models\XMLDocument {
 		protected const DOCUMENT_NAME = 'posts';
 
-		public static function getMapperForItem($subject) {
-			$class = get_class($subject);
-
-			if ($class == 'DOMElement')
-				$name = $subject->nodeName;
-			else
-				$name = str_replace('models\\', '', strtolower($class));
-
-			switch ($name) {
-				case 'comment':
-					return '\models\Comments';
-				case 'review':
-					return '\models\Reviews';
-				case 'question':
-					return '\models\Questions';
-				case 'spoiler':
-					return '\models\Spoilers';
-				case 'extra':
-					return '\models\Extras';
-			}
-		}
-
 		public function getFeaturedPosts($movie_id, $type = '*') {
 			$query = "/posts/{$type}[@status!='deleted' and @movie='{$movie_id}' and @featured='true']";
 			$matches = $this->xpath->query($query);

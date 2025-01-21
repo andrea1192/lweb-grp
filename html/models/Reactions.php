@@ -3,30 +3,6 @@
 	class Reactions extends \models\XMLDocument {
 		protected const DOCUMENT_NAME = 'reactions';
 
-		public static function getMapperForItem($subject) {
-			$class = get_class($subject);
-
-			if ($class == 'DOMElement')
-				$name = $subject->nodeName;
-			else
-				$name = str_replace('models\\', '', strtolower($class));
-
-			switch ($name) {
-				case 'like':
-					return '\models\Likes';
-				case 'usefulness':
-					return '\models\Usefulnesses';
-				case 'agreement':
-					return '\models\Agreements';
-				case 'spoilage':
-					return '\models\Spoilages';
-				case 'answer':
-					return '\models\Answers';
-				case 'report':
-					return '\models\Reports';
-			}
-		}
-
 		public function getReactionsByPost($post_id, $type = '*') {
 			$query = "/reactions/{$type}[@post='{$post_id}']";
 			$matches = $this->xpath->query($query);

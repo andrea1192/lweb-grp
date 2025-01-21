@@ -5,22 +5,6 @@
 		public const BACKDROPS_PATH = DIR_BACKDROPS;
 		public const MEDIA_TYPE = MEDIA_TYPE;
 		public const MEDIA_EXT = MEDIA_EXT;
-
-		public static function getMapperForItem($subject) {
-			$class = get_class($subject);
-
-			if ($class == 'DOMElement')
-				$name = $subject->nodeName;
-			else
-				$name = str_replace('models\\', '', strtolower($class));
-
-			switch ($name) {
-				case 'movie':
-					return '\models\Movies';
-				case 'request':
-					return '\models\Requests';
-			}
-		}
 	}
 
 	class Movies extends AbstractMovies {
