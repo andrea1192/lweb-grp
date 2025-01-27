@@ -99,7 +99,7 @@
 		public function __construct() {
 			$document = static::DOCUMENT_NAME.'.xml';
 
-			if (!$this->loadDocument() && ($_SERVER['SCRIPT_NAME'] != '/install.php'))
+			if (!$this->loadDocument() && (!str_ends_with($_SERVER['SCRIPT_NAME'], '/install.php')))
 				throw new \Exception("Couldn't load {$document}.");
 		}
 

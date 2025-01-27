@@ -19,7 +19,7 @@
 					?? $post->movie
 					?? $post->request;
 
-			if ($_SERVER['SCRIPT_NAME'] == '/post.php' && $this->session->holdsErrors())
+			if (str_ends_with($_SERVER['SCRIPT_NAME'], '/post.php') && $this->session->holdsErrors())
 				$this->errors = $this->session->popErrors();
 		}
 
@@ -446,7 +446,7 @@
 		* controller che ha inizializzato la vista.
 		*/
 		public function display() {
-			if ($_SERVER['SCRIPT_NAME'] == '/post.php')
+			if (str_ends_with($_SERVER['SCRIPT_NAME'], '/post.php'))
 				parent::displayReference(content: $this->post->text);
 			else
 				parent::displayReference(

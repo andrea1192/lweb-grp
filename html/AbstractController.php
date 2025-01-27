@@ -77,7 +77,7 @@
 			// Risolve una sessione in modo che venga chiamato session_start() (prima di output)
 			$this->session = ServiceLocator::resolve('session');
 
-			if ($_SERVER['SCRIPT_NAME'] != '/install.php') {
+			if (!str_ends_with($_SERVER['SCRIPT_NAME'], '/install.php')) {
 				$this->checkDatabase();
 				$this->checkRepository();
 			}

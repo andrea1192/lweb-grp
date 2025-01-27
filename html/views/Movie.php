@@ -10,7 +10,7 @@
 
 			$this->movie = $movie;
 
-			if ($_SERVER['SCRIPT_NAME'] == '/movie.php' && $this->session->holdsErrors())
+			if (str_ends_with($_SERVER['SCRIPT_NAME'], '/movie.php') && $this->session->holdsErrors())
 				$this->errors = $this->session->popErrors();
 		}
 
@@ -288,7 +288,7 @@
 				$placeholder = '';
 			} else {
 
-				if ($_SERVER['SCRIPT_NAME'] != '/post.php')
+				if (!str_ends_with($_SERVER['SCRIPT_NAME'], '/post.php'))
 					$cls = 'placeholder md-72 md-xlight';
 				else
 					$cls = 'placeholder md-24 md-light';
@@ -419,7 +419,7 @@
 					break;
 			}
 
-			if ($_SERVER['SCRIPT_NAME'] == '/post.php')
+			if (str_ends_with($_SERVER['SCRIPT_NAME'], '/post.php'))
 				$label = '';
 
 			return UIComponents::getOverlay($label, $icon, cls: 'status');
