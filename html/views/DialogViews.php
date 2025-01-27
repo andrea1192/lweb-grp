@@ -48,6 +48,7 @@
 				EOF;
 			}
 
+			$sample_available = is_dir(DIR_SAMPLE);
 			$optionals = <<<EOF
 				<div class="flex column">
 					{$components::getCheckbox(
@@ -58,7 +59,8 @@
 					{$components::getCheckbox(
 							'Set up sample content',
 							'setup_sample',
-							checked: true)}
+							checked: $sample_available,
+							enabled: $sample_available)}
 					{$components::getCheckbox(
 							'Set up built-in users:',
 							'setup_users',
