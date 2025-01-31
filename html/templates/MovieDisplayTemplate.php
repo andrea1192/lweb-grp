@@ -13,7 +13,7 @@
 	<head>
 		<title><?php $this->printTitle() ?></title>
 
-		<link rel="stylesheet" href="../css/common.css" type="text/css" />
+		<link rel="stylesheet" href="css/common.css" type="text/css" />
 	</head>
 
 	<body>
