@@ -252,7 +252,7 @@
 
 		/* Rimpiazza un elemento nel repository corrente, identificandolo con la proprietà $id */
 		protected function replaceElement($element) {
-			$this->document->getElementById($element->id)->replaceWith($element);
+			$this->document->getElementById($element->getAttribute('id'))->replaceWith($element);
 			$this->saveDocument();
 		}
 
