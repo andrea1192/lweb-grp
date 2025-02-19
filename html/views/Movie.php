@@ -266,10 +266,10 @@
 		/* Genera codice per visualizzare lo sfondo, se presente */
 		protected function generateBackdrop() {
 			$dir = $this->getMapper('movies')::BACKDROPS_PATH;
-			$ext = $this->getMapper('movies')::MEDIA_EXT;
+			$ext = $this->getMapper('movies')::MEDIA_TYPES;
 			$id = $this->movie->id ?? '';
 
-			$backdrop = $dir.$id.$ext;
+			$backdrop = $this->getMediaFile($dir, $id, $ext);
 
 			return "style=\"background-image: url('{$backdrop}')\"";
 		}
@@ -277,13 +277,13 @@
 		/* Genera codice per visualizzare la locandina, se presente */
 		protected function generatePoster() {
 			$dir = $this->getMapper('movies')::POSTERS_PATH;
-			$ext = $this->getMapper('movies')::MEDIA_EXT;
+			$ext = $this->getMapper('movies')::MEDIA_TYPES;
 			$id = $this->movie->id ?? '';
 
-			$poster = $dir.$id.$ext;
+			$poster = $this->getMediaFile($dir, $id, $ext);
 			$status = $this->generateStatus();
 
-			if (file_exists($poster)) {
+			if (!empty($poster)) {
 				$poster = "style=\"background-image: url('{$poster}')\"";
 				$placeholder = '';
 			} else {
@@ -303,6 +303,19 @@
 				{$placeholder}
 			</div>
 			EOF;
+		}
+
+		/* Localizza lo sfondo o la locandina del film corrente, se disponibile */
+		protected function getMediaFile($source, $id, $extensions) {
+
+			foreach ($extensions as $extension) {
+				$file = $source.$id.$extension;
+
+				if (file_exists($file))
+					return $file;
+			}
+
+			return '';
 		}
 
 		/* [Non applicabile per \models\Movie] */
@@ -343,7 +356,7 @@
 
 		/* Genera i pulsanti per il caricamento di locandine e sfondi */
 		protected function generateFiles() {
-			$accept = $this->getMapper('movies')::MEDIA_TYPE;
+			$accept = implode(', ', array_keys($this->getMapper('movies')::MEDIA_TYPES));
 
 			return <<<EOF
 			<div class="flex column files">
@@ -355,7 +368,7 @@
 					<span class="label">Backdrop</span>
 					<input class="filled" type="file" accept="{$accept}" name="backdrop" />
 				</label>
-				<div class="small">Accepted file types: image/jpeg</div>
+				<div class="small">Accepted file types: {$accept}</div>
 			</div>
 			EOF;
 		}

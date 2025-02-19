@@ -11,8 +11,10 @@
 
 	define('DIR_BACKDROPS', 'static/backdrops/');
 	define('DIR_POSTERS', 'static/posters/');
-	define('MEDIA_TYPE', 'image/jpeg');
-	define('MEDIA_EXT', '.jpg');
+	define('MEDIA_TYPES', [
+		'image/jpeg' => '.jpg',
+		'image/png' => '.png'
+	]);
 
 	define('BUILTIN_USERS', [
 		[

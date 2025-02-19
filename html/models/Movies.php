@@ -3,8 +3,7 @@
 	abstract class AbstractMovies extends \models\XMLDocument {
 		public const POSTERS_PATH = DIR_POSTERS;
 		public const BACKDROPS_PATH = DIR_BACKDROPS;
-		public const MEDIA_TYPE = MEDIA_TYPE;
-		public const MEDIA_EXT = MEDIA_EXT;
+		public const MEDIA_TYPES = MEDIA_TYPES;
 	}
 
 	class Movies extends AbstractMovies {

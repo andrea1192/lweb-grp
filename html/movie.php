@@ -70,18 +70,18 @@
 
 					// Gestisce il caricamento di poster (locandine) o backdrop (sfondi)
 					if (($_FILES['poster']['size'] !== 0)
-								&& ($_FILES['poster']['type'] === $repo::MEDIA_TYPE)) {
+								&& (in_array($_FILES['poster']['type'], array_keys($repo::MEDIA_TYPES)))) {
 
-						$ext = $repo::MEDIA_EXT;
+						$ext = $repo::MEDIA_TYPES[$_FILES['poster']['type']];
 						$dir = $repo::POSTERS_PATH;
 						$name = $dir.$object->id.$ext;
 
 						move_uploaded_file($_FILES['poster']['tmp_name'], $name);
 					}
 					if (($_FILES['backdrop']['size'] !== 0)
-								&& ($_FILES['backdrop']['type'] === $repo::MEDIA_TYPE)) {
+								&& (in_array($_FILES['backdrop']['type'], array_keys($repo::MEDIA_TYPES)))) {
 
-						$ext = $repo::MEDIA_EXT;
+						$ext = $repo::MEDIA_TYPES[$_FILES['backdrop']['type']];
 						$dir = $repo::BACKDROPS_PATH;
 						$name = $dir.$object->id.$ext;
 
@@ -136,13 +136,13 @@
 					$users->update($author);
 
 					// Gestisce il caricamento o la copia di poster (locandine)
-					$ext = $movies::MEDIA_EXT;
+					$ext = $repo::MEDIA_TYPES[$_FILES['poster']['type']];
 					$dir = $movies::POSTERS_PATH;
 					$req_name = $dir.$request->id.$ext;
 					$mov_name = $dir.$movie->id.$ext;
 
 					if (($_FILES['poster']['size'] !== 0)
-								&& ($_FILES['poster']['type'] === $movies::MEDIA_TYPE)) {
+								&& (in_array($_FILES['poster']['type'], array_keys($movies::MEDIA_TYPES)))) {
 
 						move_uploaded_file($_FILES['poster']['tmp_name'], $mov_name);
 						copy($mov_name, $req_name);
@@ -152,13 +152,13 @@
 					}
 
 					// Gestisce il caricamento o la copia di backdrop (sfondi)
-					$ext = $movies::MEDIA_EXT;
+					$ext = $repo::MEDIA_TYPES[$_FILES['backdrop']['type']];
 					$dir = $movies::BACKDROPS_PATH;
 					$req_name = $dir.$request->id.$ext;
 					$mov_name = $dir.$movie->id.$ext;
 
 					if (($_FILES['backdrop']['size'] !== 0)
-								&& ($_FILES['backdrop']['type'] === $movies::MEDIA_TYPE)) {
+								&& (in_array($_FILES['backdrop']['type'], array_keys($movies::MEDIA_TYPES)))) {
 
 						move_uploaded_file($_FILES['backdrop']['tmp_name'], $mov_name);
 						copy($mov_name, $req_name);
