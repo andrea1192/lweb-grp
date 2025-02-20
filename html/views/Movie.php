@@ -101,6 +101,9 @@
 			$movie_writer =
 					(!empty($this->movie->writer)) ? $this->movie->writer : $placeholder;
 
+			// Rimpiazza newline con <br /> per preservare lo spazio nella visualizzazione
+			$movie_summary = nl2br($movie_summary);
+
 			echo <<<EOF
 			<div id="backdrop" {$backdrop}>
 				<div class="blur">
