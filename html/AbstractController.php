@@ -41,11 +41,15 @@
 		}
 
 		public function __construct() {
+			require_once('connection.php'); // credenziali di connessione al db
 
 			spl_autoload_register(function ($class) {
 				require('autoloader.php');
 			});
 
+			ServiceLocator::register('db_connection', function() {
+				return new \mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+			});
 			ServiceLocator::register('session', function() {
 				return new Session();
 			});

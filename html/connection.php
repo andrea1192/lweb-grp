@@ -3,7 +3,6 @@
 	define('DB_USER', 'mariadb_user');
 	define('DB_PASS', 'mariadb_password');
 	define('DB_NAME', 'test_db');
-	define('TAB_USERS', 'Users');
 
 	define('DIR_SCHEMAS', 'schemas/');
 	define('DIR_SAMPLE', 'sample/');

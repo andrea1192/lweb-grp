@@ -27,6 +27,9 @@
 		case 'models\InvalidDataException':
 			require_once 'models/AbstractModel.php';
 			break;
+		case 'models\Database':
+			require_once 'models/Database.php';
+			break;
 		case 'models\AbstractMovie':
 		case 'models\Movie':
 		case 'models\Request':
@@ -78,7 +81,6 @@
 		case 'models\User':
 			require_once 'models/User.php';
 			break;
-		case 'models\Database':
 		case 'models\Users':
 			require_once 'models/Users.php';
 			break;

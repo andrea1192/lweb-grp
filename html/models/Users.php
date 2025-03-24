@@ -1,41 +1,8 @@
 <?php namespace models;
 
-	require_once('connection.php'); // credenziali di connessione al db
-
-	/* Classe base per un repository di tipo database SQL */
-	class Database {
-		protected $connection;
-		protected const DB_NAME = DB_NAME;
-
-		public function __construct() {
-			$this->connection = new \mysqli(
-					DB_HOST,
-					DB_USER,
-					DB_PASS,
-					DB_NAME
-			);
-		}
-
-		/* Esegue una query sul database, restituendo un array associativo con i risultati */
-		public function query($query, $parameters = null) {
-			$stmt = $this->connection->prepare($query);
-			$stmt->execute($parameters);
-
-			$result = $stmt->get_result();
-
-			if ($result) {
-				if ($result->num_rows == 1) {
-					return $result->fetch_assoc();
-				} else {
-					return $result->fetch_all(MYSQLI_ASSOC);
-				}
-			}
-		}
-	}
-
-	/* Rappresenta un repository tipo tabella di database SQL */
+	/* Rappresenta il repository degli utenti all'interno di un database SQL */
 	class Users extends Database implements IRepository {
-		protected const DB_TABLE = TAB_USERS;
+		protected const DB_TABLE = 'Users';
 
 		/* Inizializza il repository, da zero od utilizzando i dati in $source */
 		public function init($source = null) {
@@ -125,7 +92,7 @@
 			return $user;
 		}
 
-		/* Crea un nuovo elemento di tipo $type, usando $state, e lo aggiunge al repository */
+		/* Aggiorna l'elemento $object, identificandolo attraverso la sua chiave primaria */
 		public function update($object) {
 			$table = static::DB_TABLE;
 			$username = $object->username;
