@@ -55,8 +55,7 @@
 		/* Recupera l'elemento identificato da $id dal repository */
 		public function read($id) {
 			$table = static::DB_TABLE;
-			$query = "SELECT * FROM $table WHERE username = ?";
-			$match = $this->query($query, [$id]);
+			$match = $this->sql_select($table, ['username' => $id]);
 
 			if ($match)
 				return new User($match, hashed: true);
@@ -65,8 +64,7 @@
 		/* Recupera tutti gli elementi contenuti nel repository */
 		public function readAll() {
 			$table = static::DB_TABLE;
-			$query = "SELECT * FROM $table";
-			$matches = $this->query($query);
+			$matches = $this->sql_select($table);
 
 			foreach ($matches as $match) {
 				$users[] = new User($match, hashed: true);
@@ -81,13 +79,7 @@
 			$user = new \models\User($state);
 			$state = $user->getState();
 
-			$values = array_values($state);
-			$parameters = implode(',', array_keys($state));
-			$placeholders = implode(',', array_fill(0, count($state), '?'));
-
-			$query = "INSERT INTO $table ($parameters) VALUES ({$placeholders})";
-
-			$this->query($query, $values);
+			$this->sql_insert($table, $state);
 
 			return $user;
 		}
@@ -103,16 +95,7 @@
 			if (empty($diff))
 				return;
 
-			$values = array_values($diff);
-			$values[] = $current->username;
-
-			$parameters = array_keys($diff);
-			$parameters = array_map(fn($elem) => ($elem.'=?'), $parameters);
-			$parameters = implode(',', $parameters);
-
-			$query = "UPDATE $table SET $parameters WHERE username = ?";
-
-			$this->query($query, $values);
+			$this->sql_update($table, ['username' => $username], $diff);
 
 			return $current;
 		}

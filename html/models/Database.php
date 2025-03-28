@@ -57,6 +57,54 @@
 			}
 		}
 
+		/* Esegue una interrogazione su $table, operando opzionalmente:
+			- una selezione, specificandone i criteri in $criteria
+			- una proiezione, specificando gli attributi in $attributes
+		*/
+		protected function sql_select($table, $criteria = [], $attributes = '*') {
+			$values = array_values($criteria);
+
+			if (!empty($criteria)) {
+				$criteria = array_keys($criteria);
+				$criteria = array_map(fn($elem) => ($elem.'=?'), $criteria);
+				$criteria = implode(',', $criteria);
+
+				$query = "SELECT $attributes FROM $table WHERE $criteria";
+			} else {
+				$query = "SELECT $attributes FROM $table";
+			}
+
+			return $this->query($query, $values);
+		}
+
+		/* Inserisce una tupla in $table, utilizzando per attributi i valori in $state */
+		protected function sql_insert($table, $state) {
+			$values = array_values($state);
+
+			$attributes = implode(',', array_keys($state));
+			$placeholders = implode(',', array_fill(0, count($state), '?'));
+
+			$query = "INSERT INTO $table ($attributes) VALUES ($placeholders)";
+			$this->query($query, $values);
+		}
+
+		/* Aggiorna in $table le tuple che rispondono a $criteria, utilizzando i valori in $diff */
+		protected function sql_update($table, $criteria, $diff) {
+			$values = array_values($diff);
+			$values = array_merge($values, array_values($criteria));
+
+			$attributes = array_keys($diff);
+			$attributes = array_map(fn($elem) => ($elem.'=?'), $attributes);
+			$attributes = implode(',', $attributes);
+
+			$criteria = array_keys($criteria);
+			$criteria = array_map(fn($elem) => ($elem.'=?'), $criteria);
+			$criteria = implode(',', $criteria);
+
+			$query = "UPDATE $table SET $attributes WHERE $criteria";
+			$this->query($query, $values);
+		}
+
 		/* Recupera l'elemento identificato da $id dal repository */
 		public function read($id) {
 			return $this->getRepo($type)->read($id);
