@@ -25,6 +25,11 @@
 			return $state;
 		}
 
+		/* Restituisce un array associativo con i valori delle sole proprietà indicate in $keys */
+		public function getAttributes($keys) {
+			return array_intersect_key($this->getState(), array_flip($keys));
+		}
+
 		/* Restituisce il tipo di oggetto rappresentato da $subject:
 		*
 		*	se istanza di DOMElement, il tipo è costituito dal nome dell'elemento (nodeName);
@@ -154,6 +159,9 @@
 					return new Answer($state);
 				case 'report':
 					return new Report($state);
+
+				case 'user':
+					return new User($state);
 			}
 		}
 	}

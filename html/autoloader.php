@@ -28,6 +28,7 @@
 			require_once 'models/AbstractModel.php';
 			break;
 		case 'models\Database':
+		case 'models\Table':
 			require_once 'models/Database.php';
 			break;
 		case 'models\AbstractMovie':

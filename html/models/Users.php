@@ -1,15 +1,26 @@
 <?php namespace models;
 
 	/* Rappresenta il repository degli utenti all'interno di un database SQL */
-	class Users extends Database implements IRepository {
+	class Users extends Table implements IRepository {
+		protected const DB_VIEW = '';
 		protected const DB_TABLE = 'Users';
+		protected const DB_ATTRIBS = [
+			'username',
+			'password',
+			'name',
+			'address',
+			'mail_pri',
+			'mail_sec',
+			'reputation',
+			'privilege'
+		];
+		protected const OB_PRI_KEY = 'username';
 
 		/* Inizializza il repository, da zero od utilizzando i dati in $source */
 		public function init($source = null) {
-			$table = static::DB_TABLE;
 
 			$this->query(<<<EOF
-					CREATE TABLE IF NOT EXISTS $table (
+					CREATE TABLE IF NOT EXISTS 'Users' (
 					username	VARCHAR(160)	PRIMARY KEY,
 					password	VARCHAR(160)	NOT NULL,
 					name		VARCHAR(160),
@@ -42,12 +53,6 @@
 			}
 		}
 
-		/* Ripristina il repository */
-		public function restore() {
-			$table = static::DB_TABLE;
-			$this->query("TRUNCATE $table");
-		}
-
 		public function getUserByUsername($username) {
 			return $this->read($username);
 		}
@@ -71,33 +76,6 @@
 			}
 
 			return $users;
-		}
-
-		/* Crea un nuovo elemento di tipo $type, usando $state, e lo aggiunge al repository */
-		public function create($type, $state) {
-			$table = static::DB_TABLE;
-			$user = new \models\User($state);
-			$state = $user->getState();
-
-			$this->sql_insert($table, $state);
-
-			return $user;
-		}
-
-		/* Aggiorna l'elemento $object, identificandolo attraverso la sua chiave primaria */
-		public function update($object) {
-			$table = static::DB_TABLE;
-			$username = $object->username;
-
-			$current = $this->read($username);
-			$diff = array_diff_assoc($object->getState(), $current->getState());
-
-			if (empty($diff))
-				return;
-
-			$this->sql_update($table, ['username' => $username], $diff);
-
-			return $current;
 		}
 	}
 ?>

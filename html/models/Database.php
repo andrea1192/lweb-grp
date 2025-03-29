@@ -58,8 +58,8 @@
 		}
 
 		/* Esegue una interrogazione su $table, operando opzionalmente:
-			- una selezione, specificandone i criteri in $criteria
-			- una proiezione, specificando gli attributi in $attributes
+		*	- una selezione, specificandone i criteri in $criteria
+		*	- una proiezione, specificando gli attributi in $attributes
 		*/
 		protected function sql_select($table, $criteria = [], $attributes = '*') {
 			$values = array_values($criteria);
@@ -104,22 +104,86 @@
 			$query = "UPDATE $table SET $attributes WHERE $criteria";
 			$this->query($query, $values);
 		}
+	}
+
+	class Table extends Database implements IRepository {
+
+		/* Ripristina il repository */
+		public function restore() {
+			$table = static::DB_TABLE;
+			$this->query("TRUNCATE $table");
+		}
 
 		/* Recupera l'elemento identificato da $id dal repository */
 		public function read($id) {
-			return $this->getRepo($type)->read($id);
+			$table = static::DB_TABLE ?? static::DB_VIEW;
+			$id_key = static::OB_PRI_KEY;
+			$id_value = $id;
+
+			$match = $this->sql_select($table, [$id_key => $id_value]);
+
+			if ($match) {
+				$type = \models\AbstractModel::getType($id);
+				return \models\AbstractModel::build($type, $match);
+			}
+		}
+
+		/* Recupera tutti gli elementi contenuti nel repository */
+		public function readAll() {
+			$table = static::DB_TABLE ?? static::DB_VIEW;
+			$id_key = static::OB_PRI_KEY;
+
+			$matches = $this->sql_select($table);
+
+			foreach ($matches as $match) {
+				$type = \models\AbstractModel::getType($match[$id_key]);
+				$objects[] = \models\AbstractModel::build($type, $match);
+			}
+
+			return $objects;
 		}
 
 		/* Crea un nuovo elemento di tipo $type, usando $state, e lo aggiunge al repository */
 		public function create($type, $state) {
-			return $this->getRepo($type)->create($type, $state);
+			$table = static::DB_TABLE;
+			$object = \models\AbstractModel::build($type, $state);
+
+			if (defined(get_parent_class($this).'DB_TABLE')) {
+				$pc = get_parent_class($this);
+				$pi = new $pc();
+
+				$pi->create($type, $state);
+			}
+
+			$this->sql_insert($table, $object->getAttributes(static::DB_ATTRIBS));
+
+			return $object;
 		}
 
 		/* Aggiorna l'elemento $object, identificandolo attraverso la sua chiave primaria */
 		public function update($object) {
-			return $this->getRepo($type)->update($object);
-		}
+			$table = static::DB_TABLE;
+			$id_key = static::OB_PRI_KEY;
+			$id_value = $object->$id_key;
 
+			if (defined(get_parent_class($this).'DB_TABLE')) {
+				$pc = get_parent_class($this);
+				$pi = new $pc();
+
+				$pi->update($object);
+			}
+
+			$current = $this->read($id_value);
+			$new = $object;
+			$diff = array_diff_assoc(
+					$new->getAttributes(static::DB_ATTRIBS),
+					$current->getAttributes(static::DB_ATTRIBS));
+
+			if (!empty($diff))
+				$this->sql_update($table, [$id_key => $id_value], $diff);
+
+			return $current;
+		}
 	}
 
 ?>
