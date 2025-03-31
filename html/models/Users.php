@@ -1,7 +1,7 @@
 <?php namespace models;
 
-	/* Rappresenta il repository degli utenti all'interno di un database SQL */
-	class Users extends Table implements IRepository {
+	/* Rappresenta il repository degli utenti */
+	class Users extends Table {
 		protected const DB_VIEW = '';
 		protected const DB_TABLE = 'Users';
 		protected const DB_ATTRIBS = [
@@ -20,7 +20,7 @@
 		public function init($source = null) {
 
 			$this->query(<<<EOF
-					CREATE TABLE IF NOT EXISTS 'Users' (
+					CREATE TABLE IF NOT EXISTS Users (
 					username	VARCHAR(160)	PRIMARY KEY,
 					password	VARCHAR(160)	NOT NULL,
 					name		VARCHAR(160),

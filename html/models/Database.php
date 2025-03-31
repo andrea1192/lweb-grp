@@ -2,7 +2,7 @@
 
 	require_once('connection.php'); // credenziali di connessione al db
 
-	/* Classe base per un repository di tipo database SQL */
+	/* Metodi per interrogare un database relazionale, inserire o aggiornare tuple */
 	class Database {
 		protected const DB_NAME = DB_NAME;
 		protected $connection;
@@ -106,17 +106,20 @@
 		}
 	}
 
+	/* Metodi per interrogare una tabella specifica del database, ritornando elementi del dominio */
 	class Table extends Database implements IRepository {
 
 		/* Ripristina il repository */
 		public function restore() {
-			$table = static::DB_TABLE;
-			$this->query("TRUNCATE $table");
+			if (!empty(static::DB_TABLE)) {
+				$table = static::DB_TABLE;
+				$this->query("TRUNCATE $table");
+			}
 		}
 
 		/* Recupera l'elemento identificato da $id dal repository */
 		public function read($id) {
-			$table = static::DB_TABLE ?? static::DB_VIEW;
+			$table = !empty(static::DB_TABLE) ? static::DB_TABLE : static::DB_VIEW;
 			$id_key = static::OB_PRI_KEY;
 			$id_value = $id;
 
@@ -130,10 +133,11 @@
 
 		/* Recupera tutti gli elementi contenuti nel repository */
 		public function readAll() {
-			$table = static::DB_TABLE ?? static::DB_VIEW;
+			$table = !empty(static::DB_TABLE) ? static::DB_TABLE : static::DB_VIEW;
 			$id_key = static::OB_PRI_KEY;
 
 			$matches = $this->sql_select($table);
+			$objects = [];
 
 			foreach ($matches as $match) {
 				$type = \models\AbstractModel::getType($match[$id_key]);
@@ -146,7 +150,9 @@
 		/* Crea un nuovo elemento di tipo $type, usando $state, e lo aggiunge al repository */
 		public function create($type, $state) {
 			$table = static::DB_TABLE;
-			$object = \models\AbstractModel::build($type, $state);
+
+			// Aggiunge username dell'autore (utente corrente), necessario per alcuni elementi
+			$state['author'] = \controllers\ServiceLocator::resolve('session')->getUsername();
 
 			if (defined(get_parent_class($this).'DB_TABLE')) {
 				$pc = get_parent_class($this);
@@ -155,6 +161,7 @@
 				$pi->create($type, $state);
 			}
 
+			$object = \models\AbstractModel::build($type, $state);
 			$this->sql_insert($table, $object->getAttributes(static::DB_ATTRIBS));
 
 			return $object;
