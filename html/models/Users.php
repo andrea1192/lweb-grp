@@ -14,6 +14,7 @@
 			'reputation',
 			'privilege'
 		];
+		protected const OB_TYPE = 'user';
 		protected const OB_PRI_KEY = 'username';
 
 		/* Inizializza il repository, da zero od utilizzando i dati in $source */
@@ -70,6 +71,8 @@
 		public function readAll() {
 			$table = static::DB_TABLE;
 			$matches = $this->sql_select($table);
+
+			$users = [];
 
 			foreach ($matches as $match) {
 				$users[] = new User($match, hashed: true);

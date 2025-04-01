@@ -30,6 +30,11 @@
 			return array_intersect_key($this->getState(), array_flip($keys));
 		}
 
+		/* Restituisce il prefisso degli ID per il tipo di oggetto $type */
+		public static function getPrefix($type) {
+			return static::get($type)::ID_PREFIX;
+		}
+
 		/* Restituisce il tipo di oggetto rappresentato da $subject:
 		*
 		*	se istanza di DOMElement, il tipo è costituito dal nome dell'elemento (nodeName);
@@ -54,7 +59,6 @@
 
 				switch ($prefix) {
 					case Movie::ID_PREFIX:
-						return 'movie';
 					case Request::ID_PREFIX:
 						return 'request';
 
@@ -127,42 +131,16 @@
 				throw new InvalidDataException('Validation errors!', $this->__errors);
 		}
 
+		/* Restituisce la classe corrispondente al tipo $type */
+		public static function get($type) {
+			return '\models\\'.ucfirst($type);
+		}
+
 		/* Restituisce una istanza di tipo $type costruita utilizzando lo stato $state */
 		public static function build($type, $state) {
+			$class = static::get($type);
 
-			switch ($type) {
-				case 'movie':
-					return new Movie($state);
-				case 'request':
-					return new Request($state);
-
-				case 'review':
-					return new Review($state);
-				case 'question':
-					return new Question($state);
-				case 'spoiler':
-					return new Spoiler($state);
-				case 'extra':
-					return new Extra($state);
-				case 'comment':
-					return new Comment($state);
-
-				case 'like':
-					return new Like($state);
-				case 'usefulness':
-					return new Usefulness($state);
-				case 'agreement':
-					return new Agreement($state);
-				case 'spoilage':
-					return new Spoilage($state);
-				case 'answer':
-					return new Answer($state);
-				case 'report':
-					return new Report($state);
-
-				case 'user':
-					return new User($state);
-			}
+			return new $class($state);
 		}
 	}
 

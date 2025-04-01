@@ -11,36 +11,6 @@
 			$this->connection = \controllers\ServiceLocator::resolve('db_connection');
 		}
 
-		/* Restituisce l'istanza repository di riferimento per gli oggetti di tipo $type, quella
-		* che ne implementa le funzionalità di creazione, recupero, aggiornamento e cancellazione
-		* su database (CRUD) definite da IRepository
-		*/
-		public static function getRepo($type) {
-			$sl = '\\controllers\\ServiceLocator';
-
-			switch ($type) {
-				case 'movie':
-				case 'request':
-
-				case 'review':
-				case 'question':
-				case 'spoiler':
-				case 'extra':
-				case 'comment':
-
-				case 'like':
-				case 'usefulness':
-				case 'agreement':
-				case 'spoilage':
-				case 'answer':
-				case 'report':
-					return;
-
-				case 'user':
-					return $sl::resolve('users');
-			}
-		}
-
 		/* Esegue una query sul database, restituendo un array associativo con i risultati */
 		public function query($query, $parameters = null) {
 			$stmt = $this->connection->prepare($query);
@@ -104,6 +74,29 @@
 			$query = "UPDATE $table SET $attributes WHERE $criteria";
 			$this->query($query, $values);
 		}
+
+		/* Genera un ID appropriato per un elemento di tipo $type */
+		protected function generateID($type) {
+			$nodes = $this->readAll();
+			$prefix = \models\AbstractModel::getPrefix($type);
+
+			if (!$nodes)
+				return $prefix.'1';
+
+			$largest = 0;
+
+			foreach ($nodes as $node) {
+				preg_match('/([[:alpha:]]+)([[:digit:]])/', $node->id, $matches);
+
+				$pref = $matches[1];
+				$number = $matches[2];
+
+				if ($number > $largest)
+					$largest = $number;
+			}
+
+			return $prefix.++$largest;
+		}
 	}
 
 	/* Metodi per interrogare una tabella specifica del database, ritornando elementi del dominio */
@@ -120,13 +113,13 @@
 		/* Recupera l'elemento identificato da $id dal repository */
 		public function read($id) {
 			$table = !empty(static::DB_TABLE) ? static::DB_TABLE : static::DB_VIEW;
+			$type = static::OB_TYPE;
 			$id_key = static::OB_PRI_KEY;
 			$id_value = $id;
 
 			$match = $this->sql_select($table, [$id_key => $id_value]);
 
 			if ($match) {
-				$type = \models\AbstractModel::getType($id);
 				return \models\AbstractModel::build($type, $match);
 			}
 		}
@@ -134,13 +127,18 @@
 		/* Recupera tutti gli elementi contenuti nel repository */
 		public function readAll() {
 			$table = !empty(static::DB_TABLE) ? static::DB_TABLE : static::DB_VIEW;
+			$type = static::OB_TYPE;
 			$id_key = static::OB_PRI_KEY;
 
 			$matches = $this->sql_select($table);
+
+			if (!array_is_list($matches)) {
+				return [\models\AbstractModel::build($type, $matches)];
+			}
+
 			$objects = [];
 
 			foreach ($matches as $match) {
-				$type = \models\AbstractModel::getType($match[$id_key]);
 				$objects[] = \models\AbstractModel::build($type, $match);
 			}
 
@@ -151,8 +149,13 @@
 		public function create($type, $state) {
 			$table = static::DB_TABLE;
 
+			// Genera ID alfanumerico appropriato
+			if (property_exists(\models\AbstractModel::get($type), 'id'))
+				$state['id'] = $this->generateID($type);
+
 			// Aggiunge username dell'autore (utente corrente), necessario per alcuni elementi
-			$state['author'] = \controllers\ServiceLocator::resolve('session')->getUsername();
+			if (property_exists(\models\AbstractModel::get($type), 'author'))
+				$state['author'] = \controllers\ServiceLocator::resolve('session')->getUsername();
 
 			if (defined(get_parent_class($this).'DB_TABLE')) {
 				$pc = get_parent_class($this);
