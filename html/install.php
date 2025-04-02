@@ -18,8 +18,8 @@
 				case 'install':
 					try {
 						$sample_content = isset($_POST['setup_sample']) ? DIR_SAMPLE : null;
-						ServiceLocator::resolve('movies')->init($sample_content);
 						ServiceLocator::resolve('requests')->init($sample_content);
+						ServiceLocator::resolve('movies')->init($sample_content);
 						ServiceLocator::resolve('posts')->init($sample_content);
 						ServiceLocator::resolve('comments')->init($sample_content);
 						ServiceLocator::resolve('reactions')->init($sample_content);

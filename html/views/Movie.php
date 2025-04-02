@@ -18,8 +18,10 @@
 		public function generateURL($action = 'display') {
 			$URL = 'movie.php';
 
-			if ($this->movie)
-				$URL .= "?id={$this->movie->id}";
+			if ($this->movie) {
+				$type = ($this->movie::class != 'models\Movie') ? 'request' : 'movie';
+				$URL .= "?type={$type}&id={$this->movie->id}";
+			}
 
 			switch ($action) {
 				default:

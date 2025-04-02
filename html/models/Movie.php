@@ -1,7 +1,7 @@
 <?php namespace models;
 
 	abstract class AbstractMovie extends AbstractModel {
-		public const ID_PREFIX = 'm';
+		public const ID_PREFIX = 't';
 
 		public $id;
 		public $title = '';
@@ -43,7 +43,6 @@
 	}
 
 	class Request extends AbstractMovie {
-		public const ID_PREFIX = 'req';
 		public const REPUTATION_DELTAS = [
 			'accepted' => +10
 		];

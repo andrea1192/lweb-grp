@@ -15,33 +15,29 @@
 				'comment' => 'Comments'
 			]];
 
-		public $tabs;
+		public $type;
 		public $tab;
 		public $movie;
 		public $posts;
 		public $featuredPosts;
 
-		public function __construct($movie_id, $tab) {
+		public function __construct($movie_id, $movie_type, $tab) {
 			parent::__construct();
-			$tabs = static::TABS;
+			$this->type = $movie_type;
 
-			switch (\models\Movie::getType($movie_id)) {
-				case 'movie':
-					$this->tabs = $tabs['movie'];
-					$this->tab = (!empty($tab)) ? $tab : 'question';
-					$this->movie =
-							$this->getMapper('movies')->getMovieById($movie_id);
-					$this->posts =
-							$this->getMapper('posts')->getPostsByMovie($movie_id, $this->tab);
-					break;
-				case 'request':
-					$this->tabs = $tabs['request'];
-					$this->tab = (!empty($tab)) ? $tab : 'comment';
-					$this->movie =
-							$this->getMapper('requests')->getRequestById($movie_id);
-					$this->posts =
-							$this->getMapper('comments')->getCommentsByRequest($movie_id);
-					break;
+			if ($this->type == 'movie') {
+				$this->tab = (!empty($tab)) ? $tab : 'question';
+				$this->movie =
+						$this->getMapper('movies')->getMovieById($movie_id);
+				$this->posts =
+						$this->getMapper('posts')->getPostsByMovie($movie_id, $this->tab);
+
+			} else {
+				$this->tab = (!empty($tab)) ? $tab : 'comment';
+				$this->movie =
+						$this->getMapper('requests')->getRequestById($movie_id);
+				$this->posts =
+						$this->getMapper('comments')->getCommentsByRequest($movie_id);
 			}
 
 			if (empty($this->movie)) {
@@ -56,8 +52,8 @@
 		}
 
 		public function printTitle() {
-			print("{$this->movie->title} ({$this->movie->year}) - {$this->tabs[$this->tab]} - grp");
-
+			$tabs = static::TABS[$this->type];
+			print("{$this->movie->title} ({$this->movie->year}) - {$tabs[$this->tab]} - grp");
 		}
 
 		/* Stampa i dettagli principali, delegando ad un opportuno oggetto Movie/Request */
@@ -70,10 +66,11 @@
 		private function printTabs() {
 			$base_URL = $_SERVER['SCRIPT_NAME'];
 
-			foreach ($this->tabs as $tab => $label) {
+			foreach (static::TABS[$this->type] as $tab => $label) {
 				$query = [
+					'type' => $this->type,
 					'id' => $this->movie->id,
-					'type' => $tab
+					'tab' => $tab
 				];
 
 				$URL = $base_URL.'?'.http_build_query($query);
@@ -154,16 +151,16 @@
 	/* Form di modifica della scheda di un film o di una richiesta */
 	class MovieEditView extends AbstractEditView {
 
-		public function __construct($movie_id) {
+		public function __construct($movie_id, $movie_type) {
 			parent::__construct();
 
-			switch (\models\Movie::getType($movie_id)) {
-				case 'movie':
-					$this->movie = $this->getMapper('movies')->getMovieById($movie_id);
-					break;
-				case 'request':
-					$this->movie = $this->getMapper('requests')->getRequestById($movie_id);
-					break;
+			if ($movie_type == 'movie') {
+				$this->movie =
+						$this->getMapper('movies')->getMovieById($movie_id);
+
+			} else {
+				$this->movie =
+						$this->getMapper('requests')->getRequestById($movie_id);
 			}
 		}
 

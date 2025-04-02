@@ -36,7 +36,7 @@
 		case 'models\Request':
 			require_once 'models/Movie.php';
 			break;
-		case 'models\AbstractMovies':
+		case 'models\Threads':
 		case 'models\Movies':
 		case 'models\Requests':
 		case 'models\MovieList':

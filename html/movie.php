@@ -8,17 +8,18 @@
 			$action = static::sanitize($_REQUEST['action'] ?? '');
 			$movie_id = static::sanitize($_GET['id'] ?? '');
 			$movie_type = static::sanitize($_REQUEST['type'] ?? '');
+			$tab = static::sanitize($_REQUEST['tab'] ?? '');
 
 			switch ($action) {
 
 				default:
 				case 'display':
-					$view = new \views\MovieView($movie_id, $movie_type);
+					$view = new \views\MovieView($movie_id, $movie_type, $tab);
 					$view->render();
 					break;
 
 				case 'edit':
-					$view = new \views\MovieEditView($movie_id);
+					$view = new \views\MovieEditView($movie_id, $movie_type);
 					$view->render();
 					break;
 
@@ -40,7 +41,17 @@
 					// Controlla che la richiesta utilizzi il metodo HTTP POST
 					static::checkPOST();
 
-					$repo = ServiceLocator::resolve('movies');
+					switch ($_POST['status'] ?? '') {
+						default:
+						case 'submitted':
+						case 'rejected':
+						case 'deleted':
+							$repo = ServiceLocator::resolve('requests');
+							break;
+						case 'accepted':
+							$repo = ServiceLocator::resolve('movies');
+							break;
+					}
 
 					$state['id'] = $movie_id;
 					$state['title'] = static::sanitize($_POST['title']);
@@ -61,14 +72,14 @@
 							$object = \models\AbstractModel::build($movie_type, $state);
 							$repo->update($object);
 						}
-					} catch (\Exception $e) {
+					} catch (\models\InvalidDataException $e) {
 						static::abort(
 								'Couldn\'t complete operation. Invalid or missing data.',
 								$e->getErrors()
 						);
 					}
 
-					// Gestisce il caricamento di poster (locandine) o backdrop (sfondi)
+					/*// Gestisce il caricamento di poster (locandine) o backdrop (sfondi)
 					if (($_FILES['poster']['size'] !== 0)
 								&& (in_array($_FILES['poster']['type'], array_keys($repo::MEDIA_TYPES)))) {
 
@@ -86,7 +97,7 @@
 						$name = $dir.$object->id.$ext;
 
 						move_uploaded_file($_FILES['backdrop']['tmp_name'], $name);
-					}
+					}*/
 
 					// Aggiorna e reindirizza l'utente
 					if ($action == 'create') {
@@ -95,7 +106,8 @@
 						$this->session->pushNotification('Request successfully updated.');
 					}
 					$nextView = \views\Movie::matchModel($object);
-					header("Location: {$nextView->generateURL()}");
+					$redir = htmlspecialchars_decode($nextView->generateURL());
+					header("Location: $redir");
 					break;
 
 				case 'accept':
@@ -103,6 +115,7 @@
 					if (!$this->session->isAdmin())
 						header('Location: index.php');
 
+					$requests = ServiceLocator::resolve('requests');
 					$movies = ServiceLocator::resolve('movies');
 					$users = ServiceLocator::resolve('users');
 
@@ -118,12 +131,10 @@
 
 					// Porta a termine l'operazione
 					try {
-						$movie = $movies->create('movie', $state);
-
 						$request = \models\AbstractModel::build('request', $state);
-						$request = $movies->update($request);
+						$requests->update($request);
 
-					} catch (\Exception $e) {
+					} catch (\InvalidDataException $e) {
 						static::abort(
 								'Couldn\'t complete operation. Invalid or missing data.',
 								$e->getErrors()
@@ -135,7 +146,7 @@
 					$author->reputation += $request::REPUTATION_DELTAS[$request->status];
 					$users->update($author);
 
-					// Gestisce il caricamento o la copia di poster (locandine)
+					/*// Gestisce il caricamento o la copia di poster (locandine)
 					$ext = $repo::MEDIA_TYPES[$_FILES['poster']['type']];
 					$dir = $movies::POSTERS_PATH;
 					$req_name = $dir.$request->id.$ext;
@@ -165,13 +176,15 @@
 
 					} elseif (file_exists($req_name)) {
 						copy($req_name, $mov_name);
-					}
+					}*/
 
 					// Aggiorna e reindirizza l'utente
 					$this->session->pushNotification('Movie successfully added to the archive.');
-					$nextView = \views\Movie::matchModel($movie);
-					header("Location: {$nextView->generateURL()}");
-					break;
+					$newMovie = $movies->read($movie_id);
+					$nextView = \views\Movie::matchModel($newMovie);
+					$redir = htmlspecialchars_decode($nextView->generateURL());
+					header("Location: $redir");
+					return;
 
 				case 'reject':
 					// Livello di privilegio richiesto: 3 (admin)
@@ -187,7 +200,8 @@
 					$requests->update($request);
 
 					$nextView = \views\Movie::matchModel($request);
-					header("Location: {$nextView->generateURL()}");
+					$redir = htmlspecialchars_decode($nextView->generateURL());
+					header("Location: $redir");
 					break;
 
 				case 'delete':

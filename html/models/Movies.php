@@ -1,20 +1,41 @@
 <?php namespace models;
 
-	abstract class AbstractMovies extends \models\XMLDocument {
+	class Threads extends Table {
 		public const POSTERS_PATH = DIR_POSTERS;
 		public const BACKDROPS_PATH = DIR_BACKDROPS;
 		public const MEDIA_TYPES = MEDIA_TYPES;
 	}
 
-	class Movies extends AbstractMovies {
-		protected const DOCUMENT_NAME = 'movies';
-		protected const ELEMENT_NAME = 'movie';
+	class Movies extends Threads {
+		protected const DB_VIEW = 'VThreadsAccepted';
+		protected const DB_TABLE = '';
+		protected const DB_ATTRIBS = [];
+		protected const OB_TYPE = 'movie';
+		protected const OB_PRI_KEY = 'id';
+
+		/* Inizializza il repository */
+		public function init($source = null) {
+
+			$this->query(<<<EOF
+					CREATE VIEW IF NOT EXISTS VThreadsAccepted AS
+							SELECT
+									id,
+									title,
+									year,
+									author,
+									date,
+									duration,
+									summary,
+									director,
+									writer
+							FROM Threads
+							WHERE status = 'accepted'
+					EOF
+			);
+		}
 
 		public function getMovies() {
-			$query = "/movies/*";
-			$matches = $this->xpath->query($query);
-
-			return new \models\MovieList($matches);
+			return $this->readAll();
 		}
 
 		public function getMovieById($id) {
@@ -22,22 +43,60 @@
 		}
 	}
 
-	class Requests extends AbstractMovies {
-		protected const DOCUMENT_NAME = 'requests';
-		protected const ELEMENT_NAME = 'request';
+	class Requests extends Threads {
+		protected const DB_VIEW = '';
+		protected const DB_TABLE = 'Threads';
+		protected const DB_ATTRIBS = [
+			'id',
+			'status',
+			'title',
+			'year',
+			'author',
+			'date',
+			'duration',
+			'summary',
+			'director',
+			'writer'
+		];
+		protected const OB_TYPE = 'request';
+		protected const OB_PRI_KEY = 'id';
+
+		/* Inizializza il repository */
+		public function init($source = null) {
+
+			$this->query(<<<EOF
+					CREATE TABLE IF NOT EXISTS Threads (
+					id 			VARCHAR(80)		PRIMARY KEY,
+					status 		SET(
+							'submitted',
+							'accepted',
+							'rejected',
+							'deleted'
+					) DEFAULT 'submitted',
+					title		VARCHAR(160)	NOT NULL,
+					year		YEAR			NOT NULL,
+					author		VARCHAR(160)	NOT NULL,
+					date		TIMESTAMP		DEFAULT CURRENT_TIMESTAMP,
+					duration	SMALLINT,
+					summary		TEXT,
+					director	VARCHAR(160),
+					writer		VARCHAR(160)
+					)
+					EOF
+			);
+		}
 
 		public function getRequests() {
-			$query = "/requests/*[@status!='deleted']";
-			$matches = $this->xpath->query($query);
-
-			return new \models\RequestList($matches);
+			return $this->readAll();
 		}
 
 		private function getRequestsByStatus($status) {
-			$query = "/requests/*[@status='{$status}']";
-			$matches = $this->xpath->query($query);
+			$matches = $this->sql_select(DB_TABLE, ['status' => $status]);
 
-			return new \models\RequestList($matches);
+			foreach ($matches as $match)
+				$requests[] = new \models\Request($match);
+
+			return $requests;
 		}
 
 		public function getSubmittedRequests() {
@@ -60,7 +119,7 @@
 	class MovieList extends ElementList {
 
 		public function current(): \models\Movie {
-			$state = MovieMapper::createStateFromElement(parent::current());
+			$state = parent::current();
 			return \models\Movie::build('movie', $state);
 		}
 	}
@@ -68,8 +127,9 @@
 	class RequestList extends ElementList {
 
 		public function current(): \models\Request {
-			$state = RequestMapper::createStateFromElement(parent::current());
+			$state = parent::current();
 			return \models\Request::build('request', $state);
 		}
 	}
+
 ?>
