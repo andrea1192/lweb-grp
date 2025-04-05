@@ -11,7 +11,7 @@
 			$this->connection = \controllers\ServiceLocator::resolve('db_connection');
 		}
 
-		/* Esegue una query sul database, restituendo un array associativo con i risultati */
+		/* Esegue una query sul database, restituendo un array con i risultati */
 		public function query($query, $parameters = null) {
 			$stmt = $this->connection->prepare($query);
 			$stmt->execute($parameters);
@@ -20,7 +20,7 @@
 
 			if ($result) {
 				if ($result->num_rows == 1) {
-					return $result->fetch_assoc();
+					return [$result->fetch_assoc()];
 				} else {
 					return $result->fetch_all(MYSQLI_ASSOC);
 				}
@@ -37,7 +37,7 @@
 			if (!empty($criteria)) {
 				$criteria = array_keys($criteria);
 				$criteria = array_map(fn($elem) => ($elem.'=?'), $criteria);
-				$criteria = implode(',', $criteria);
+				$criteria = implode(' AND ', $criteria);
 
 				$query = "SELECT $attributes FROM $table WHERE $criteria";
 			} else {
@@ -69,7 +69,7 @@
 
 			$criteria = array_keys($criteria);
 			$criteria = array_map(fn($elem) => ($elem.'=?'), $criteria);
-			$criteria = implode(',', $criteria);
+			$criteria = implode(' AND ', $criteria);
 
 			$query = "UPDATE $table SET $attributes WHERE $criteria";
 			$this->query($query, $values);
@@ -86,7 +86,7 @@
 			$largest = 0;
 
 			foreach ($nodes as $node) {
-				preg_match('/([[:alpha:]]+)([[:digit:]])/', $node->id, $matches);
+				preg_match('/([[:alpha:]]+)([[:digit:]]+)/', $node->id, $matches);
 
 				$pref = $matches[1];
 				$number = $matches[2];
@@ -112,30 +112,31 @@
 
 		/* Recupera l'elemento identificato da $id dal repository */
 		public function read($id) {
-			$table = !empty(static::DB_TABLE) ? static::DB_TABLE : static::DB_VIEW;
+			// Indica una vista appropriata, se disponibile, o la tabella di riferimento. Se
+			// questo elemento è distribuito in più tabelle, la vista potrà essere un join con
+			// tutti gli attributi.
+			$table = !empty(static::DB_VIEW) ? static::DB_VIEW : static::DB_TABLE;
 			$type = static::OB_TYPE;
 			$id_key = static::OB_PRI_KEY;
 			$id_value = $id;
 
-			$match = $this->sql_select($table, [$id_key => $id_value]);
+			$matches = $this->sql_select($table, [$id_key => $id_value]);
 
-			if ($match) {
-				return \models\AbstractModel::build($type, $match);
+			if (count($matches) == 1) {
+				return \models\AbstractModel::build($type, $matches[0]);
 			}
 		}
 
 		/* Recupera tutti gli elementi contenuti nel repository */
 		public function readAll() {
-			$table = !empty(static::DB_TABLE) ? static::DB_TABLE : static::DB_VIEW;
+			// Indica una vista appropriata, se disponibile, o la tabella di riferimento. Se
+			// questo elemento è distribuito in più tabelle, la vista potrà essere un join con
+			// tutti gli attributi.
+			$table = !empty(static::DB_VIEW) ? static::DB_VIEW : static::DB_TABLE;
 			$type = static::OB_TYPE;
 			$id_key = static::OB_PRI_KEY;
 
 			$matches = $this->sql_select($table);
-
-			if (!array_is_list($matches)) {
-				return [\models\AbstractModel::build($type, $matches)];
-			}
-
 			$objects = [];
 
 			foreach ($matches as $match) {
@@ -150,14 +151,17 @@
 			$table = static::DB_TABLE;
 
 			// Genera ID alfanumerico appropriato
-			if (property_exists(\models\AbstractModel::get($type), 'id'))
+			if (property_exists(\models\AbstractModel::get($type), 'id')
+					&& empty($state['id']))
 				$state['id'] = $this->generateID($type);
 
 			// Aggiunge username dell'autore (utente corrente), necessario per alcuni elementi
-			if (property_exists(\models\AbstractModel::get($type), 'author'))
+			if (property_exists(\models\AbstractModel::get($type), 'author')
+					&& empty($state['author']))
 				$state['author'] = \controllers\ServiceLocator::resolve('session')->getUsername();
 
-			if (defined(get_parent_class($this).'DB_TABLE')) {
+			// Crea l'elemento parente (generalizzazione), se $type distribuito in più tabelle
+			if (defined(get_parent_class($this).'::DB_TABLE')) {
 				$pc = get_parent_class($this);
 				$pi = new $pc();
 
@@ -171,20 +175,24 @@
 		}
 
 		/* Aggiorna l'elemento $object, identificandolo attraverso la sua chiave primaria */
-		public function update($object) {
+		public function update($object, $base = null) {
 			$table = static::DB_TABLE;
 			$id_key = static::OB_PRI_KEY;
 			$id_value = $object->$id_key;
 
-			if (defined(get_parent_class($this).'DB_TABLE')) {
+			$current = $base ?? $this->read($id_value);
+			$new = $object;
+
+			if (defined(get_parent_class($this).'::DB_TABLE')) {
 				$pc = get_parent_class($this);
 				$pi = new $pc();
 
-				$pi->update($object);
+				// Utilizza $current come base per il confronto: chiamate ricorsive a read()
+				// possono provocare problemi perchè gli elementi restituiti hanno solo parte degli
+				// attributi previsti (quelli più generali)
+				$pi->update($object, base: $current);
 			}
 
-			$current = $this->read($id_value);
-			$new = $object;
 			$diff = array_diff_assoc(
 					$new->getAttributes(static::DB_ATTRIBS),
 					$current->getAttributes(static::DB_ATTRIBS));

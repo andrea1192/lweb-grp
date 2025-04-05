@@ -61,10 +61,10 @@
 		/* Recupera l'elemento identificato da $id dal repository */
 		public function read($id) {
 			$table = static::DB_TABLE;
-			$match = $this->sql_select($table, ['username' => $id]);
+			$matches = $this->sql_select($table, ['username' => $id]);
 
-			if ($match)
-				return new User($match, hashed: true);
+			if (count($matches) == 1)
+				return new User($matches[0], hashed: true);
 		}
 
 		/* Recupera tutti gli elementi contenuti nel repository */
