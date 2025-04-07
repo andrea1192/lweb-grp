@@ -40,12 +40,11 @@
 					// Controlla che la richiesta utilizzi il metodo HTTP POST
 					static::checkPOST();
 
-					$repo = ServiceLocator::resolve('posts');
+					$repo = ServiceLocator::resolve($post_type.'s');
 
 					$state['id'] = $post_id;
 					$state['status'] = static::sanitize($_POST['status'] ?? 'active');
 					$state['author'] = static::sanitize($_POST['author'] ?? '');
-					$state['date'] = static::sanitize($_POST['date'] ?? '');
 					$state['text'] = static::sanitize($_POST['text']);
 
 					$state['title'] =
@@ -66,18 +65,18 @@
 						case 'spoiler':
 						case 'extra':
 							$state['movie'] = static::sanitize($_POST['movie']);
-							$redir = "movie.php?id={$state['movie']}&type={$post_type}";
+							$redir = "movie.php?id={$state['movie']}&type=movie&tab={$post_type}";
 							break;
 
 						case 'comment':
-							$state['request'] = static::sanitize($_POST['request']);
-							$redir = "movie.php?id={$state['request']}&type={$post_type}";
+							$state['movie'] = static::sanitize($_POST['movie']);
+							$redir = "movie.php?id={$state['movie']}&type=request&tab=comment";
 							break;
 
 						case 'answer':
 							$state['post'] = static::sanitize($_POST['post']);
 							$movie_ref = $repo->read($state['post'])->movie;
-							$redir = "movie.php?id={$movie_ref}&type=question";
+							$redir = "movie.php?id={$movie_ref}&type=movie&tab=question";
 							break;
 					}
 
@@ -89,7 +88,7 @@
 							$object = \models\AbstractModel::build($post_type, $state);
 							$repo->update($object);
 						}
-					} catch (\Exception $e) {
+					} catch (\models\InvalidDataException $e) {
 						static::abort(
 								'Couldn\'t complete operation. Invalid or missing data.',
 								$e->getErrors()
@@ -110,7 +109,7 @@
 					if (!$this->session->isAllowed())
 						header('Location: index.php');
 
-					$repo = ServiceLocator::resolve('posts');
+					$repo = ServiceLocator::resolve($post_type.'s');
 					$post = $repo->read($post_id);
 
 					$post->setStatus('deleted'); // soft-delete
@@ -118,10 +117,10 @@
 
 					switch ($post_type) {
 						default:
-							$redir = "movie.php?id={$post->movie}&type={$post_type}";
+							$redir = "movie.php?id={$post->movie}&type=movie&tab={$post_type}";
 							break;
 						case 'comment':
-							$redir = "movie.php?id={$post->request}&type={$post_type}";
+							$redir = "movie.php?id={$post->request}&type=request&tab=comment";
 							break;
 					}
 
@@ -246,7 +245,7 @@
 					if (!$this->session->isMod())
 						header('Location: index.php');
 
-					$repo = ServiceLocator::resolve('posts');
+					$repo = ServiceLocator::resolve('questions');
 					$post = $repo->read($post_id);
 
 					$post->setFeatured(true);
@@ -262,7 +261,7 @@
 
 					$answer_id = static::sanitize($_GET['answer']);
 
-					$repo = ServiceLocator::resolve('posts');
+					$repo = ServiceLocator::resolve('questions');
 					$post = $repo->read($post_id);
 
 					$post->setFeaturedAnswer($answer_id);

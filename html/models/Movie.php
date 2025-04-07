@@ -11,8 +11,6 @@
 		public $director = '';
 		public $writer = '';
 
-		public $posts;
-
 		protected function __construct($state) {
 			parent::__construct($state);
 
@@ -33,10 +31,6 @@
 			$this->summary = $this->validateString('summary');
 			$this->director = $this->validateString('director');
 			$this->writer = $this->validateString('writer');
-
-			$this->posts =
-					\controllers\ServiceLocator::resolve('posts')
-					->getPostsByMovie($state['id']);
 
 			$this->checkValidation();
 		}
@@ -60,10 +54,6 @@
 			$this->summary = $this->validateString('summary', required: false);
 			$this->director = $this->validateString('director', required: false);
 			$this->writer = $this->validateString('writer', required: false);
-
-			$this->posts =
-					\controllers\ServiceLocator::resolve('comments')
-					->getCommentsByRequest($state['id']);
 
 			$this->checkValidation();
 		}

@@ -53,6 +53,10 @@
 			require_once 'models/Post.php';
 			break;
 		case 'models\Posts':
+		case 'models\Reviews':
+		case 'models\Questions':
+		case 'models\Spoilers':
+		case 'models\Extras':
 		case 'models\Comments':
 		case 'models\PostList':
 			require_once 'models/Posts.php';

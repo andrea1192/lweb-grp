@@ -18,7 +18,7 @@
 			$this->status = $this->validateString('status');
 			$this->movie = $this->validateString('movie');
 			$this->author = $this->validateString('author');
-			$this->date = $this->validateString('date');
+			$this->date = $this->validateString('date', required: false);
 			$this->title = $this->validateString('title');
 			$this->text = $this->validateString('text');
 
@@ -50,14 +50,11 @@
 	class Comment extends Post {
 		public const ID_PREFIX = 'c';
 
-		public $request;
-		public $rating;
+		public $rating; // non numerico
 
 		protected function __construct($state) {
-			$state['movie'] = $state['request'];
 			parent::__construct($state);
 
-			$this->request = $this->validateString('request');
 			$this->rating = $this->validateString('rating');
 
 			$this->checkValidation();

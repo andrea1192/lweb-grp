@@ -18,10 +18,12 @@
 		public function __construct($post_id) {
 			parent::__construct();
 
-			switch (\models\Post::getType($post_id)) {
+			$post_type = \models\Post::getType($post_id);
+
+			switch ($post_type) {
 				default:
 					$this->post =
-							$this->getMapper('posts')->getPostById($post_id)
+							$this->getMapper($post_type.'s')->getPostById($post_id)
 					and $this->movie =
 							$this->getMapper('movies')->getMovieById($this->post->movie);
 					break;
@@ -29,7 +31,7 @@
 					$this->post =
 							$this->getMapper('comments')->getCommentById($post_id)
 					and $this->movie =
-							$this->getMapper('requests')->getRequestById($this->post->request);
+							$this->getMapper('requests')->getRequestById($this->post->movie);
 					break;
 			}
 

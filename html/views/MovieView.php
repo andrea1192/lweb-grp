@@ -30,7 +30,7 @@
 				$this->movie =
 						$this->getMapper('movies')->getMovieById($movie_id);
 				$this->posts =
-						$this->getMapper('posts')->getPostsByMovie($movie_id, $this->tab);
+						$this->getMapper($this->tab.'s')->getPostsByMovie($movie_id);
 
 			} else {
 				$this->tab = (!empty($tab)) ? $tab : 'comment';
@@ -48,7 +48,7 @@
 			}
 
 			if ($this->tab == 'question')
-				$this->featuredPosts = $this->getMapper('posts')->getFeaturedPosts($movie_id);
+				$this->featuredPosts = $this->getMapper('questions')->getFeaturedQuestions($movie_id);
 		}
 
 		public function printTitle() {
@@ -86,7 +86,7 @@
 		public function printPosts() {
 			$components = 'views\UIComponents';
 
-			if (!$this->posts->count()) {
+			if (empty($this->posts)) {
 
 				echo <<<EOF
 				<div class="flex cross-center">
@@ -97,7 +97,7 @@
 				return;
 			}
 
-			if ($this->tab == 'question' && $this->featuredPosts->count()) {
+			if ($this->tab == 'question' && (!empty($this->posts))) {
 
 				echo <<<EOF
 				<div class="featured">

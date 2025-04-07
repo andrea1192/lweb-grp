@@ -21,6 +21,10 @@
 						ServiceLocator::resolve('requests')->init($sample_content);
 						ServiceLocator::resolve('movies')->init($sample_content);
 						ServiceLocator::resolve('posts')->init($sample_content);
+						ServiceLocator::resolve('reviews')->init($sample_content);
+						ServiceLocator::resolve('questions')->init($sample_content);
+						ServiceLocator::resolve('spoilers')->init($sample_content);
+						ServiceLocator::resolve('extras')->init($sample_content);
 						ServiceLocator::resolve('comments')->init($sample_content);
 						ServiceLocator::resolve('reactions')->init($sample_content);
 						ServiceLocator::resolve('answers')->init($sample_content);
@@ -63,6 +67,10 @@
 						ServiceLocator::resolve('movies')->restore();
 						ServiceLocator::resolve('requests')->restore();
 						ServiceLocator::resolve('posts')->restore();
+						ServiceLocator::resolve('reviews')->restore();
+						ServiceLocator::resolve('questions')->restore();
+						ServiceLocator::resolve('spoilers')->restore();
+						ServiceLocator::resolve('extras')->restore();
 						ServiceLocator::resolve('comments')->restore();
 						ServiceLocator::resolve('reactions')->restore();
 						ServiceLocator::resolve('answers')->restore();

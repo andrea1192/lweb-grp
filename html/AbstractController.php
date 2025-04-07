@@ -62,6 +62,18 @@
 			ServiceLocator::register('posts', function() {
 				return new \models\Posts();
 			});
+			ServiceLocator::register('reviews', function() {
+				return new \models\Reviews();
+			});
+			ServiceLocator::register('questions', function() {
+				return new \models\Questions();
+			});
+			ServiceLocator::register('spoilers', function() {
+				return new \models\Spoilers();
+			});
+			ServiceLocator::register('extras', function() {
+				return new \models\Extras();
+			});
 			ServiceLocator::register('comments', function() {
 				return new \models\Comments();
 			});

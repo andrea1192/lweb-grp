@@ -252,6 +252,9 @@
 		/* Genera un campo nascosto con il film di riferimento. Utilizzato da edit() e compose();
 		* fa in modo che i form di inserimento e modifica contengano tutti i dati di cui il
 		* controller ha bisogno per portare a termine l'operazione.
+		*
+		* TODO: Oggetti di tipo Comment hanno ora attributo 'movie' come tutti gli altri. Questo
+		* metodo non è più necessario, quindi è possibile rimuoverlo.
 		*/
 		protected function generateReferenceField() {
 			return UIComponents::getHiddenInput('movie', $this->ref);
@@ -325,9 +328,13 @@
 			EOF;
 		}
 
-		/* Genera un campo con la richiesta di riferimento. Override per \models\Comment. */
+		/* Genera un campo con la richiesta di riferimento. Override per \models\Comment.
+		*
+		* TODO: Oggetti di tipo Comment hanno ora attributo 'movie' come tutti gli altri. Questo
+		* metodo non è più necessario, quindi è possibile rimuoverlo.
+		*/
 		protected function generateReferenceField() {
-			return UIComponents::getHiddenInput('request', $this->ref);
+			return UIComponents::getHiddenInput('movie', $this->ref);
 		}
 
 		/* Genera campi specifici dell'oggetto di riferimento. Override per \models\Comment. */
