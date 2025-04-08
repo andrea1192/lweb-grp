@@ -228,18 +228,4 @@
 			return $this->read($id);
 		}
 	}
-
-
-	class PostList extends ElementList {
-
-		public function current(): \models\Post {
-			$element = parent::current();
-
-			$type = \models\AbstractModel::getType($element);
-			$mapper = \controllers\ServiceLocator::resolve('posts')::getMapper($type);
-
-			$state = $mapper::createStateFromElement($element);
-			return \models\AbstractModel::build($type, $state);
-		}
-	}
 ?>

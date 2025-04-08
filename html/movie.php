@@ -79,6 +79,8 @@
 						);
 					}
 
+					// FIXME: Rivedi e riattiva logica per gestire locandine e poster
+
 					/*// Gestisce il caricamento di poster (locandine) o backdrop (sfondi)
 					if (($_FILES['poster']['size'] !== 0)
 								&& (in_array($_FILES['poster']['type'], array_keys($repo::MEDIA_TYPES)))) {
@@ -145,6 +147,8 @@
 					$author = $users->read($request->author);
 					$author->reputation += $request::REPUTATION_DELTAS[$request->status];
 					$users->update($author);
+
+					// FIXME: Rivedi e riattiva logica per gestire locandine e poster
 
 					/*// Gestisce il caricamento o la copia di poster (locandine)
 					$ext = $repo::MEDIA_TYPES[$_FILES['poster']['type']];

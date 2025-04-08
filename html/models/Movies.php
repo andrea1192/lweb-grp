@@ -115,21 +115,4 @@
 			return $this->read($id);
 		}
 	}
-
-	class MovieList extends ElementList {
-
-		public function current(): \models\Movie {
-			$state = parent::current();
-			return \models\Movie::build('movie', $state);
-		}
-	}
-
-	class RequestList extends ElementList {
-
-		public function current(): \models\Request {
-			$state = parent::current();
-			return \models\Request::build('request', $state);
-		}
-	}
-
 ?>

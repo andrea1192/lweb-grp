@@ -190,10 +190,6 @@
 		}
 	}
 
-	class XMLReactions extends XMLDocument {
-		protected const DOCUMENT_NAME = 'reactions';
-	}
-
 	class Answers extends Reactions {
 		protected const DB_VIEW = '';
 		protected const DB_TABLE = 'Answers';
@@ -290,19 +286,6 @@
 				$objects[] = \models\AbstractModel::build(static::OB_TYPE, $match);
 
 			return $objects;
-		}
-	}
-
-	class ReactionList extends ElementList {
-
-		public function current(): \models\Reaction {
-			$element = parent::current();
-
-			$type = \models\AbstractModel::getType($element);
-			$mapper = \controllers\ServiceLocator::resolve('reactions')::getMapper($type);
-
-			$state = $mapper::createStateFromElement($element);
-			return \models\AbstractModel::build($type, $state);
 		}
 	}
 ?>

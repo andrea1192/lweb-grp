@@ -39,8 +39,6 @@
 		case 'models\Threads':
 		case 'models\Movies':
 		case 'models\Requests':
-		case 'models\MovieList':
-		case 'models\RequestList':
 			require_once 'models/Movies.php';
 			break;
 		case 'models\Post':
@@ -58,7 +56,6 @@
 		case 'models\Spoilers':
 		case 'models\Extras':
 		case 'models\Comments':
-		case 'models\PostList':
 			require_once 'models/Posts.php';
 			break;
 		case 'models\Reaction':
@@ -82,7 +79,6 @@
 		case 'models\Spoilages':
 		case 'models\Answers':
 		case 'models\Reports':
-		case 'models\ReactionList':
 			require_once 'models/Reactions.php';
 			break;
 		case 'models\IRepository':
@@ -93,9 +89,6 @@
 		case 'models\Users':
 			require_once 'models/Users.php';
 			break;
-		case 'models\XMLDocument':
-		case 'models\ElementList':
-			require_once 'models/XMLDocument.php';
 
 		// Views
 		case 'views\AbstractView':
