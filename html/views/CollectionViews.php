@@ -134,7 +134,9 @@
 			print('<div>');
 
 			foreach ($this->items as $item) {
-				$post = $this->getMapper('posts')->getPostById($item->post);
+				$type = \models\AbstractModel::getType($item->post);
+				$repo = $this->getMapper($type.'s');
+				$post = $repo->getPostById($item->post);
 
 				$postView = \views\AbstractView::matchModel($post);
 				$reactionView = \views\AbstractView::matchModel($item);

@@ -219,15 +219,16 @@
 
 					$state['post'] = $post_id;
 					$state['author'] = static::sanitize($_POST['author'] ?? '');
-					$state['date'] = static::sanitize($_POST['date'] ?? '');
 					$state['status'] = static::sanitize($_POST['status'] ?? 'open');
 					$state['message'] = static::sanitize($_POST['message']);
 					$state['response'] = static::sanitize($_POST['response']);
 
+					// FIXME: Controlla se l'utente corrente ha già segnalato questo post
+
 					// Porta a termine l'operazione corretta (send/close)
 					if ($action == 'send_report') {
 						$report = $repo->create('report', $state);
-						$redir = "movie.php?id={$repo->read($report->post)->movie}";
+						$redir = "post.php?id={$state['post']}";
 					} else {
 						$report = \models\AbstractModel::build($post_type, $state);
 						$repo->update($report);

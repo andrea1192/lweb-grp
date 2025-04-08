@@ -241,33 +241,55 @@
 		}
 	}
 
-	class Reports extends XMLReactions {
-		protected const DOCUMENT_NAME = 'reports';
-		protected const ELEMENT_NAME = 'report';
+	class Reports extends Reactions {
+		protected const DB_VIEW = '';
+		protected const DB_TABLE = 'Reports';
+		protected const DB_ATTRIBS = [
+				'author',
+				'post',
+				'status',
+				'date',
+				'message',
+				'response'
+		];
+		protected const OB_TYPE = 'report';
+		protected const OB_PRI_KEY = ['author', 'post'];
+
+		/* Inizializza il repository */
+		public function init($source = null) {
+
+			$this->query(<<<EOF
+					CREATE TABLE IF NOT EXISTS Reports (
+					author		VARCHAR(160)	NOT NULL REFERENCES Users(username),
+					post 		VARCHAR(80)		NOT NULL REFERENCES Posts(id),
+					status 		SET(
+							'open',
+							'closed',
+							'accepted',
+							'rejected'
+					) DEFAULT 'open',
+					date		TIMESTAMP		DEFAULT CURRENT_TIMESTAMP,
+					message 	TEXT,
+					response	TEXT,
+					PRIMARY KEY(author, post)
+					)
+					EOF
+			);
+		}
 
 		public function getReports() {
-			$query = "/reports/*";
-			$matches = $this->xpath->query($query);
-
-			return new \models\ReactionList($matches);
+			return $this->readAll();
 		}
 
 		public function getReportsByAuthor($author) {
-			$query = "/reports/report[@author='{$author}']";
-			$matches = $this->xpath->query($query);
+			$criteria = ['author' => $author];
+			$matches = $this->sql_select(static::DB_TABLE, $criteria);
+			$objects = [];
 
-			return new \models\ReactionList($matches);
-		}
+			foreach ($matches as $match)
+				$objects[] = \models\AbstractModel::build(static::OB_TYPE, $match);
 
-		protected function replaceElement($element) {
-			$post_id = $element->getAttribute('post');
-			$author = $element->getAttribute('author');
-			$date = $element->getAttribute('date');
-			$type = $element->tagName;
-
-			$query = "/*/{$type}[@post='{$post_id}' and @author='{$author}' and @date='{$date}']";
-			$this->xpath->query($query)->item(0)->replaceWith($element);
-			$this->saveDocument();
+			return $objects;
 		}
 	}
 

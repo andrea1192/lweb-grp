@@ -111,7 +111,7 @@
 		protected function __construct($state) {
 			parent::__construct($state);
 
-			$this->date = $state['date'];
+			$this->date = $state['date'] ?? null;
 			$this->status = $state['status'];
 			$this->message = $state['message'];
 			$this->response = $state['response'];
