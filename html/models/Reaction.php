@@ -133,13 +133,14 @@
 			$this->post = $post_id;
 			$this->type = $reaction_type;
 
-			$reactions = \controllers\ServiceLocator::resolve('reactions');
+			$repo = ($reaction_type != 'usefulness') ? $reaction_type.'s' : $reaction_type.'es';
+			$reactions = \controllers\ServiceLocator::resolve($repo);
 			$this->list =
 					$reactions->getReactionsByPost($post_id);
 			$this->count_up =
-					$reactions->getReactionCountByPost($post_id, $reaction_type, $type_up);
+					$reactions->getReactionCountByPost($post_id, $type_up);
 			$this->count_down =
-					$reactions->getReactionCountByPost($post_id, $reaction_type, $type_down);
+					$reactions->getReactionCountByPost($post_id, $type_down);
 		}
 	}
 
@@ -150,9 +151,10 @@
 			$this->post = $post_id;
 			$this->type = $reaction_type;
 
-			$reactions = \controllers\ServiceLocator::resolve('reactions');
+			$repo = ($reaction_type != 'usefulness') ? $reaction_type.'s' : $reaction_type.'es';
+			$reactions = \controllers\ServiceLocator::resolve($repo);
 			$this->list = $reactions->getReactionsByPost($post_id);
-			$this->average = $reactions->getReactionAverageByPost($post_id, $reaction_type);
+			$this->average = $reactions->getReactionAverageByPost($post_id);
 		}
 	}
 ?>

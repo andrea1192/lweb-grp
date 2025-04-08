@@ -1,63 +1,198 @@
 <?php namespace models;
 
-	class Reactions extends \models\XMLDocument {
-		protected const DOCUMENT_NAME = 'reactions';
+	class Reactions extends Table {
+		protected const DB_VIEW = 'VReactions';
+		protected const DB_TABLE = '';
+		protected const DB_ATTRIBS = [];
+		protected const OB_TYPE = '';
+		protected const OB_PRI_KEY = '';
+
+		/* Inizializza il repository */
+		public function init($source = null) {
+
+			$this->query(<<<EOF
+					CREATE VIEW IF NOT EXISTS VReactions AS
+									SELECT author, post, type, CASE
+											WHEN type = 'like' THEN 1
+											WHEN type = 'dislike' THEN 0
+											END AS rating
+									FROM Likes
+							UNION
+									SELECT author, post, 'usefulness' AS type, rating
+									FROM Usefulnesses
+							UNION
+									SELECT author, post, 'agreement' AS type, rating
+									FROM Agreements
+							UNION
+									SELECT author, post, 'spoilage' AS type, rating
+									FROM Spoilages
+					EOF
+			);
+		}
 
 		public function getReactionsByPost($post_id, $type = '*') {
-			$query = "/reactions/{$type}[@post='{$post_id}']";
-			$matches = $this->xpath->query($query);
+			$criteria = ['post' => $post_id];
+			$matches = $this->sql_select(static::DB_TABLE, $criteria);
+			$objects = [];
 
-			return new \models\ReactionList($matches);
+			foreach ($matches as $match)
+				$objects[] = \models\AbstractModel::build(static::OB_TYPE, $match);
+
+			return $objects;
 		}
 
-		public function getReactionsByAuthor($author, $type = '*') {
-			$query = "/reactions/{$type}[@author='{$author}']";
-			$matches = $this->xpath->query($query);
+		public function getReactionCountByPost($post_id, $type) {
+			$criteria = [
+					'post' => $post_id,
+					'type' => $type
+			];
+			$attributes = 'COUNT(*)';
+			$matches = $this->sql_select(static::DB_TABLE, $criteria, $attributes);
 
-			return new \models\ReactionList($matches);
-		}
-
-		public function getReactionCountByPost($post_id, $type, $type_bin) {
-			$query = "/reactions/{$type}[@post='{$post_id}' and @type='{$type_bin}']";
-			$matches = $this->xpath->query($query);
-
-			return count($matches);
-		}
-
-		public function getReactionAverageByPost($post_id, $type) {
-			$query = "/reactions/{$type}[@post='{$post_id}']";
-			$matches = $this->xpath->query($query);
-			$mapper = static::getMapper($type);
-
-			$sum = 0;
-
-			foreach ($matches as $match) {
-				$state = $mapper::createStateFromElement($match);
-				$sum += $state['rating'];
+			if (count($matches) == 1) {
+				return (int) $matches[array_key_first($matches)]['COUNT(*)'];
 			}
-
-			return (count($matches)) ? ($sum / count($matches)) : 0;
 		}
 
-		public function getReaction($post_id, $author, $type) {
-			$query = "/*/{$type}[@post='{$post_id}' and @author='{$author}']";
-			$match = $this->xpath->query($query)->item(0);
+		public function getReactionAverageByPost($post_id) {
+			$criteria = [
+					'post' => $post_id
+			];
+			$attributes = 'AVG(rating)';
+			$matches = $this->sql_select(static::DB_TABLE, $criteria, $attributes);
 
-			return $match;
+			if (count($matches) == 1) {
+				return (float) $matches[array_key_first($matches)]['AVG(rating)'];
+			}
 		}
 
-		protected function replaceElement($element) {
-			$post_id = $element->getAttribute('post');
-			$author = $element->getAttribute('author');
-			$type = $element->tagName;
+		public function getReaction($post_id, $author, $type = null) {
+			$criteria = [
+					'post' => $post_id,
+					'author' => $author
+			];
+			$matches = $this->sql_select(static::DB_TABLE, $criteria);
 
-			$query = "/*/{$type}[@post='{$post_id}' and @author='{$author}']";
-			$this->xpath->query($query)->item(0)->replaceWith($element);
-			$this->saveDocument();
+			if (count($matches) == 1)
+				return \models\AbstractModel::build(static::OB_TYPE, $matches[0]);
 		}
 	}
 
-	class Answers extends Reactions {
+	class Likes extends Reactions {
+		protected const DB_VIEW = '';
+		protected const DB_TABLE = 'Likes';
+		protected const DB_ATTRIBS = [
+				'author',
+				'post',
+				'type'
+		];
+		protected const OB_TYPE = 'like';
+		protected const OB_PRI_KEY = ['author', 'post'];
+
+		/* Inizializza il repository */
+		public function init($source = null) {
+
+			$this->query(<<<EOF
+					CREATE TABLE IF NOT EXISTS Likes (
+					author		VARCHAR(160)	NOT NULL REFERENCES Users(username),
+					post 		VARCHAR(80)		NOT NULL REFERENCES Reviews(id),
+					type 		SET(
+							'like',
+							'dislike'
+					),
+					PRIMARY KEY(author, post)
+					)
+					EOF
+			);
+		}
+	}
+
+	class Usefulnesses extends Reactions {
+		protected const DB_VIEW = '';
+		protected const DB_TABLE = 'Usefulnesses';
+		protected const DB_ATTRIBS = [
+				'author',
+				'post',
+				'rating'
+		];
+		protected const OB_TYPE = 'usefulness';
+		protected const OB_PRI_KEY = ['author', 'post'];
+
+		/* Inizializza il repository */
+		public function init($source = null) {
+
+			$this->query(<<<EOF
+					CREATE TABLE IF NOT EXISTS Usefulnesses (
+					author		VARCHAR(160)	NOT NULL REFERENCES Users(username),
+					post 		VARCHAR(80)		NOT NULL REFERENCES Questions(id),
+					rating		INT 			NOT NULL,
+					CONSTRAINT 	rating_dom CHECK (rating BETWEEN 1 AND 5),
+					PRIMARY KEY(author, post)
+					)
+					EOF
+			);
+		}
+	}
+
+	class Agreements extends Reactions {
+		protected const DB_VIEW = '';
+		protected const DB_TABLE = 'Agreements';
+		protected const DB_ATTRIBS = [
+				'author',
+				'post',
+				'rating'
+		];
+		protected const OB_TYPE = 'agreement';
+		protected const OB_PRI_KEY = ['author', 'post'];
+
+		/* Inizializza il repository */
+		public function init($source = null) {
+
+			$this->query(<<<EOF
+					CREATE TABLE IF NOT EXISTS Agreements (
+					author		VARCHAR(160)	NOT NULL REFERENCES Users(username),
+					post 		VARCHAR(80)		NOT NULL REFERENCES Questions(id),
+					rating		INT 			NOT NULL,
+					CONSTRAINT 	rating_dom CHECK (rating BETWEEN 1 AND 5),
+					PRIMARY KEY(author, post)
+					)
+					EOF
+			);
+		}
+	}
+
+	class Spoilages extends Reactions {
+		protected const DB_VIEW = '';
+		protected const DB_TABLE = 'Spoilages';
+		protected const DB_ATTRIBS = [
+				'author',
+				'post',
+				'rating'
+		];
+		protected const OB_TYPE = 'spoilage';
+		protected const OB_PRI_KEY = ['author', 'post'];
+
+		/* Inizializza il repository */
+		public function init($source = null) {
+
+			$this->query(<<<EOF
+					CREATE TABLE IF NOT EXISTS Spoilages (
+					author		VARCHAR(160)	NOT NULL REFERENCES Users(username),
+					post 		VARCHAR(80)		NOT NULL REFERENCES Spoilers(id),
+					rating		INT 			NOT NULL,
+					CONSTRAINT 	rating_dom CHECK (rating BETWEEN 1 AND 10),
+					PRIMARY KEY(author, post)
+					)
+					EOF
+			);
+		}
+	}
+
+	class XMLReactions extends XMLDocument {
+		protected const DOCUMENT_NAME = 'reactions';
+	}
+
+	class Answers extends XMLReactions {
 		protected const DOCUMENT_NAME = 'answers';
 		protected const ELEMENT_NAME = 'answer';
 
@@ -89,7 +224,7 @@
 		}
 	}
 
-	class Reports extends Reactions {
+	class Reports extends XMLReactions {
 		protected const DOCUMENT_NAME = 'reports';
 		protected const ELEMENT_NAME = 'report';
 

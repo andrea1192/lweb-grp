@@ -17,6 +17,9 @@
 
 				case 'install':
 					try {
+						$sample_users = isset($_POST['setup_users']) ? BUILTIN_USERS : null;
+						ServiceLocator::resolve('users')->init($sample_users);
+
 						$sample_content = isset($_POST['setup_sample']) ? DIR_SAMPLE : null;
 						ServiceLocator::resolve('requests')->init($sample_content);
 						ServiceLocator::resolve('movies')->init($sample_content);
@@ -26,12 +29,13 @@
 						ServiceLocator::resolve('spoilers')->init($sample_content);
 						ServiceLocator::resolve('extras')->init($sample_content);
 						ServiceLocator::resolve('comments')->init($sample_content);
+						ServiceLocator::resolve('likes')->init($sample_content);
+						ServiceLocator::resolve('usefulnesses')->init($sample_content);
+						ServiceLocator::resolve('agreements')->init($sample_content);
+						ServiceLocator::resolve('spoilages')->init($sample_content);
 						ServiceLocator::resolve('reactions')->init($sample_content);
 						ServiceLocator::resolve('answers')->init($sample_content);
 						ServiceLocator::resolve('reports')->init($sample_content);
-
-						$sample_users = isset($_POST['setup_users']) ? BUILTIN_USERS : null;
-						ServiceLocator::resolve('users')->init($sample_users);
 
 					} catch (\mysqli_sql_exception $e) {
 						static::abort("Install failed. Database error: {$e->getMessage()}");
@@ -73,6 +77,10 @@
 						ServiceLocator::resolve('extras')->restore();
 						ServiceLocator::resolve('comments')->restore();
 						ServiceLocator::resolve('reactions')->restore();
+						ServiceLocator::resolve('likes')->restore();
+						ServiceLocator::resolve('usefulnesses')->restore();
+						ServiceLocator::resolve('agreements')->restore();
+						ServiceLocator::resolve('spoilages')->restore();
 						ServiceLocator::resolve('answers')->restore();
 						ServiceLocator::resolve('reports')->restore();
 

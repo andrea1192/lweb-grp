@@ -80,6 +80,18 @@
 			ServiceLocator::register('reactions', function() {
 				return new \models\Reactions();
 			});
+			ServiceLocator::register('likes', function() {
+				return new \models\Likes();
+			});
+			ServiceLocator::register('usefulnesses', function() {
+				return new \models\Usefulnesses();
+			});
+			ServiceLocator::register('agreements', function() {
+				return new \models\Agreements();
+			});
+			ServiceLocator::register('spoilages', function() {
+				return new \models\Spoilages();
+			});
 			ServiceLocator::register('answers', function() {
 				return new \models\Answers();
 			});

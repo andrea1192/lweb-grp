@@ -76,6 +76,10 @@
 			require_once 'models/Reaction.php';
 			break;
 		case 'models\Reactions':
+		case 'models\Likes':
+		case 'models\Usefulnesses':
+		case 'models\Agreements':
+		case 'models\Spoilages':
 		case 'models\Answers':
 		case 'models\Reports':
 		case 'models\ReactionList':

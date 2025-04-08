@@ -117,10 +117,21 @@
 			// tutti gli attributi.
 			$table = !empty(static::DB_VIEW) ? static::DB_VIEW : static::DB_TABLE;
 			$type = static::OB_TYPE;
-			$id_key = static::OB_PRI_KEY;
-			$id_value = $id;
+			$pkey = static::OB_PRI_KEY;
 
-			$matches = $this->sql_select($table, [$id_key => $id_value]);
+			// Controlla da quanti attributi è composta la chiave primaria secondo lo schema, e
+			// verifica se quella fornita come argomento è compatibile
+			$key_is_array = is_array($pkey);
+			$arg_is_array = is_array($id) && (array_keys($id) == $pkey);
+			$type_is_compatible = ($key_is_array == $arg_is_array);
+
+			if (!$type_is_compatible)
+				return;
+
+			if (!$key_is_array)
+				$id = [$pkey => $id];
+
+			$matches = $this->sql_select($table, $id);
 
 			if (count($matches) == 1) {
 				return \models\AbstractModel::build($type, $matches[0]);
@@ -134,7 +145,6 @@
 			// tutti gli attributi.
 			$table = !empty(static::DB_VIEW) ? static::DB_VIEW : static::DB_TABLE;
 			$type = static::OB_TYPE;
-			$id_key = static::OB_PRI_KEY;
 
 			$matches = $this->sql_select($table);
 			$objects = [];
@@ -160,13 +170,11 @@
 					&& empty($state['author']))
 				$state['author'] = \controllers\ServiceLocator::resolve('session')->getUsername();
 
-			// Crea l'elemento parente (generalizzazione), se $type distribuito in più tabelle
-			if (defined(get_parent_class($this).'::DB_TABLE')) {
-				$pc = get_parent_class($this);
-				$pi = new $pc();
+			$parent = get_parent_class($this);
 
-				$pi->create($type, $state);
-			}
+			// Crea l'elemento parente (generalizzazione), se $type distribuito in più tabelle
+			if (defined($parent.'::DB_TABLE') && !empty(constant($parent.'::DB_TABLE')))
+				(new $parent)->create($type, $state);
 
 			$object = \models\AbstractModel::build($type, $state);
 			$this->sql_insert($table, $object->getAttributes(static::DB_ATTRIBS));
@@ -177,20 +185,32 @@
 		/* Aggiorna l'elemento $object, identificandolo attraverso la sua chiave primaria */
 		public function update($object, $base = null) {
 			$table = static::DB_TABLE;
-			$id_key = static::OB_PRI_KEY;
-			$id_value = $object->$id_key;
+			$pkey = static::OB_PRI_KEY;
 
-			$current = $base ?? $this->read($id_value);
+			// Controlla da quanti attributi è composta la chiave primaria secondo lo schema, e
+			// costruisce l'array $id di conseguenza: questo verrà utilizzato prima per recuperare
+			// lo stato corrente dell'elemento da aggiornare, poi per selezionarlo nella successiva
+			// istruzione SQL UPDATE
+			$id = [];
+
+			if (!is_array($pkey))
+				$id[$pkey] = $object->$pkey;
+			else
+				foreach ($pkey as $attrib)
+					$id[$attrib] = $object->$attrib;
+
+			$current = $base ?? $this->read(!is_array($pkey) ? $id[$pkey] : $id);
 			$new = $object;
 
-			if (defined(get_parent_class($this).'::DB_TABLE')) {
-				$pc = get_parent_class($this);
-				$pi = new $pc();
+			$parent = get_parent_class($this);
+
+			// Aggiorna l'elemento parente (generalizzazione), se $type distribuito in più tabelle
+			if (defined($parent.'::DB_TABLE') && !empty(constant($parent.'::DB_TABLE'))) {
 
 				// Utilizza $current come base per il confronto: chiamate ricorsive a read()
 				// possono provocare problemi perchè gli elementi restituiti hanno solo parte degli
 				// attributi previsti (quelli più generali)
-				$pi->update($object, base: $current);
+				(new $parent)->update($object, base: $current);
 			}
 
 			$diff = array_diff_assoc(
@@ -198,7 +218,7 @@
 					$current->getAttributes(static::DB_ATTRIBS));
 
 			if (!empty($diff))
-				$this->sql_update($table, [$id_key => $id_value], $diff);
+				$this->sql_update($table, $id, $diff);
 
 			return $current;
 		}

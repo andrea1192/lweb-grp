@@ -132,33 +132,40 @@
 					if (!$this->session->isAllowed())
 						header('Location: index.php');
 
-					$repo = ServiceLocator::resolve('posts');
+					$reaction_type = $post_type;
+					$post_type = \models\AbstractModel::getType($post_id);
+
+					$posts = ServiceLocator::resolve($post_type.'s');
 					$users = ServiceLocator::resolve('users');
 
 					$state['author'] = ServiceLocator::resolve('session')->getUsername();
 					$state['post'] = $post_id;
-					$state['type'] = $post_type;
+					$state['type'] = $reaction_type;
 					$state['rating'] = static::sanitize($_POST['rating'] ?? '');
 
-					if ($post_type == 'dislike')
-						$post_type = 'like';
+					// 'dislike' tipo speciale di 'like' (reazione binaria)
+					// $reaction_type può essere aggiornato in quanto ora è preservato in $state
+					if ($reaction_type == 'dislike')
+						$reaction_type = 'like';
 
+					$repo = ($reaction_type != 'usefulness') ? $reaction_type.'s' : $reaction_type.'es';
+					$reactions = ServiceLocator::resolve($repo);
 					$reaction_old =
-							$repo->readReaction($state['post'], $state['author'], $post_type);
+							$reactions->getReaction($state['post'], $state['author']);
 
 					if (!$reaction_old) {
-							$reaction = $repo->create($post_type, $state);
+							$reaction = $reactions->create($reaction_type, $state);
 						} else {
-							$reaction = \models\AbstractModel::build($post_type, $state);
-							$repo->update($reaction);
+							$reaction = \models\AbstractModel::build($reaction_type, $state);
+							$reactions->update($reaction);
 						}
 
 					// Determina l'autore del post
-					$post_author = $repo->read($post_id)->author;
+					$post_author = $posts->read($post_id)->author;
 					$post_user = $users->read($post_author);
 
 					// Aggiorna la reputazione dell'autore del post
-					switch ($post_type) {
+					switch ($reaction_type) {
 						case 'like':
 						case 'dislike':
 							if ($reaction)
