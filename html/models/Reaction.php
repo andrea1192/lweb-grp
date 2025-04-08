@@ -87,7 +87,7 @@
 
 			$this->id = $state['id'];
 			$this->status = $state['status'];
-			$this->date = $state['date'];
+			$this->date = $state['date'] ?? null;
 			$this->text = $state['text'];
 
 			$this->reactions = [

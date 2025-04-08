@@ -121,6 +121,7 @@
 		/* Inizializza il repository */
 		public function init($source = null) {
 
+			// FIXME: Il vincolo di integrità post->Questions(id) blocca reazioni ad Answers
 			$this->query(<<<EOF
 					CREATE TABLE IF NOT EXISTS Usefulnesses (
 					author		VARCHAR(160)	NOT NULL REFERENCES Users(username),
@@ -148,6 +149,7 @@
 		/* Inizializza il repository */
 		public function init($source = null) {
 
+			// FIXME: Il vincolo di integrità post->Questions(id) blocca reazioni ad Answers
 			$this->query(<<<EOF
 					CREATE TABLE IF NOT EXISTS Agreements (
 					author		VARCHAR(160)	NOT NULL REFERENCES Users(username),
@@ -192,9 +194,38 @@
 		protected const DOCUMENT_NAME = 'reactions';
 	}
 
-	class Answers extends XMLReactions {
-		protected const DOCUMENT_NAME = 'answers';
-		protected const ELEMENT_NAME = 'answer';
+	class Answers extends Reactions {
+		protected const DB_VIEW = '';
+		protected const DB_TABLE = 'Answers';
+		protected const DB_ATTRIBS = [
+				'author',
+				'post',
+				'id',
+				'status',
+				'date',
+				'text'
+		];
+		protected const OB_TYPE = 'answer';
+		protected const OB_PRI_KEY = 'id';
+
+		/* Inizializza il repository */
+		public function init($source = null) {
+
+			$this->query(<<<EOF
+					CREATE TABLE IF NOT EXISTS Answers (
+					author		VARCHAR(160)	NOT NULL REFERENCES Users(username),
+					post 		VARCHAR(80)		NOT NULL REFERENCES Questions(id),
+					id 			VARCHAR(80)		PRIMARY KEY,
+					status 		SET(
+							'active',
+							'deleted'
+					) DEFAULT 'active',
+					date		TIMESTAMP		DEFAULT CURRENT_TIMESTAMP,
+					text		TEXT
+					)
+					EOF
+			);
+		}
 
 		public function getFeaturedAnswer($post_id) {
 			$answer_id =
@@ -203,20 +234,6 @@
 
 			if ($answer_id)
 				return $this->getAnswerById($answer_id);
-		}
-
-		public function getAnswersByPost($post_id) {
-			$query = "/answers/answer[@post='{$post_id}']";
-			$matches = $this->xpath->query($query);
-
-			return new \models\ReactionList($matches);
-		}
-
-		public function getAnswersByAuthor($author) {
-			$query = "/answers/answer[@author='{$author}']";
-			$matches = $this->xpath->query($query);
-
-			return new \models\ReactionList($matches);
 		}
 
 		public function getAnswerById($id) {

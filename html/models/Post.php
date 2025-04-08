@@ -89,7 +89,7 @@
 
 			$this->answers =
 					\controllers\ServiceLocator::resolve('answers')
-					->getAnswersByPost($state['id']);
+					->getReactionsByPost($state['id']);
 
 			$this->reactions = [
 				'usefulness' => new \models\NumericReactionType($state['id'], 'usefulness'),

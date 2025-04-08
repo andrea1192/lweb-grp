@@ -75,8 +75,7 @@
 
 						case 'answer':
 							$state['post'] = static::sanitize($_POST['post']);
-							$movie_ref = $repo->read($state['post'])->movie;
-							$redir = "movie.php?id={$movie_ref}&type=movie&tab=question";
+							$redir = "post.php?id={$state['post']}&type=question";
 							break;
 					}
 
