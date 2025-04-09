@@ -18,7 +18,6 @@
 		/* Inizializza il repository */
 		public function init($source = null) {
 
-			// FIXME: Aggiungi vincoli mancanti su movie, author (chiavi esterne)
 			$this->query(<<<EOF
 					CREATE TABLE IF NOT EXISTS Posts (
 					id 			VARCHAR(80)		PRIMARY KEY,
@@ -26,8 +25,8 @@
 							'active',
 							'deleted'
 					) DEFAULT 'active',
-					movie		VARCHAR(80)		NOT NULL,
-					author		VARCHAR(160)	NOT NULL,
+					movie		VARCHAR(80)		NOT NULL REFERENCES Threads(id),
+					author		VARCHAR(160)	NOT NULL REFERENCES Users(username),
 					date		TIMESTAMP		DEFAULT CURRENT_TIMESTAMP,
 					title		VARCHAR(160),
 					text		TEXT
@@ -159,7 +158,12 @@
 							FROM Posts NATURAL JOIN Answers
 					EOF
 			);
-			// TODO: Aggiorna Questions con foreign key reference featuredAnswer->Answers(id)
+			$this->query(<<<EOF
+					ALTER TABLE Questions
+					ADD CONSTRAINT featuredAnswer_fk
+							FOREIGN KEY (featuredAnswer) REFERENCES Answers(id)
+					EOF
+			);
 		}
 
 		public function getFeaturedAnswer($post_id) {
