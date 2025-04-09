@@ -18,6 +18,7 @@
 		/* Inizializza il repository */
 		public function init($source = null) {
 
+			// FIXME: Aggiungi vincoli mancanti su movie, author (chiavi esterne)
 			$this->query(<<<EOF
 					CREATE TABLE IF NOT EXISTS Posts (
 					id 			VARCHAR(80)		PRIMARY KEY,
@@ -98,6 +99,9 @@
 		/* Inizializza il repository */
 		public function init($source = null) {
 
+			// NOTA: Il vincolo di integrità su featuredAnswer (chiave esterna riferita ad Answers)
+			// non può essere aggiunto subito perchè Answers, contenendo un riferimento NOT NULL a
+			// questa tabella, deve necessariamente essere creata in seguito
 			$this->query(<<<EOF
 					CREATE TABLE IF NOT EXISTS Questions (
 					id 				VARCHAR(80)		PRIMARY KEY REFERENCES Posts(id),
@@ -126,6 +130,60 @@
 				$objects[] = \models\AbstractModel::build(static::OB_TYPE, $match);
 
 			return $objects;
+		}
+	}
+
+	class Answers extends Posts {
+		protected const DB_VIEW = 'VAnswers';
+		protected const DB_TABLE = 'Answers';
+		protected const DB_ATTRIBS = [
+				'id',
+				'post'
+		];
+		protected const OB_TYPE = 'answer';
+		protected const OB_PRI_KEY = 'id';
+
+		/* Inizializza il repository */
+		public function init($source = null) {
+
+			$this->query(<<<EOF
+					CREATE TABLE IF NOT EXISTS Answers (
+					id 			VARCHAR(80)		PRIMARY KEY,
+					post 		VARCHAR(80)		NOT NULL REFERENCES Questions(id)
+					)
+					EOF
+			);
+			$this->query(<<<EOF
+					CREATE VIEW IF NOT EXISTS VAnswers AS
+							SELECT *
+							FROM Posts NATURAL JOIN Answers
+					EOF
+			);
+			// TODO: Aggiorna Questions con foreign key reference featuredAnswer->Answers(id)
+		}
+
+		public function getFeaturedAnswer($post_id) {
+			$answer_id =
+					\controllers\ServiceLocator::resolve('questions')
+					->getPostById($post_id)->featuredAnswer;
+
+			if ($answer_id)
+				return $this->getAnswerById($answer_id);
+		}
+
+		public function getAnswersByPost($post_id) {
+			$criteria = ['post' => $post_id];
+			$matches = $this->sql_select(static::DB_VIEW, $criteria);
+			$objects = [];
+
+			foreach ($matches as $match)
+				$objects[] = \models\AbstractModel::build(static::OB_TYPE, $match);
+
+			return $objects;
+		}
+
+		public function getAnswerById($id) {
+			return $this->read($id);
 		}
 	}
 

@@ -76,6 +76,7 @@
 		public const ID_PREFIX = 'a';
 
 		public $id;
+		public $movie;
 		public $status = 'active';
 		public $date;
 		public $text = '';
@@ -86,6 +87,7 @@
 			parent::__construct($state);
 
 			$this->id = $state['id'];
+			$this->movie = $state['movie'];
 			$this->status = $state['status'];
 			$this->date = $state['date'] ?? null;
 			$this->text = $state['text'];

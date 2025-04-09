@@ -75,7 +75,8 @@
 
 						case 'answer':
 							$state['post'] = static::sanitize($_POST['post']);
-							$redir = "post.php?id={$state['post']}&type=question";
+							$state['movie'] = static::sanitize($_POST['movie']);
+							$redir = "movie.php?id={$state['movie']}&type=movie&tab=question";
 							break;
 					}
 

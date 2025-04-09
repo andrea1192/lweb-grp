@@ -250,6 +250,7 @@
 					<div class="flex column">
 						{$components::getHiddenInput('type', 'answer')}
 						{$components::getHiddenInput('post', $this->ref->id)}
+						{$components::getHiddenInput('movie', $this->ref->movie)}
 						{$text}
 						<div class="flex footer">
 							<div class="flex left">
