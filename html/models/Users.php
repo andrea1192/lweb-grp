@@ -14,45 +14,21 @@
 			'reputation',
 			'privilege'
 		];
+		protected const DB_SCHEMA = <<<EOF
+		CREATE TABLE IF NOT EXISTS Users (
+			username	VARCHAR(160)	PRIMARY KEY,
+			password	VARCHAR(160)	NOT NULL,
+			name		VARCHAR(160),
+			address		VARCHAR(160),
+			mail_pri	VARCHAR(160),
+			mail_sec	VARCHAR(160),
+			reputation	INTEGER			NOT NULL DEFAULT 1,
+			privilege	INTEGER			NOT NULL DEFAULT 1,
+			CONSTRAINT priv_levels CHECK (privilege BETWEEN -1 AND 3)
+		)
+		EOF;
 		protected const OB_TYPE = 'user';
 		protected const OB_PRI_KEY = 'username';
-
-		/* Inizializza il repository, da zero od utilizzando i dati in $source */
-		public function init($source = null) {
-
-			$this->query(<<<EOF
-					CREATE TABLE IF NOT EXISTS Users (
-					username	VARCHAR(160)	PRIMARY KEY,
-					password	VARCHAR(160)	NOT NULL,
-					name		VARCHAR(160),
-					address		VARCHAR(160),
-					mail_pri	VARCHAR(160),
-					mail_sec	VARCHAR(160),
-					reputation	INTEGER			NOT NULL DEFAULT 1,
-					privilege	INTEGER			NOT NULL DEFAULT 1,
-					CONSTRAINT priv_levels CHECK (privilege BETWEEN -1 AND 3)
-					)
-					EOF
-			);
-
-			if ($source) {
-				$existing_users = [];
-
-				foreach ($source as $details) {
-					try {
-						$this->create('user', $details);
-
-					} catch (\mysqli_sql_exception $e) {
-						$existing_users[] = $details['username'];
-					}
-				}
-
-				if (!empty($existing_users)) {
-					$msg = " Couldn't overwrite existing users: ".implode(', ', $existing_users);
-					throw new \Exception($msg);
-				}
-			}
-		}
 
 		public function getUserByUsername($username) {
 			return $this->read($username);

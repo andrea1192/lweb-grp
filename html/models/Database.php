@@ -102,7 +102,39 @@
 	/* Metodi per interrogare una tabella specifica del database, ritornando elementi del dominio */
 	class Table extends Database implements IRepository {
 
-		/* Ripristina il repository */
+		/* Inizializza la tabella, opzionalmente con i dati in un array $source */
+		public function init() {
+
+			// Crea le tabelle e/o viste definite per questo elemento (una o più query)
+			$this->connection->multi_query(static::DB_SCHEMA);
+
+			// Consuma eventuali output di multi_query prima di continuare
+			while ($this->connection->next_result());
+		}
+
+		/* Carica dati da un array $source */
+		public function load($source) {
+			$type = static::OB_TYPE;
+			$pkey = static::OB_PRI_KEY;
+
+			$existing_data = [];
+
+			foreach ($source as $attributes) {
+				try {
+					$this->create($type, $attributes);
+
+				} catch (\mysqli_sql_exception $e) {
+					$existing_data[] = $attributes[$pkey];
+				}
+			}
+
+			if (!empty($existing_data)) {
+				$msg = "Couldn't overwrite existing $type elements: ".implode(', ', $existing_data);
+				throw new \Exception($msg);
+			}
+		}
+
+		/* Ripristina la tabella, cancellando una riga alla volta mediante DELETE */
 		public function restore() {
 			if (!empty(static::DB_TABLE)) {
 				$table = static::DB_TABLE;

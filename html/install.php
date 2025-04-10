@@ -5,7 +5,7 @@
 	class SetupController extends AbstractController {
 
 		public function route() {
-			require_once('connection.php'); // costanti con i percorsi da utilizzare
+			require_once('connection.php'); // costanti con le credenziali per il database
 
 			switch ($_REQUEST['action'] ?? '') {
 
@@ -17,29 +17,47 @@
 
 				case 'install':
 					try {
+						// Inizializza le tabelle
+
 						// NOTA: L'ordine di inizializzazione è significativo
 						// 'users' va prima dei contenuti generati dagli utenti
-						// 'posts' va prima delle diverse tipologie di post
+						// 'posts' va prima delle sue specializzazioni, e 'reactions' dopo
+						ServiceLocator::resolve('users')->init();
 
-						$sample_users = isset($_POST['setup_users']) ? BUILTIN_USERS : null;
-						ServiceLocator::resolve('users')->init($sample_users);
+						ServiceLocator::resolve('requests')->init();
+						ServiceLocator::resolve('movies')->init();
+						ServiceLocator::resolve('posts')->init();
+						ServiceLocator::resolve('reviews')->init();
+						ServiceLocator::resolve('questions')->init();
+						ServiceLocator::resolve('answers')->init();
+						ServiceLocator::resolve('spoilers')->init();
+						ServiceLocator::resolve('extras')->init();
+						ServiceLocator::resolve('comments')->init();
 
-						$sample_content = isset($_POST['setup_sample']) ? DIR_SAMPLE : null;
-						ServiceLocator::resolve('requests')->init($sample_content);
-						ServiceLocator::resolve('movies')->init($sample_content);
-						ServiceLocator::resolve('posts')->init($sample_content);
-						ServiceLocator::resolve('reviews')->init($sample_content);
-						ServiceLocator::resolve('questions')->init($sample_content);
-						ServiceLocator::resolve('answers')->init($sample_content);
-						ServiceLocator::resolve('spoilers')->init($sample_content);
-						ServiceLocator::resolve('extras')->init($sample_content);
-						ServiceLocator::resolve('comments')->init($sample_content);
-						ServiceLocator::resolve('likes')->init($sample_content);
-						ServiceLocator::resolve('usefulnesses')->init($sample_content);
-						ServiceLocator::resolve('agreements')->init($sample_content);
-						ServiceLocator::resolve('spoilages')->init($sample_content);
-						ServiceLocator::resolve('reactions')->init($sample_content);
-						ServiceLocator::resolve('reports')->init($sample_content);
+						ServiceLocator::resolve('likes')->init();
+						ServiceLocator::resolve('usefulnesses')->init();
+						ServiceLocator::resolve('agreements')->init();
+						ServiceLocator::resolve('spoilages')->init();
+						ServiceLocator::resolve('reactions')->init();
+						ServiceLocator::resolve('reports')->init();
+
+						// A seconda delle scelte operate nel form di installazione, carica utenti
+						// e/o contenuti di esempio definiti in connection.php
+
+						// Utenti di esempio
+						if (isset($_POST['setup_users'])) {
+							$data = BUILTIN_USERS;
+
+							ServiceLocator::resolve('users')->load($data);
+						}
+
+						// Contenuti di esempio
+						if (isset($_POST['setup_sample'])) {
+							$data = SAMPLE_CONTENT;
+
+							foreach ($data as $repo => $content)
+								ServiceLocator::resolve($repo)->load($content);
+						}
 
 					} catch (\mysqli_sql_exception $e) {
 						static::abort("Install failed. Database error: {$e->getMessage()}");
@@ -48,8 +66,10 @@
 						static::abort("Install failed. {$e->getMessage()}");
 					}
 
+					// FIXME: Rivedi e riattiva logica per gestire locandine e poster
+
 					// Inizializza le cartelle di poster (locandine) e backdrop (sfondi)
-					if (isset($_POST['setup_sample'])) {
+					/*if (isset($_POST['setup_sample'])) {
 						$sample_bdrops = str_replace(DIR_STATIC, DIR_SAMPLE, DIR_BACKDROPS);
 						$sample_posters = str_replace(DIR_STATIC, DIR_SAMPLE, DIR_POSTERS);
 
@@ -61,7 +81,7 @@
 							mkdir(DIR_BACKDROPS);
 						if (!is_dir(DIR_POSTERS))
 							mkdir(DIR_POSTERS);
-					}
+					}*/
 
 					$message = "Install completed successfully.";
 					$message .= " <a href=\"index.php\">Go to site &gt;&gt;&gt;</a>";
