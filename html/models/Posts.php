@@ -69,7 +69,9 @@
 
 			$this->query(<<<EOF
 					CREATE TABLE IF NOT EXISTS Reviews (
-					id 			VARCHAR(80)		PRIMARY KEY REFERENCES Posts(id),
+					id 			VARCHAR(80)		PRIMARY KEY REFERENCES Posts(id)
+														ON DELETE CASCADE
+														ON UPDATE RESTRICT,
 					rating		INT 			NOT NULL,
 					CONSTRAINT 	rating_dom CHECK (rating BETWEEN 1 AND 10)
 					)
@@ -103,7 +105,9 @@
 			// questa tabella, deve necessariamente essere creata in seguito
 			$this->query(<<<EOF
 					CREATE TABLE IF NOT EXISTS Questions (
-					id 				VARCHAR(80)		PRIMARY KEY REFERENCES Posts(id),
+					id 				VARCHAR(80)		PRIMARY KEY REFERENCES Posts(id)
+														ON DELETE CASCADE
+														ON UPDATE RESTRICT,
 					featured 		BOOLEAN			DEFAULT FALSE,
 					featuredAnswer	VARCHAR(80)
 					)
@@ -147,7 +151,9 @@
 
 			$this->query(<<<EOF
 					CREATE TABLE IF NOT EXISTS Answers (
-					id 			VARCHAR(80)		PRIMARY KEY,
+					id 			VARCHAR(80)		PRIMARY KEY REFERENCES Posts(id)
+														ON DELETE CASCADE
+														ON UPDATE RESTRICT,
 					post 		VARCHAR(80)		NOT NULL REFERENCES Questions(id)
 					)
 					EOF
@@ -161,7 +167,9 @@
 			$this->query(<<<EOF
 					ALTER TABLE Questions
 					ADD CONSTRAINT featuredAnswer_fk
-							FOREIGN KEY (featuredAnswer) REFERENCES Answers(id)
+							FOREIGN KEY IF NOT EXISTS (featuredAnswer) REFERENCES Answers(id)
+									ON DELETE SET NULL
+									ON UPDATE RESTRICT
 					EOF
 			);
 		}
@@ -206,7 +214,9 @@
 
 			$this->query(<<<EOF
 					CREATE TABLE IF NOT EXISTS Spoilers (
-					id 			VARCHAR(80)		PRIMARY KEY REFERENCES Posts(id),
+					id 			VARCHAR(80)		PRIMARY KEY REFERENCES Posts(id)
+														ON DELETE CASCADE
+														ON UPDATE RESTRICT,
 					rating		INT 			NOT NULL,
 					CONSTRAINT 	rating_dom CHECK (rating BETWEEN 1 AND 10)
 					)
@@ -236,7 +246,9 @@
 
 			$this->query(<<<EOF
 					CREATE TABLE IF NOT EXISTS Extras (
-					id 			VARCHAR(80)		PRIMARY KEY REFERENCES Posts(id),
+					id 			VARCHAR(80)		PRIMARY KEY REFERENCES Posts(id)
+														ON DELETE CASCADE
+														ON UPDATE RESTRICT,
 					reputation	INT 			NOT NULL
 					)
 					EOF
@@ -265,7 +277,9 @@
 
 			$this->query(<<<EOF
 					CREATE TABLE IF NOT EXISTS Comments (
-					id 			VARCHAR(80)		PRIMARY KEY REFERENCES Posts(id),
+					id 			VARCHAR(80)		PRIMARY KEY REFERENCES Posts(id)
+														ON DELETE CASCADE
+														ON UPDATE RESTRICT,
 					rating		SET(
 							'ok',
 							'okma',

@@ -17,6 +17,10 @@
 
 				case 'install':
 					try {
+						// NOTA: L'ordine di inizializzazione è significativo
+						// 'users' va prima dei contenuti generati dagli utenti
+						// 'posts' va prima delle diverse tipologie di post
+
 						$sample_users = isset($_POST['setup_users']) ? BUILTIN_USERS : null;
 						ServiceLocator::resolve('users')->init($sample_users);
 
@@ -26,6 +30,7 @@
 						ServiceLocator::resolve('posts')->init($sample_content);
 						ServiceLocator::resolve('reviews')->init($sample_content);
 						ServiceLocator::resolve('questions')->init($sample_content);
+						ServiceLocator::resolve('answers')->init($sample_content);
 						ServiceLocator::resolve('spoilers')->init($sample_content);
 						ServiceLocator::resolve('extras')->init($sample_content);
 						ServiceLocator::resolve('comments')->init($sample_content);
@@ -34,7 +39,6 @@
 						ServiceLocator::resolve('agreements')->init($sample_content);
 						ServiceLocator::resolve('spoilages')->init($sample_content);
 						ServiceLocator::resolve('reactions')->init($sample_content);
-						ServiceLocator::resolve('answers')->init($sample_content);
 						ServiceLocator::resolve('reports')->init($sample_content);
 
 					} catch (\mysqli_sql_exception $e) {
@@ -68,22 +72,18 @@
 
 				case 'restore':
 					try {
-						ServiceLocator::resolve('movies')->restore();
-						ServiceLocator::resolve('requests')->restore();
-						ServiceLocator::resolve('posts')->restore();
-						ServiceLocator::resolve('reviews')->restore();
-						ServiceLocator::resolve('questions')->restore();
-						ServiceLocator::resolve('spoilers')->restore();
-						ServiceLocator::resolve('extras')->restore();
-						ServiceLocator::resolve('comments')->restore();
-						ServiceLocator::resolve('reactions')->restore();
+						// NOTA: L'ordine di ripristino è significativo
 						ServiceLocator::resolve('likes')->restore();
 						ServiceLocator::resolve('usefulnesses')->restore();
 						ServiceLocator::resolve('agreements')->restore();
 						ServiceLocator::resolve('spoilages')->restore();
-						ServiceLocator::resolve('answers')->restore();
 						ServiceLocator::resolve('reports')->restore();
 
+						// restore() su 'posts' ripristina a cascata le specializzazioni di 'post'
+						ServiceLocator::resolve('posts')->restore();
+						ServiceLocator::resolve('requests')->restore();
+
+						// Chiude eventuali sessioni aperte prima di ripristinare gli utenti
 						ServiceLocator::resolve('session')->setUser(null);
 						ServiceLocator::resolve('users')->restore();
 

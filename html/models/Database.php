@@ -106,7 +106,7 @@
 		public function restore() {
 			if (!empty(static::DB_TABLE)) {
 				$table = static::DB_TABLE;
-				$this->query("TRUNCATE $table");
+				$this->query("DELETE FROM $table");
 			}
 		}
 
