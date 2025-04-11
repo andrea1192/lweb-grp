@@ -97,7 +97,7 @@
 				return;
 			}
 
-			if ($this->tab == 'question' && (!empty($this->posts))) {
+			if ($this->tab == 'question' && !empty($this->featuredPosts)) {
 
 				echo <<<EOF
 				<div class="featured">
