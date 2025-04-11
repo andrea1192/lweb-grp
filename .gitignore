@@ -6,9 +6,12 @@
 .env
 
 # Others
-test.php
 archived/
 mockups/
 notes/
 sample/
 static/
+pdf/
+export.py
+samples.php
+test.php

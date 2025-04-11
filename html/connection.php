@@ -1,4 +1,7 @@
 <?php
+	// Includi contenuto di esempio, da caricare opzionalmente durante l'installazione
+	if(is_file('samples.php')) require_once('samples.php');
+
 	define('DB_HOST', 'db');
 	define('DB_USER', 'mariadb_user');
 	define('DB_PASS', 'mariadb_password');
@@ -15,37 +18,26 @@
 		'image/png' => '.png'
 	]);
 
-	define('BUILTIN_USERS', [
+	// Definisci utenti di esempio, se non presenti in samples.php
+	defined('BUILTIN_USERS') or define('BUILTIN_USERS',
+	[
 		[
-			'username' => 'adm',
+			'username' => 'admin',
 			'password' => '1234',
 			'privilege' => 3
-		],
-		[
-			'username' => 'mod',
-			'password' => '1234',
-			'privilege' => 2
-		],
-		[
-			'username' => 'usr',
-			'password' => '1234',
-			'privilege' => 1
-		],
-		[
-			'username' => 'foo',
-			'password' => '1234',
-			'privilege' => 1
-		],
-		[
-			'username' => 'bar',
-			'password' => '1234',
-			'privilege' => 1
-		],
-		[
-			'username' => 'baz',
-			'password' => '1234',
-			'privilege' => 1
 		]
+	]);
+
+	// Definisci contenuti di esempio, se non presenti in samples.php
+	defined('SAMPLE_CONTENT') or define('SAMPLE_CONTENT',
+	[
+		'requests' => [],
+		'reviews' => [],
+		'questions' => [],
+		'answers' => [],
+		'spoilers' => [],
+		'extras' => [],
+		'comments' => []
 	]);
 
 	define('CREDITS', 'Andrea Ippoliti - matricola 1496769');
