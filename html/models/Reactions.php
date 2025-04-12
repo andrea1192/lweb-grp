@@ -24,7 +24,7 @@
 		protected const OB_TYPE = '';
 		protected const OB_PRI_KEY = '';
 
-		public function getReactionsByPost($post_id, $type = '*') {
+		public function getReactionsByPost($post_id) {
 			$criteria = ['post' => $post_id];
 			$matches = $this->sql_select(static::DB_TABLE, $criteria);
 			$objects = [];

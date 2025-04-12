@@ -138,7 +138,7 @@
 					$posts = ServiceLocator::resolve($post_type.'s');
 					$users = ServiceLocator::resolve('users');
 
-					$state['author'] = ServiceLocator::resolve('session')->getUsername();
+					$state['author'] = $this->session->getUsername();
 					$state['post'] = $post_id;
 					$state['type'] = $reaction_type;
 					$state['rating'] = static::sanitize($_POST['rating'] ?? '');
@@ -219,15 +219,17 @@
 					$users = ServiceLocator::resolve('users');
 
 					$state['post'] = $post_id;
-					$state['author'] = static::sanitize($_POST['author'] ?? '');
+					$state['author'] =
+							static::sanitize($_POST['author'] ?? $this->session->getUsername());
 					$state['status'] = static::sanitize($_POST['status'] ?? 'open');
 					$state['message'] = static::sanitize($_POST['message']);
 					$state['response'] = static::sanitize($_POST['response']);
 
-					// FIXME: Controlla se l'utente corrente ha già segnalato questo post
+					$reaction_old =
+							$repo->getReaction($state['post'], $state['author']);
 
 					// Porta a termine l'operazione corretta (send/close)
-					if ($action == 'send_report') {
+					if ($action == 'send_report' && !$reaction_old) {
 						$report = $repo->create('report', $state);
 						$redir = "post.php?id={$state['post']}";
 					} else {
@@ -245,6 +247,12 @@
 
 					$users->update($author);
 
+					// Aggiorna e reindirizza l'utente
+					if ($action == 'send_report') {
+						$this->session->pushNotification('Report sent. Thank you.');
+					} else {
+						$this->session->pushNotification('Report successfully updated.');
+					}
 					header("Location: $redir");
 					break;
 
