@@ -11,12 +11,18 @@
 		public $director = '';
 		public $writer = '';
 
+		public $poster = '';
+		public $backdrop = '';
+
 		protected function __construct($state) {
 			parent::__construct($state);
 
 			$this->id = $this->validateString('id');
 			$this->title = $this->validateString('title');
 			$this->year = $this->validateNumeric('year');
+
+			$this->poster = $state['poster'] ?? '';
+			$this->backdrop = $state['backdrop'] ?? '';
 
 			$this->checkValidation();
 		}

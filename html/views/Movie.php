@@ -270,26 +270,27 @@
 
 		/* Genera codice per visualizzare lo sfondo, se presente */
 		protected function generateBackdrop() {
-			$dir = $this->getMapper('movies')::BACKDROPS_PATH;
-			$ext = $this->getMapper('movies')::MEDIA_TYPES;
-			$id = $this->movie->id ?? '';
 
-			$backdrop = $this->getMediaFile($dir, $id, $ext);
+			if (!empty($this->movie->backdrop)) {
+				$backdrop = $this->movie->backdrop;
+				$backdrop_b64 = base64_encode($backdrop);
+				$type = getimagesizefromstring($backdrop)['mime'];
 
-			return "style=\"background-image: url('{$backdrop}')\"";
+				return "style=\"background-image: url('data:{$type};base64,{$backdrop_b64}')\"";
+			} else {
+				return '';
+			}
 		}
 
 		/* Genera codice per visualizzare la locandina, se presente */
 		protected function generatePoster() {
-			$dir = $this->getMapper('movies')::POSTERS_PATH;
-			$ext = $this->getMapper('movies')::MEDIA_TYPES;
-			$id = $this->movie->id ?? '';
 
-			$poster = $this->getMediaFile($dir, $id, $ext);
-			$status = $this->generateStatus();
+			if (!empty($this->movie->poster)) {
+				$poster = $this->movie->poster;
+				$poster_b64 = base64_encode($poster);
+				$type = getimagesizefromstring($poster)['mime'];
 
-			if (!empty($poster)) {
-				$poster = "style=\"background-image: url('{$poster}')\"";
+				$poster = "style=\"background-image: url('data:{$type};base64,{$poster_b64}')\"";
 				$placeholder = '';
 			} else {
 
@@ -304,23 +305,10 @@
 
 			return <<<EOF
 			<div class="poster" {$poster}>
-				{$status}
+				{$this->generateStatus()}
 				{$placeholder}
 			</div>
 			EOF;
-		}
-
-		/* Localizza lo sfondo o la locandina del film corrente, se disponibile */
-		protected function getMediaFile($source, $id, $extensions) {
-
-			foreach ($extensions as $extension) {
-				$file = $source.$id.$extension;
-
-				if (file_exists($file))
-					return $file;
-			}
-
-			return '';
 		}
 
 		/* [Non applicabile per \models\Movie] */

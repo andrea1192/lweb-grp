@@ -1,8 +1,6 @@
 <?php namespace models;
 
 	class Threads extends Table {
-		public const POSTERS_PATH = DIR_POSTERS;
-		public const BACKDROPS_PATH = DIR_BACKDROPS;
 		public const MEDIA_TYPES = MEDIA_TYPES;
 	}
 
@@ -21,7 +19,9 @@
 				duration,
 				summary,
 				director,
-				writer
+				writer,
+				poster,
+				backdrop
 			FROM Threads
 			WHERE status = 'accepted'
 		EOF;
@@ -50,7 +50,9 @@
 			'duration',
 			'summary',
 			'director',
-			'writer'
+			'writer',
+			'poster',
+			'backdrop'
 		];
 		protected const DB_SCHEMA = <<<EOF
 		CREATE TABLE IF NOT EXISTS Threads (
@@ -68,7 +70,9 @@
 			duration	SMALLINT,
 			summary		TEXT,
 			director	VARCHAR(160),
-			writer		VARCHAR(160)
+			writer		VARCHAR(160),
+			poster 		MEDIUMBLOB,
+			backdrop 	MEDIUMBLOB
 		)
 		EOF;
 		protected const OB_TYPE = 'request';
