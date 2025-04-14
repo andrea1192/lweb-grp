@@ -30,6 +30,7 @@
 
 				case 'create':
 				case 'update':
+				case 'accept':
 					// Livello di privilegio richiesto per inviare richieste: 1 (utente)
 					if ($action == 'create' && !$this->session->isAllowed())
 						header('Location: index.php');
@@ -38,31 +39,33 @@
 					if ($action == 'update' && !$this->session->isMod())
 						header('Location: index.php');
 
+					// Livello di privilegio richiesto per approvare richieste: 3 (admin)
+					if ($action == 'accept' && !$this->session->isAdmin())
+						header('Location: index.php');
+
 					// Controlla che la richiesta utilizzi il metodo HTTP POST
 					static::checkPOST();
 
-					switch ($_POST['status'] ?? '') {
+					switch ($movie_type) {
 						default:
-						case 'submitted':
-						case 'rejected':
-						case 'deleted':
+						case 'request':
 							$repo = ServiceLocator::resolve('requests');
 							break;
-						case 'accepted':
+						case 'movie':
 							$repo = ServiceLocator::resolve('movies');
 							break;
 					}
 
 					$state['id'] = $movie_id;
+					$state['status'] = ($action != 'accept') ?
+							static::sanitize($_POST['status'] ?? 'submitted') : 'accepted';
+					$state['author'] = static::sanitize($_POST['author'] ?? '');
 					$state['title'] = static::sanitize($_POST['title']);
 					$state['year'] = static::sanitize($_POST['year']);
 					$state['duration'] = static::sanitize($_POST['duration']);
 					$state['summary'] = static::sanitize($_POST['summary']);
 					$state['director'] = static::sanitize($_POST['director']);
 					$state['writer'] = static::sanitize($_POST['writer']);
-
-					$state['status'] = static::sanitize($_POST['status'] ?? 'submitted');
-					$state['author'] = static::sanitize($_POST['author'] ?? '');
 
 					$current_state = $repo->read($movie_id);
 
@@ -99,62 +102,27 @@
 						);
 					}
 
+					// Aggiorna la reputazione del proponente della scheda
+					if ($action == 'accept') {
+						$users = ServiceLocator::resolve('users');
+						$author = $users->read($object->author);
+						$author->reputation += $object::REPUTATION_DELTAS[$object->status];
+						$users->update($author);
+					}
+
 					// Aggiorna e reindirizza l'utente
 					if ($action == 'create') {
 						$this->session->pushNotification('Request submitted for approval.');
-					} else {
+						$redir = "movie.php?id={$object->id}&type={$movie_type}";
+					} elseif ($action == 'update') {
 						$this->session->pushNotification('Request successfully updated.');
+						$redir = "movie.php?id={$object->id}&type={$movie_type}";
+					} elseif ($action == 'accept') {
+						$this->session->pushNotification('Request marked as approved.');
+						$redir = "movie.php?id={$object->id}&type=movie";
 					}
-					$nextView = \views\Movie::matchModel($object);
-					$redir = htmlspecialchars_decode($nextView->generateURL());
 					header("Location: $redir");
 					break;
-
-				case 'accept':
-					// Livello di privilegio richiesto: 3 (admin)
-					if (!$this->session->isAdmin())
-						header('Location: index.php');
-
-					$requests = ServiceLocator::resolve('requests');
-					$movies = ServiceLocator::resolve('movies');
-					$users = ServiceLocator::resolve('users');
-
-					$state['id'] = $movie_id;
-					$state['status'] = 'accepted';
-					$state['author'] = static::sanitize($_POST['author']);
-					$state['title'] = static::sanitize($_POST['title']);
-					$state['year'] = static::sanitize($_POST['year']);
-					$state['duration'] = static::sanitize($_POST['duration']);
-					$state['summary'] = static::sanitize($_POST['summary']);
-					$state['director'] = static::sanitize($_POST['director']);
-					$state['writer'] = static::sanitize($_POST['writer']);
-
-					// Porta a termine l'operazione
-					try {
-						$request = \models\AbstractModel::build('request', $state);
-						$requests->update($request);
-
-					} catch (\InvalidDataException $e) {
-						static::abort(
-								'Couldn\'t complete operation. Invalid or missing data.',
-								$e->getErrors()
-						);
-					}
-
-					// Aggiorna la reputazione del proponente della scheda
-					$author = $users->read($request->author);
-					$author->reputation += $request::REPUTATION_DELTAS[$request->status];
-					$users->update($author);
-
-					// TODO: Unisci alla logica di gestione di 'update'
-
-					// Aggiorna e reindirizza l'utente
-					$this->session->pushNotification('Movie successfully added to the archive.');
-					$newMovie = $movies->read($movie_id);
-					$nextView = \views\Movie::matchModel($newMovie);
-					$redir = htmlspecialchars_decode($nextView->generateURL());
-					header("Location: $redir");
-					return;
 
 				case 'reject':
 					// Livello di privilegio richiesto: 3 (admin)
