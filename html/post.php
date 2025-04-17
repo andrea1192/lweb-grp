@@ -120,10 +120,11 @@
 							$redir = "movie.php?id={$post->movie}&type=movie&tab={$post_type}";
 							break;
 						case 'comment':
-							$redir = "movie.php?id={$post->request}&type=request&tab=comment";
+							$redir = "movie.php?id={$post->movie}&type=request&tab=comment";
 							break;
 					}
 
+					$this->session->pushNotification('Post deleted.');
 					header("Location: $redir");
 					break;
 
