@@ -107,7 +107,6 @@
 
 			if (!str_ends_with($_SERVER['SCRIPT_NAME'], '/install.php')) {
 				$this->checkDatabase();
-				$this->checkRepository();
 			}
 
 			// Determina l'azione da intraprendere (definito da sottoclassi di AbstractController)
@@ -122,32 +121,6 @@
 
 			} catch (\mysqli_sql_exception $e) {
 				$message = "Couldn't connect to the database. Please check your credentials.";
-
-				$this->session->pushNotification($message);
-				header('Location: install.php');
-				die();
-			}
-		}
-
-		/* Verifica la disponibilità del repository di file XML */
-		private function checkRepository() {
-			require_once('connection.php');
-
-			try {
-				if (!is_dir(DIR_STATIC))
-					throw new \Exception('Couldn\'t load the content archive.');
-
-				ServiceLocator::resolve('movies');
-				ServiceLocator::resolve('requests');
-				ServiceLocator::resolve('posts');
-				ServiceLocator::resolve('comments');
-				ServiceLocator::resolve('reactions');
-				ServiceLocator::resolve('answers');
-				ServiceLocator::resolve('reports');
-
-			} catch (\Exception $e) {
-				$message = $e->getMessage();
-				$message .= ' Please try restoring and repeating the installation.';
 
 				$this->session->pushNotification($message);
 				header('Location: install.php');

@@ -31,14 +31,19 @@
 			$action_install = 'install.php?action=install';
 			$action_restore = 'install.php?action=restore';
 			$tooltip_install = 'Carry out selected actions';
-			$tooltip_restore = 'Empty database tables and XML files';
+			$tooltip_restore = 'Empty database tables';
 
+			$samples_count = 0;
+			$users_count = 0;
 			$users_table = '';
 			$components = '\views\UIComponents';
 
+			foreach (SAMPLE_CONTENT as $category=>$items)
+				$samples_count += count($items);
+
 			foreach (BUILTIN_USERS as $details) {
 				$user = new \models\User($details);
-
+				$users_count++;
 				$users_table .= <<<EOF
 				<tr>
 					<td>{$details['username']}</td>
@@ -48,23 +53,8 @@
 				EOF;
 			}
 
-			$sample_available = is_dir(DIR_SAMPLE);
-			$optionals = <<<EOF
-				<div class="flex column">
-					{$components::getCheckbox(
-							'Set up database tables',
-							'setup_tables',
-							checked: true,
-							enabled: false)}
-					{$components::getCheckbox(
-							'Set up sample content',
-							'setup_sample',
-							checked: $sample_available,
-							enabled: $sample_available)}
-					{$components::getCheckbox(
-							'Set up built-in users:',
-							'setup_users',
-							checked: true)}
+			if ($users_count)
+				$users_table = <<<EOF
 					<table>
 						<tr>
 							<th>Username</th>
@@ -73,6 +63,28 @@
 						</tr>
 						{$users_table}
 					</table>
+					EOF;
+			else
+				$users_table = '';
+
+			$optionals = <<<EOF
+				<div class="flex column">
+					{$components::getCheckbox(
+							'Set up database tables',
+							'setup_tables',
+							checked: true,
+							enabled: false)}
+					{$components::getCheckbox(
+							"Set up sample content ({$samples_count} items)",
+							'setup_sample',
+							checked: $samples_count,
+							enabled: $samples_count)}
+					{$components::getCheckbox(
+							"Set up built-in users ({$users_count} accounts)",
+							'setup_users',
+							checked: $users_count,
+							enabled: $users_count)}
+					{$users_table}
 				</div>
 			EOF;
 

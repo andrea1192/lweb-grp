@@ -35,47 +35,31 @@
 			return static::get($type)::ID_PREFIX;
 		}
 
-		/* Restituisce il tipo di oggetto rappresentato da $subject:
-		*
-		*	se istanza di DOMElement, il tipo è costituito dal nome dell'elemento (nodeName);
-		*	se istanza di altra classe, il tipo è costituito dal nome della classe (get_class());
-		*	se ID alfanumerico di un oggetto, il tipo è determinato dal prefisso.
-		*/
-		public static function getType($subject) {
+		/* Restituisce il tipo di oggetto a partire dal suo $id (in base al prefisso) */
+		public static function getType($id) {
+			preg_match('/([[:alpha:]]+)([[:digit:]])/', $id, $matches);
 
-			if (is_object($subject)) {
-				$class = get_class($subject);
+			$prefix = $matches[1];
+			$number = $matches[2];
 
-				if ($class == 'DOMElement')
-					return $subject->nodeName;
-				else
-					return str_replace('models\\', '', strtolower($class));
+			switch ($prefix) {
+				case Movie::ID_PREFIX:
+				case Request::ID_PREFIX:
+					return 'request';
 
-			} else {
-				preg_match('/([[:alpha:]]+)([[:digit:]])/', $subject, $matches);
+				case Review::ID_PREFIX:
+					return 'review';
+				case Question::ID_PREFIX:
+					return 'question';
+				case Spoiler::ID_PREFIX:
+					return 'spoiler';
+				case Extra::ID_PREFIX:
+					return 'extra';
+				case Comment::ID_PREFIX:
+					return 'comment';
 
-				$prefix = $matches[1];
-				$number = $matches[2];
-
-				switch ($prefix) {
-					case Movie::ID_PREFIX:
-					case Request::ID_PREFIX:
-						return 'request';
-
-					case Review::ID_PREFIX:
-						return 'review';
-					case Question::ID_PREFIX:
-						return 'question';
-					case Spoiler::ID_PREFIX:
-						return 'spoiler';
-					case Extra::ID_PREFIX:
-						return 'extra';
-					case Comment::ID_PREFIX:
-						return 'comment';
-
-					case Answer::ID_PREFIX:
-						return 'answer';
-				}
+				case Answer::ID_PREFIX:
+					return 'answer';
 			}
 		}
 

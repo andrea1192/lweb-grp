@@ -7,12 +7,6 @@
 	define('DB_PASS', 'mariadb_password');
 	define('DB_NAME', 'test_db');
 
-	define('DIR_SCHEMAS', 'schemas/');
-	define('DIR_SAMPLE', 'sample/');
-	define('DIR_STATIC', 'static/');
-
-	define('DIR_BACKDROPS', 'static/backdrops/');
-	define('DIR_POSTERS', 'static/posters/');
 	define('MEDIA_TYPES', [
 		'image/jpeg' => '.jpg',
 		'image/png' => '.png'
