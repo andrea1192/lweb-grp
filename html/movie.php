@@ -46,15 +46,7 @@
 					// Controlla che la richiesta utilizzi il metodo HTTP POST
 					static::checkPOST();
 
-					switch ($movie_type) {
-						default:
-						case 'request':
-							$repo = ServiceLocator::resolve('requests');
-							break;
-						case 'movie':
-							$repo = ServiceLocator::resolve('movies');
-							break;
-					}
+					$repo = ServiceLocator::resolve('requests');
 
 					$state['id'] = $movie_id;
 					$state['status'] = ($action != 'accept') ?
