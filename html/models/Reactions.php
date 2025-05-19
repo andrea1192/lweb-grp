@@ -84,7 +84,7 @@
 		CREATE TABLE IF NOT EXISTS Likes (
 			author		VARCHAR(160)	NOT NULL REFERENCES Users(username),
 			post 		VARCHAR(80)		NOT NULL REFERENCES Posts(id),
-			type 		SET(
+			type 		ENUM(
 				'like',
 				'dislike'
 			),
@@ -173,7 +173,7 @@
 		CREATE TABLE IF NOT EXISTS Reports (
 			author		VARCHAR(160)	NOT NULL REFERENCES Users(username),
 			post 		VARCHAR(80)		NOT NULL REFERENCES Posts(id),
-			status 		SET(
+			status 		ENUM(
 				'open',
 				'closed',
 				'accepted',

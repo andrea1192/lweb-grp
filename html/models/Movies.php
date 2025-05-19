@@ -57,7 +57,7 @@
 		protected const DB_SCHEMA = <<<EOF
 		CREATE TABLE IF NOT EXISTS Threads (
 			id 			VARCHAR(80)		PRIMARY KEY,
-			status 		SET(
+			status 		ENUM(
 				'submitted',
 				'accepted',
 				'rejected',

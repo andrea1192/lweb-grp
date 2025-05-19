@@ -15,7 +15,7 @@
 		protected const DB_SCHEMA = <<<EOF
 		CREATE TABLE IF NOT EXISTS Posts (
 			id 			VARCHAR(80)		PRIMARY KEY,
-			status 		SET(
+			status 		ENUM(
 				'active',
 				'deleted'
 			) DEFAULT 'active',
@@ -226,7 +226,7 @@
 			id 			VARCHAR(80)		PRIMARY KEY REFERENCES Posts(id)
 												ON DELETE CASCADE
 												ON UPDATE RESTRICT,
-			rating		SET(
+			rating		ENUM(
 					'ok',
 					'okma',
 					'ko'
