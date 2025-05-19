@@ -63,6 +63,9 @@
 				'rejected',
 				'deleted'
 			) DEFAULT 'submitted',
+			verified	BOOLEAN			GENERATED ALWAYS AS (
+				CASE WHEN status = 'accepted' THEN TRUE ELSE NULL END
+			) STORED,
 			title		VARCHAR(160)	NOT NULL,
 			year		YEAR			NOT NULL,
 			author		VARCHAR(160)	NOT NULL,
@@ -72,7 +75,8 @@
 			director	VARCHAR(160),
 			writer		VARCHAR(160),
 			poster 		MEDIUMBLOB,
-			backdrop 	MEDIUMBLOB
+			backdrop 	MEDIUMBLOB,
+			UNIQUE(verified, title, year)
 		)
 		EOF;
 		protected const OB_TYPE = 'request';
