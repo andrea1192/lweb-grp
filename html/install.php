@@ -28,6 +28,7 @@
 						ServiceLocator::resolve('movies')->init();
 						ServiceLocator::resolve('posts')->init();
 						ServiceLocator::resolve('reviews')->init();
+						ServiceLocator::resolve('qa')->init();
 						ServiceLocator::resolve('questions')->init();
 						ServiceLocator::resolve('answers')->init();
 						ServiceLocator::resolve('spoilers')->init();

@@ -52,7 +52,9 @@
 			break;
 		case 'models\Posts':
 		case 'models\Reviews':
+		case 'models\QA':
 		case 'models\Questions':
+		case 'models\Answers':
 		case 'models\Spoilers':
 		case 'models\Extras':
 		case 'models\Comments':
@@ -77,7 +79,6 @@
 		case 'models\Usefulnesses':
 		case 'models\Agreements':
 		case 'models\Spoilages':
-		case 'models\Answers':
 		case 'models\Reports':
 			require_once 'models/Reactions.php';
 			break;

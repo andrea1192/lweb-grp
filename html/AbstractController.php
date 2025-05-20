@@ -65,6 +65,9 @@
 			ServiceLocator::register('reviews', function() {
 				return new \models\Reviews();
 			});
+			ServiceLocator::register('qa', function() {
+				return new \models\QA();
+			});
 			ServiceLocator::register('questions', function() {
 				return new \models\Questions();
 			});

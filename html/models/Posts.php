@@ -72,7 +72,22 @@
 		protected const OB_PRI_KEY = 'id';
 	}
 
-	class Questions extends Posts {
+	class QA extends Posts {
+		protected const DB_VIEW = '';
+		protected const DB_TABLE = 'QA';
+		protected const DB_ATTRIBS = [
+				'id'
+		];
+		protected const DB_SCHEMA = <<<EOF
+		CREATE TABLE IF NOT EXISTS QA (
+			id 				VARCHAR(80)		PRIMARY KEY REFERENCES Posts(id)
+												ON DELETE CASCADE
+												ON UPDATE RESTRICT
+		);
+		EOF;
+	}
+
+	class Questions extends QA {
 		protected const DB_VIEW = 'VQuestions';
 		protected const DB_TABLE = 'Questions';
 		protected const DB_ATTRIBS = [
@@ -85,7 +100,7 @@
 		// questa tabella, deve necessariamente essere creata in seguito
 		protected const DB_SCHEMA = <<<EOF
 		CREATE TABLE IF NOT EXISTS Questions (
-			id 				VARCHAR(80)		PRIMARY KEY REFERENCES Posts(id)
+			id 				VARCHAR(80)		PRIMARY KEY REFERENCES QA(id)
 												ON DELETE CASCADE
 												ON UPDATE RESTRICT,
 			featured 		BOOLEAN			DEFAULT FALSE,
@@ -114,7 +129,7 @@
 		}
 	}
 
-	class Answers extends Posts {
+	class Answers extends QA {
 		protected const DB_VIEW = 'VAnswers';
 		protected const DB_TABLE = 'Answers';
 		protected const DB_ATTRIBS = [
@@ -123,7 +138,7 @@
 		];
 		protected const DB_SCHEMA = <<<EOF
 		CREATE TABLE IF NOT EXISTS Answers (
-			id 			VARCHAR(80)		PRIMARY KEY REFERENCES Posts(id)
+			id 			VARCHAR(80)		PRIMARY KEY REFERENCES QA(id)
 												ON DELETE CASCADE
 												ON UPDATE RESTRICT,
 			post 		VARCHAR(80)		NOT NULL REFERENCES Questions(id)
