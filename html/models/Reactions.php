@@ -83,7 +83,7 @@
 		protected const DB_SCHEMA = <<<EOF
 		CREATE TABLE IF NOT EXISTS Likes (
 			author		VARCHAR(160)	NOT NULL REFERENCES Users(username),
-			post 		VARCHAR(80)		NOT NULL REFERENCES Posts(id),
+			post 		VARCHAR(80)		NOT NULL REFERENCES Reviews(id),
 			type 		ENUM(
 				'like',
 				'dislike'
@@ -106,7 +106,7 @@
 		protected const DB_SCHEMA = <<<EOF
 		CREATE TABLE IF NOT EXISTS Usefulnesses (
 			author		VARCHAR(160)	NOT NULL REFERENCES Users(username),
-			post 		VARCHAR(80)		NOT NULL REFERENCES Posts(id),
+			post 		VARCHAR(80)		NOT NULL REFERENCES QA(id),
 			rating		INT 			NOT NULL,
 			CONSTRAINT 	rating_dom CHECK (rating BETWEEN 1 AND 5),
 			PRIMARY KEY(author, post)
@@ -127,7 +127,7 @@
 		protected const DB_SCHEMA = <<<EOF
 		CREATE TABLE IF NOT EXISTS Agreements (
 			author		VARCHAR(160)	NOT NULL REFERENCES Users(username),
-			post 		VARCHAR(80)		NOT NULL REFERENCES Posts(id),
+			post 		VARCHAR(80)		NOT NULL REFERENCES QA(id),
 			rating		INT 			NOT NULL,
 			CONSTRAINT 	rating_dom CHECK (rating BETWEEN 1 AND 5),
 			PRIMARY KEY(author, post)
@@ -148,7 +148,7 @@
 		protected const DB_SCHEMA = <<<EOF
 		CREATE TABLE IF NOT EXISTS Spoilages (
 			author		VARCHAR(160)	NOT NULL REFERENCES Users(username),
-			post 		VARCHAR(80)		NOT NULL REFERENCES Posts(id),
+			post 		VARCHAR(80)		NOT NULL REFERENCES Spoilers(id),
 			rating		INT 			NOT NULL,
 			CONSTRAINT 	rating_dom CHECK (rating BETWEEN 1 AND 10),
 			PRIMARY KEY(author, post)
