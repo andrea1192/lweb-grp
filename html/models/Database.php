@@ -116,20 +116,32 @@
 		public function load($source) {
 			$type = static::OB_TYPE;
 			$pkey = static::OB_PRI_KEY;
-
-			$existing_data = [];
+			$errors = [];
 
 			foreach ($source as $attributes) {
 				try {
 					$this->create($type, $attributes);
 
 				} catch (\mysqli_sql_exception $e) {
-					$existing_data[] = $attributes[$pkey];
+					$errors[$attributes[$pkey]] = $e->getSqlState();
 				}
 			}
 
-			if (!empty($existing_data)) {
-				$msg = "Couldn't overwrite existing $type elements: ".implode(', ', $existing_data);
+			if (!empty($errors)) {
+				function array_map_assoc($callback, $array) {
+					$out = [];
+
+					foreach ($array as $key => $value)
+						$out[$key] = $callback($key,$value);
+
+					return $out;
+				}
+
+				$list = implode(
+						', ',
+						array_map_assoc(function($k, $v) {return "$k ($v)";}, $errors)
+				);
+				$msg = "Couldn't load elements (SQLSTATE): $list";
 				throw new \Exception($msg);
 			}
 		}

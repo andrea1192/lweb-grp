@@ -95,8 +95,8 @@
 				'featured',
 				'featuredAnswer'
 		];
-		// NOTA: Il vincolo di integrità su featuredAnswer (chiave esterna riferita ad Answers)
-		// non può essere aggiunto subito perchè Answers, contenendo un riferimento NOT NULL a
+		// (*): Il vincolo di integrità su featuredAnswer (chiave esterna riferita ad Answers(id))
+		// non può essere aggiunto subito perchè Answers, contenendo a sua volta un riferimento a
 		// questa tabella, deve necessariamente essere creata in seguito
 		protected const DB_SCHEMA = <<<EOF
 		CREATE TABLE IF NOT EXISTS Questions (
@@ -104,7 +104,7 @@
 												ON DELETE CASCADE
 												ON UPDATE RESTRICT,
 			featured 		BOOLEAN			DEFAULT FALSE,
-			featuredAnswer	VARCHAR(80)
+			featuredAnswer	VARCHAR(80)		-- REFERENCES Answers(id) da aggiungere dopo (*)
 		);
 		CREATE VIEW IF NOT EXISTS VQuestions AS
 			SELECT *
