@@ -93,6 +93,10 @@
 								'Couldn\'t complete operation. Invalid or missing data.',
 								$e->getErrors()
 						);
+					} catch (\mysqli_sql_exception $e) {
+						static::abort(
+								"Couldn't complete operation. Database error: {$e->getMessage()}"
+						);
 					}
 
 					// Aggiorna e reindirizza l'utente
