@@ -68,7 +68,7 @@
 			) STORED,
 			title		VARCHAR(160)	NOT NULL,
 			year		YEAR			NOT NULL,
-			author		VARCHAR(160)	NOT NULL,
+			author		VARCHAR(160)	NOT NULL REFERENCES Users(username),
 			date		TIMESTAMP		DEFAULT CURRENT_TIMESTAMP,
 			duration	SMALLINT,
 			summary		TEXT,
