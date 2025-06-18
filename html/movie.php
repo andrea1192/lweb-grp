@@ -84,6 +84,9 @@
 						if ($action == 'create') {
 							$object = $repo->create($movie_type, $state);
 						} else {
+							if ($action == 'accept')
+								$object = \models\AbstractModel::build('movie', $state);
+
 							$object = \models\AbstractModel::build($movie_type, $state);
 							$repo->update($object);
 						}
